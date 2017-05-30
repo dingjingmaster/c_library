@@ -4,7 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    clib_string/clit_string.c
+    clib_string/clib_string_test.c \
+    clib_string/clib_string.c
 
 HEADERS += \
     clib_string/clib_string.h
