@@ -3,7 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.c \
+SOURCES += \
     clib_string/clit_string.c
 
 HEADERS += \
