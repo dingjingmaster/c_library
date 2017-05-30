@@ -36,7 +36,7 @@ mDjStr djString_dup(const mDjStr str);
 void djString_clear(mDjStr str);
 
 /*  将 char 拼接到字符串末尾  */
-void djString_cat(mDjStr str);
+mDjStr djString_cat(mDjStr str, const char* cStr);
 
 /*  将给定字符串拼接到字符串末尾  */
 void djString_djString_cat();
@@ -55,6 +55,16 @@ void djString_strim(mDjStr str, const char* ceilStr);
 
 /*  字符串比较  */
 void djString_compare(const mDjStr str1, const mDjStr str2);
+
+/*  为新的字符串分配内存  */
+mDjStr djString_newLen(const void* str, size_t strLen);
+
+/*  字符串追加  */
+mDjStr djString_catLen(mDjStr str, const void* t, size_t len);
+
+/*  为字符串增加内存, 释放了原来的字符串，创建了新的  */
+mDjStr djString_expandRoom(mDjStr str, size_t addLen);
+
 
 
 
