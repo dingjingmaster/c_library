@@ -39,22 +39,25 @@ void djString_clear(mDjStr str);
 mDjStr djString_cat(mDjStr str, const char* cStr);
 
 /*  将给定字符串拼接到字符串末尾  */
-void djString_djString_cat();
+mDjStr djString_djString_cat(mDjStr str, const mDjStr catStr);
+
+/*  复制字符串   */
+mDjStr djString_cpyLen(mDjStr str, const char* cStr, size_t cStrLen);
 
 /*  给定 char 字符串覆盖原始空间中的数据  */
-void djString_cpy();
+mDjStr djString_cpy(mDjStr str, const char* cStr);
 
 /*  用空字符给字符串扩容到指定长度  */
-void djString_grow_by_zero();
+mDjStr djString_grow_by_zero(mDjStr str, size_t len);
 
 /*  保留字符串指定区间内的数据，其它数据被覆盖或者清除  */
-void djString_range();
+void djString_range(mDjStr str, int start, int end);
 
 /*  字符串删除字符 在 str 中删除 ceilStr 中存在的字符  */
-void djString_strim(mDjStr str, const char* ceilStr);
+mDjStr djString_strim(mDjStr str, const char* ceilStr);
 
 /*  字符串比较  */
-void djString_compare(const mDjStr str1, const mDjStr str2);
+int djString_compare(const mDjStr str1, const mDjStr str2);
 
 /*  为新的字符串分配内存  */
 mDjStr djString_newLen(const void* str, size_t strLen);
@@ -66,25 +69,5 @@ mDjStr djString_catLen(mDjStr str, const void* t, size_t len);
 mDjStr djString_expandRoom(mDjStr str, size_t addLen);
 
 
-
-
-/*
- *
-mDjStr djString_new_len(const void* str, size_t strLen);
-//  字符串全部转化为 大写
-void djString_to_upper(mDjStr str);
-
-//  字符串全部转化为 小写
-void djString_to_lower(mDjStr str);
-
-//  字符串空间增加
-mDjStr djString_enlarge_space(mDjStr str, size_t addLen);
-
-//  字符串追加
-mDjStr djString_cat_len(mDjStr str, const void* cStr, size_t len);
-
-//  将多个字符串一次性合并到字符串中
-mDjStr djString_join(char **argv, int argc, char *sep, size_t seplen);
-*/
 
 #endif

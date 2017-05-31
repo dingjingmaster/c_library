@@ -192,3 +192,190 @@ mDjStr djString_expandRoom(mDjStr str, size_t addLen)
 
     return newSh ->buf;
 }
+
+mDjStr djString_djString_cat(mDjStr str, const mDjStr catStr)
+{
+    return djString_catLen (str, catStr, djString_mDjStr_len (catStr));
+}
+
+mDjStr djString_cpy(mDjStr str, const char *cStr)
+{
+    return djString_cpyLen (str, cStr, strlen(cStr));
+}
+
+mDjStr djString_cpyLen(mDjStr str, const char *cStr, size_t cStrLen)
+{
+    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+
+    //  现在长度是否足够装下 cStr
+    size_t curLen = sh ->free + sh ->len;
+
+    //  如果不够就扩展
+    if(curLen < cStrLen)
+    {
+        str = djString_expandRoom (str, cStrLen - sh ->len);
+
+        //  检查是否成功
+        if(NULL == str)
+            return NULL;
+
+        sh = (sDjString*)(s - sizeof(sDjString));
+        curLen = sh ->free + sh ->len;
+    }
+
+    //  复制内容
+    memcpy(str, cStr, cStrLen);
+
+    //  添加结束符号
+    sh ->len = cStrLen;
+    sh ->free = curLen - cStrLen;
+
+    return sh;
+}
+
+mDjStr djString_grow_by_zero(mDjStr str, size_t len)
+{
+    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    size_t curLen = sh ->len;
+    size_t toLen = 0;
+
+    //  len 比字符串现有长度小，直接返回，不做任何处理
+    if(len <= curLen)
+        return str;
+
+    //  开始扩展
+    str = djString_expandRoom (str, len - curLen);
+
+    //  检查是否成功
+    if(NULL == str)
+        return NULL;
+
+    //  将新分配的内存用 0 填充
+    sh = (void*)(str - sizeof(sDjString));
+    memset (str + curLen, 0, (len - curLen + 1));
+
+    //  更新属性
+    toLen = sh ->len + sh ->free;
+    sh ->len = len;
+    sh ->free = toLen - len;
+
+    return str;
+}
+
+void djString_range(mDjStr str, int start, int end)
+{
+    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    size_t newLen = 0;
+    size_t len = djString_mDjStr_len(str);
+
+    //  空字符串，不需要执行清除操作
+    if(0 == len)
+        return;
+
+    //  start 小于 0 考虑从字符串末尾开始保留字符串
+    if(start < 0)
+    {
+        start += len;
+        if(start < 0)
+            start = 0;
+    }
+
+    //  end 小于 0 考虑从字符串末尾开始保留字符串
+    if(end < 0)
+    {
+        end += len;
+        if(end < 0)
+            end = 0;
+    }
+
+    //  start < end 时获得要保留的字符串的范围(正常情况)
+    newLen = (start > end) ? 0 : (end - start + 1);
+
+    //  start > end 如果 start 大于 end 则 start = 0
+    if(newLen != 0)
+    {
+        if(start >= (signed)len)
+        {
+            newLen = 0;
+        }
+        else if(end >= (signed)len)
+        {
+            end = len - 1;
+            newLen = (start > end) ? 0 : (end - start + 1);
+        }
+    }
+    else
+    {
+        start = 0;
+    }
+
+    //  对字符串进行移动 start = 0 不需要移动 start > 0 且 要保留的字符串长度大于 0 则移动
+    if(start && newLen)
+        memmove (sh ->buf, sh ->buf + start, newLen);
+
+    //  添加终结符 相当于把要保留的字符都放到的前边，其它字符删除。
+    sh ->buf[newLen] = 0;
+
+    //  更新属性
+    sh ->free = sh ->free + (sh ->len - newLen);
+    sh ->len = newLen;
+}
+
+mDjStr djString_strim(mDjStr str, const char *ceilStr)
+{
+    //  还原字符串结构体
+    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+
+    //
+    char*   start = NULL;
+    char*   end = NULL;
+    char*   ps = NULL;
+    char*   pe = NULL;
+
+    size_t  len = 0;
+
+    //  开始处指针
+    ps = start = str;
+
+    //  结尾处指针
+    pe = end = str + djString_mDjStr_len (str);
+
+    //  开始去除字符
+    while(ps <= end && strchr (ceilStr, *ps))
+        ++ ps;
+
+    while(pe > start && strchr(ceilStr, *pe))
+        --pe;
+
+    //  计算 trim 之后的长度
+    len = (ps > pe) ? 0 : (pe - ps + 1);
+
+    //  可能的字符前移操作
+    if(sh ->buf != ps)
+        memmove (sh ->buf, ps, len);
+
+    //  添加终止字符
+    sh ->buf[len] = '\0';
+
+    //  更新属性
+    sh ->free = sh ->free + (sh ->len - len);
+    sh ->len = len;
+
+    return str;
+}
+
+int djString_compare(const mDjStr str1, const mDjStr str2)
+{
+    size_t len1 = djString_mDjStr_len (str1);
+    size_t len2 = djString_mDjStr_len (str2);
+
+    size_t minLen = (len1 < len2) ? len1 : len2;
+    int cmp = memcmp(str1, str2, minLen);
+
+    //  前若干字节相同，则长度之差就是结果
+    if(0 == cmp)
+        return len1 - len2;
+
+    //  前若干字节比较的结果
+    return cmp;
+}
