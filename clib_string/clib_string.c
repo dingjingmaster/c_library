@@ -29,14 +29,14 @@ void djString_free(mDjStr str)
 
 size_t djString_mDjStr_len(const mDjStr str)
 {
-    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
 
     return sh ->len;
 }
 
 size_t djString_avail(const mDjStr str)
 {
-    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
 
     return sh ->free;
 }
@@ -49,7 +49,7 @@ mDjStr djString_dup(const mDjStr str)
 
 void djString_clear(mDjStr str)
 {
-    sDjString* sh = (sDjString* )(str - sizeof(sDjString));
+    sDjString* sh = (sDjString* )((void*)str - sizeof(sDjString));
     sh ->free += sh ->len;
     sh ->len = 0;
     sh ->buf[0] = '\0';
@@ -62,7 +62,7 @@ mDjStr djString_cat(mDjStr str, const char *cStr)
 
 mDjStr djString_newLen(const void* str, size_t strLen)
 {
-    sDjString*     sh = NULL;
+    sDjString* sh = NULL;
 
     //  分配内存
     if (str)
@@ -116,14 +116,15 @@ mDjStr djString_catLen(mDjStr str, const void* t, size_t len)
     //  扩展内存可能申请新的内存，检查内存是否申请成功
     if(NULL == str)
     {
+        //puts("出错了");
         return NULL;
     }
 
     //  获取到结构体
-    sh = (sDjString*)(str - sizeof(sDjString));
+    sh = (sDjString*)((void*)str - sizeof(sDjString));
 
     //  开始追加操作
-    memcpy (str + curLen, t, len);
+    memcpy ((void*)str + curLen, t, len);
 
     //  更新属性
     sh ->len = curLen;
@@ -135,6 +136,7 @@ mDjStr djString_catLen(mDjStr str, const void* t, size_t len)
     return str;
 }
 
+//  在移动指针之前一定要把指针的步长变为 1
 mDjStr djString_expandRoom(mDjStr str, size_t addLen)
 {
     sDjString* sh = NULL;
@@ -155,9 +157,8 @@ mDjStr djString_expandRoom(mDjStr str, size_t addLen)
 
     //  如果内存不够用，扩展
     len = djString_mDjStr_len(str);
-    sh = (sDjString*)(str - (sizeof(sDjString)));
 
-    //  str 还需要的长度
+    //  str 总共需要的长度
     newLen = (len + addLen);
 
     //  根据新的长度，确定为 str 分配的新的长度
@@ -171,7 +172,7 @@ mDjStr djString_expandRoom(mDjStr str, size_t addLen)
     }
 
     //  获取现有字符串的信息
-    sh = (sDjString*)(str - sizeof(sDjString));
+    sh = (sDjString*)((void*)str - sizeof(sDjString));
 
     //  开始分配内存
     newSh = (sDjString*)malloc(sizeof(sDjString) + newLen + 1);
@@ -181,7 +182,9 @@ mDjStr djString_expandRoom(mDjStr str, size_t addLen)
     }
 
     //  拷贝内存
-    memcpy(newSh + sizeof(sDjString), sh ->buf, sh ->len);
+    //memcpy(newSh ->buf, sh ->buf, sh ->len);
+    memcpy((void*)newSh + sizeof(sDjString), sh ->buf, sh ->len);
+    (newSh ->buf)[len] = '\0';
 
     //  更新信息
     newSh ->len = sh ->len;
@@ -205,7 +208,7 @@ mDjStr djString_cpy(mDjStr str, const char *cStr)
 
 mDjStr djString_cpyLen(mDjStr str, const char *cStr, size_t cStrLen)
 {
-    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
 
     //  现在长度是否足够装下 cStr
     size_t curLen = sh ->free + sh ->len;
@@ -219,23 +222,25 @@ mDjStr djString_cpyLen(mDjStr str, const char *cStr, size_t cStrLen)
         if(NULL == str)
             return NULL;
 
-        sh = (sDjString*)(s - sizeof(sDjString));
+        sh = (sDjString*)((void*)str - sizeof(sDjString));
         curLen = sh ->free + sh ->len;
     }
 
     //  复制内容
     memcpy(str, cStr, cStrLen);
 
+    str[cStrLen] = '\0';
+
     //  添加结束符号
     sh ->len = cStrLen;
     sh ->free = curLen - cStrLen;
 
-    return sh;
+    return str;
 }
 
 mDjStr djString_grow_by_zero(mDjStr str, size_t len)
 {
-    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
     size_t curLen = sh ->len;
     size_t toLen = 0;
 
@@ -252,7 +257,7 @@ mDjStr djString_grow_by_zero(mDjStr str, size_t len)
 
     //  将新分配的内存用 0 填充
     sh = (void*)(str - sizeof(sDjString));
-    memset (str + curLen, 0, (len - curLen + 1));
+    memset ((void*)str + curLen, 0, (len - curLen + 1));
 
     //  更新属性
     toLen = sh ->len + sh ->free;
@@ -264,7 +269,7 @@ mDjStr djString_grow_by_zero(mDjStr str, size_t len)
 
 void djString_range(mDjStr str, int start, int end)
 {
-    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
     size_t newLen = 0;
     size_t len = djString_mDjStr_len(str);
 
@@ -324,7 +329,7 @@ void djString_range(mDjStr str, int start, int end)
 mDjStr djString_strim(mDjStr str, const char *ceilStr)
 {
     //  还原字符串结构体
-    sDjString* sh = (sDjString*)(str - sizeof(sDjString));
+    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
 
     //
     char*   start = NULL;
@@ -340,12 +345,17 @@ mDjStr djString_strim(mDjStr str, const char *ceilStr)
     //  结尾处指针
     pe = end = str + djString_mDjStr_len (str);
 
+    printf ("%p\n", ps);
+    printf ("%p\n", pe);
     //  开始去除字符
     while(ps <= end && strchr (ceilStr, *ps))
         ++ ps;
 
     while(pe > start && strchr(ceilStr, *pe))
-        --pe;
+        -- pe;
+
+    printf ("%p\n", ps);
+    printf ("%p\n", pe);
 
     //  计算 trim 之后的长度
     len = (ps > pe) ? 0 : (pe - ps + 1);

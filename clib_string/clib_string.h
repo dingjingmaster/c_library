@@ -53,7 +53,7 @@ mDjStr djString_grow_by_zero(mDjStr str, size_t len);
 /*  保留字符串指定区间内的数据，其它数据被覆盖或者清除  */
 void djString_range(mDjStr str, int start, int end);
 
-/*  字符串删除字符 在 str 中删除 ceilStr 中存在的字符  */
+/*  字符串删除字符 在 str 始末位置删除 ceilStr 中的字符  */
 mDjStr djString_strim(mDjStr str, const char* ceilStr);
 
 /*  字符串比较  */
