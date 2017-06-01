@@ -345,17 +345,12 @@ mDjStr djString_strim(mDjStr str, const char *ceilStr)
     //  结尾处指针
     pe = end = str + djString_mDjStr_len (str);
 
-    printf ("%p\n", ps);
-    printf ("%p\n", pe);
     //  开始去除字符
     while(ps <= end && strchr (ceilStr, *ps))
         ++ ps;
 
     while(pe > start && strchr(ceilStr, *pe))
         -- pe;
-
-    printf ("%p\n", ps);
-    printf ("%p\n", pe);
 
     //  计算 trim 之后的长度
     len = (ps > pe) ? 0 : (pe - ps + 1);
