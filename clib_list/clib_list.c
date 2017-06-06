@@ -200,3 +200,158 @@ sDjListNode *list_nextData(sDjListIter *iter)
 
     return current;
 }
+
+sDjList *list_dupList(sDjList *orig)
+{
+    sDjList* copyList = NULL;
+    sDjListIter* iter = NULL;
+    sDjListNode* listNode = NULL;
+
+    //  创建新的链表
+    if((copyList = list_create ()) == NULL)
+    {
+        return NULL;
+    }
+
+    //  给新的链表设置处理函数
+    copyList ->dup = orig ->dup;
+    copyList ->free = orig ->free;
+    copyList ->match = orig ->match;
+
+    //  迭代链表并把值加入到新的链表中
+    iter = list_getIterator (orig, ITERATOR_START_HEAD);
+    while (NULL != (listNode = list_nextData (iter)))
+    {
+        void* value = NULL;
+        //  复制节点并加入
+        if(copyList ->dup)
+        {
+            value = copyList ->dup(listNode ->value);
+
+            if(NULL == value)
+            {
+                list_free(copyList);
+                list_freeIterator(iter);
+
+                return NULL;
+            }
+        }
+        else
+        {
+            value = listNode ->value;
+        }
+
+        //  将节点添加到链表
+        if(NULL == list_addNodeTail (copyList, value))
+        {
+            list_free(value);
+            list_freeIterator(iter);
+
+            return NULL;
+        }
+    }
+
+    //  释放迭代器
+    list_freeIterator(iter);
+
+    return copyList;
+}
+
+sDjListNode *list_search_value(sDjList *list, void *value)
+{
+    sDjListIter*    iter = NULL;
+    sDjListNode*    listNode = NULL;
+
+    //  迭代整个列表
+    iter = list_getIterator (list, ITERATOR_START_HEAD);
+
+    while(NULL != (listNode = list_nextData (iter)))
+    {
+        //  比较
+        if(list ->match)
+        {
+            if(list ->match(listNode ->value, value))
+            {
+                //  找到了 释放迭代器， 返回节点
+                list_freeIterator(iter);
+
+                return listNode;
+            }
+        }
+        else
+        {
+            if(value == listNode ->value)
+            {
+                //  找到
+                list_freeIterator(iter);
+
+                return listNode;
+            }
+        }
+    }
+
+    //  未找到
+    list_freeIterator(iter);
+
+    return NULL;
+}
+
+sDjListNode *list_index(sDjList *list, long index)
+{
+    sDjListNode* listNode = NULL;
+
+    //  索引为正 从链表头部开始
+    if(index < 0)
+    {
+        index = (-index) - 1;
+        listNode = list ->tail;
+
+        while(index -- && (NULL != listNode))
+        {
+            listNode = listNode ->pre;
+        }
+    }
+    //  索引为负 从链表尾部开始
+    else
+    {
+        listNode = list ->head;
+
+        while(index -- &&(NULL != listNode))
+        {
+            listNode = listNode ->next;
+        }
+    }
+
+    return listNode;
+}
+
+void list_rewind_head(sDjList *list, sDjListIter *iter)
+{
+    iter ->next = list ->head;
+
+    iter ->direction = ITERATOR_START_HEAD;
+}
+
+void list_rewind_tail(sDjList *list, sDjListIter *iter)
+{
+    iter ->next = list ->tail;
+    iter ->direction = ITERATOR_START_TAIL;
+}
+
+void list_rotate(sDjList *list)
+{
+    sDjListNode* tail = NULL;
+
+    //  暂存表尾节点
+    tail = list ->tail;
+    list ->tail ->pre ->next = NULL;
+
+    //  tail 不再有前一个节点
+    tail ->pre = NULL;
+
+    //  头结点指向原来的尾节点
+    tail ->next = list ->head;
+    list ->head ->pre = tail;
+
+    list ->head = tail;
+}

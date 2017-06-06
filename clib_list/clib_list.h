@@ -3,6 +3,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
+
 // 从表头向表尾进行迭代
 #define ITERATOR_START_HEAD 0
 // 从表尾到表头进行迭代
@@ -111,10 +116,26 @@ void list_freeIterator(sDjListIter* iter);
 /*  链表下一个元素 */
 sDjListNode* list_nextData(sDjListIter* iter);
 
-
 /*  链表复制    */
+sDjList* list_dupList(sDjList* origList);
 
-/*  链表*/
+/*  查找链表 list 中值与 value 匹配的节点   */
+sDjListNode* list_search_value(sDjList* list, void* value);
+
+/*  返回链表给定索引位置的节点    */
+sDjListNode* list_index(sDjList* list, long index);
+
+/*  将迭代器置到链表的开头位置   */
+void list_rewind_head(sDjList* list, sDjListIter* iter);
+
+/*  将迭代器置到链表的结尾位置   */
+void list_rewind_tail(sDjList* list, sDjListIter* iter);
+
+/*  取出表尾节点放到表头，成为新的链表   */
+void list_rotate(sDjList* list);
 
 
+#ifdef __cplusplus
+}
+#endif
 #endif // CLIB_LIST_H

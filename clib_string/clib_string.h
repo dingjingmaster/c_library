@@ -4,6 +4,10 @@
 #include <sys/types.h>
 #include <stdarg.h>
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 typedef char* 	mDjStr;
 typedef struct _sDjString   sDjString;
 
@@ -69,5 +73,7 @@ mDjStr djString_catLen(mDjStr str, const void* t, size_t len);
 mDjStr djString_expandRoom(mDjStr str, size_t addLen);
 
 
-
+#ifdef __cplusplus
+}
+#endif
 #endif
