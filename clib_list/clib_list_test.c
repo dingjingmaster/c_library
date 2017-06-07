@@ -4,24 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-sDjList* list_create(void);
-void list_free(sDjList* list);
-sDjList* list_addNodeHead(sDjList* list, void* value);
-sDjList* list_addNodeTail(sDjList* list, void* value);
-void* list_delNode(sDjList* list, sDjListNode* delNode);
-sDjListIter* list_getIterator(sDjList* list, int direction);
-void list_freeIterator(sDjListIter* iter);
-sDjListNode* list_nextData(sDjListIter* iter);
-sDjList* list_dupList(sDjList* origList);
-sDjListNode* list_search_value(sDjList* list, void* value);
-sDjListNode* list_index(sDjList* list, long index);
-void list_rewind_head(sDjList* list, sDjListIter* iter);
-void list_rewind_tail(sDjList* list, sDjListIter* iter);
-void list_rotate(sDjList* list);
-
 //  从前到后的遍历
 void print_list(sDjList* list);
+
+//  list 释放函数
+void list_node_free(sDjListNode* list);
+
 int main(int argc, char* argv[])
 {
     char* value1 = "a";
@@ -56,7 +44,6 @@ int main(int argc, char* argv[])
 
     //  打印现在列表的信息
     print_list(newList);
-    puts("\n");
 
     //  添加字符串到头部
     newList = list_addNodeHead (newList, value3);
@@ -75,7 +62,54 @@ int main(int argc, char* argv[])
     //  打印现在列表的信息
     print_list(newList);
 
+    //  list 值查找
+    puts("list search data test");
+    sDjListNode* valueNode = list_search_value(newList, "b");
+    printf ("find: %s\n", valueNode ->value);
+
+    //  list 复制
+    puts("list dup test");
+    sDjList* dupList = list_dupList(newList);
+    //  打印复制的信息
+    print_list(dupList);
+
+    //  list index test
+    puts("list index test");
+    sDjListNode* indexNode1 = list_index(newList, 2);
+    printf ("find: %s\n", indexNode1 ->value);
+    sDjListNode* indexNode2 = list_index(newList, -1);
+    printf ("find: %s\n", indexNode2 ->value);
+
+    //  list rotate test
+    puts("list rotate test");
+    print_list (newList);
+    list_rotate(newList);
+    print_list (newList);
+
+    //  list 删除节点测试
+    puts("list delete node");
+    list_delNode(newList, indexNode1);
+    print_list (newList);
+
+    //  list free test
+    puts("list free test");
+    LIST_SET_FREE_METHOD (newList, NULL);
+    list_free(newList);
+    print_list (newList);
+    printf ("list num = %d\n", newList ->len);
+
+
     return 0;
+}
+
+void list_node_free(sDjListNode* listNode)
+{
+    if(NULL == listNode)
+    {
+        return;
+    }
+
+    free(listNode);
 }
 
 void print_list(sDjList* list)
@@ -102,4 +136,7 @@ void print_list(sDjList* list)
     {
         printf ("%s\t", node ->value);
     }
+    puts("\n");
+
+    list_freeIterator(iter);
 }

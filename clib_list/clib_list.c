@@ -22,23 +22,19 @@ sDjList *list_create()
 
 void list_free(sDjList *list)
 {
-    unsigned long len = 0;
     sDjListNode* pCur = NULL;
     sDjListNode* pNext = NULL;
 
     //  指向头指针
     pCur = list ->head;
 
-    //  遍历整个链表
-    len = list ->len;
-
-    while(--len)
+    while(--(list ->len))
     {
         //  保存下一个节点
         pNext = pCur ->next;
 
         //  调用值的释放函数释放
-        if(list ->free)
+        if(NULL != (list ->free))
             list ->free(pCur ->value);
 
         //  释放节点结构
@@ -47,6 +43,12 @@ void list_free(sDjList *list)
         //  开始释放下一个节点
         pCur = pNext;
     }
+
+    list ->head = NULL;
+    list ->tail = NULL;
+    list ->dup = NULL;
+    list ->free = NULL;
+    list ->match = NULL;
 }
 
 sDjList *list_addNodeHead(sDjList* list, void* value)

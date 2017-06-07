@@ -7,40 +7,6 @@
 extern "C"{
 #endif
 
-
-// 从表头向表尾进行迭代
-#define ITERATOR_START_HEAD 0
-// 从表尾到表头进行迭代
-#define ITERATOR_START_TAIL 1
-
-//  返回链表包含节点的数量
-#define LIST_LENGTH (l) ((l) ->len)
-//  返回链表表头结点
-#define LIST_FRIST (l) ((l) ->head)
-//  返回链表表尾节点
-#define LIST_TAIL (l) ((l) ->tail))
-
-//  返回给定节点的前置节点
-#define LIST_PREV_NODE (n) ((n) ->prev)
-//  返回给定节点的后后置节点
-#define LIST_NEXT_NODE (n) ((n) ->next)
-//  返回给定节点的值
-#define LIST_NODEVALUE (n) ((n) ->value)
-
-//  将链表 l 值的复制函数设置为 m
-#define LIST_SET_DUP_METHOD (l, m) ((l) ->dup = (m))
-//  将链表 l 值的释放函数设置为 m
-#define LIST_SET_FREE_METHOD (l, m) ((l) ->free = (m))
-//  将链表 l 值的比较函数设置 为 m
-#define LIST_SET_MATCH_METHOD (l, m) ((l) ->match = (m))
-
-//  返回链表的复制函数
-#define LIST_GET_DUP_METHOD (l, m) ((l) ->dup)
-//  返回链表值的释放函数
-#define LIST_GET_FREE_METHOD (l, m) ((l) ->free)
-//  返回链表值的比较函数
-#define LIST_GET_MATCH_METHOD (l, m) ((l) ->match)
-
 typedef struct _sDjListNode sDjListNode;
 typedef struct _sDjListIter sDjListIter;
 typedef struct _sDjList sDjList;
@@ -90,6 +56,41 @@ struct _sDjList
     //  链表所含的节点数量
     unsigned long len;
 };
+
+// 从表头向表尾进行迭代
+#define ITERATOR_START_HEAD 0
+// 从表尾到表头进行迭代
+#define ITERATOR_START_TAIL 1
+
+//  返回链表包含节点的数量
+#define LIST_LENGTH(l) ((l) ->len)
+//  返回链表表头结点
+#define LIST_FRIST(l) ((l) ->head)
+//  返回链表表尾节点
+#define LIST_TAIL(l) ((l) ->tail)
+
+//  返回给定节点的前置节点
+#define LIST_PREV_NODE (n) ((n) ->prev)
+//  返回给定节点的后后置节点
+#define LIST_NEXT_NODE(n) ((n) ->next)
+//  返回给定节点的值
+#define LIST_NODEVALUE(n) ((n) ->value)
+
+//  将链表 l 值的复制函数设置为 m
+#define LIST_SET_DUP_METHOD(l, m) ((l) ->dup = (m))
+//  将链表 l 值的释放函数设置为 m
+#define LIST_SET_FREE_METHOD(l, m) ((l) ->free = (m))
+//  将链表 l 值的比较函数设置 为 m
+#define LIST_SET_MATCH_METHOD(l, m) ((l) ->match = (m))
+
+//  返回链表的复制函数
+#define LIST_GET_DUP_METHOD(l, m) ((l) ->dup)
+//  返回链表值的释放函数
+#define LIST_GET_FREE_METHOD(l, m) ((l) ->free)
+//  返回链表值的比较函数
+#define LIST_GET_MATCH_METHOD(l, m) ((l) ->match)
+
+
 
 
 /*  创建新的链表  */
