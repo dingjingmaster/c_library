@@ -9,3 +9,6 @@ SOURCES += \
 
 HEADERS += \
     clib_string.h \
+
+DISTFILES += \
+    readme.md

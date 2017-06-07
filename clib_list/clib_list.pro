@@ -10,3 +10,6 @@ SOURCES += \
 
 HEADERS += \
     clib_list.h
+
+DISTFILES += \
+    readme.md
