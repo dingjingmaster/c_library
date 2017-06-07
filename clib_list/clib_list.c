@@ -4,7 +4,7 @@
 sDjList *list_create()
 {
     sDjList*   list = NULL;
-    if(list == (sDjList*)malloc(sizeof(sDjList)) == NULL)
+    if((list = (sDjList*)malloc(sizeof(sDjList))) == NULL)
     {
         return NULL;
     }
@@ -49,13 +49,15 @@ void list_free(sDjList *list)
     }
 }
 
-sDjList *list_addNodeHead(sDjList *list, void *value)
+sDjList *list_addNodeHead(sDjList* list, void* value)
 {
-    sDjListNode* node;
+    sDjListNode* node = NULL;
 
     //  分配内存
-    if(node = (sDjListNode*)malloc(sizeof(sDjListNode)) == NULL)
+    if((node = (sDjListNode*)malloc(sizeof(sDjListNode))) == NULL)
+    {
         return NULL;
+    }
 
     //  保存值的指针
     node ->value = value;
@@ -87,11 +89,13 @@ sDjList *list_addNodeHead(sDjList *list, void *value)
 sDjList *list_addNodeTail(sDjList *list, void *value)
 {
     //  创建新的节点
-    sDjListNode* newNode;
+    sDjListNode* newNode = NULL;
 
     //  分配内存
-    if(newNode = (sDjListNode*)malloc(sizeof(sDjListNode) == NULL))
+    if((newNode = (sDjListNode*)malloc(sizeof(sDjListNode))) == NULL)
+    {
         return NULL;
+    }
 
     //  赋值
     newNode ->value = value;

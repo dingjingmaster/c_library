@@ -45,7 +45,7 @@ mDjStr djString_cat(mDjStr str, const char* cStr);
 /*  将给定字符串拼接到字符串末尾  */
 mDjStr djString_djString_cat(mDjStr str, const mDjStr catStr);
 
-/*  复制字符串   */
+/*  复制指定长度字符串   */
 mDjStr djString_cpyLen(mDjStr str, const char* cStr, size_t cStrLen);
 
 /*  给定 char 字符串覆盖原始空间中的数据  */
