@@ -4,7 +4,7 @@ STATIC_LIB = ar
 
 LIB_OBJ = clib_list.o
 LIST_TEST = clib_list_test.o
-LIST_Demo = clib_list_test
+LIST_Demo = clib_list_test.out
 
 LIB_PATH = -L "./"
 HEAD_PATH = -I "./"
