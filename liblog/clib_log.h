@@ -1,38 +1,40 @@
 #ifndef CLIB_LOG_H
 #define CLIB_LOG_H
 
+/**
+ * full_path_name = _log_path/_log_name.log
+ * _log_path = /path/of/file
+ * _log_name = _log_name_prefix _log_name_time ._log_name_suffix
+ *
+ */
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define         LOG_EMERG           0   /* 系统不兼容 */
-#define         LOG_ALERT           1   /* 严重错误 */
-#define         LOG_CRIT            2   /* 严重警告 */
-#define         LOG_ERR             3   /* 错误 */
-#define         LOG_WARNING         4   /* 警告 */
-#define         LOG_NOTICE          5   /* 正常但重要的情况 */
-#define         LOG_INFO            6   /* 信息 */
-#define         LOG_DEBUG           7   /* 调试信息 */
-#define         LOG_VERB            8   /* 详细信息 */
-
-#define         LOG_OUTPUT_FILE     0   /* log 文件输出 */
-#define         LOG_OUTPUT_CONSOLE  1   /* log 控制台输出 */
 
 typedef enum {
-    LOG_STDIN       =   0,              /* 标准输入 */
-    LOG_STDOUT      =   1,              /* 标准输出 */
-    LOG_STDERR      =   2,              /* 标准错误输出 */
-    LOG_FILE        =   3,              /* 文件 */
-    LOG_RSYSLOG     =   4,
+    LOG_EMERG           =   0,              /* 系统不兼容 */
+    LOG_ALERT           =   1,              /* 严重错误 */
+    LOG_CRIT            =   2,              /* 严重警告 */
+    LOG_ERR             =   3,              /* 错误 */
+    LOG_WARNING         =   4,              /* 警告 */
+    LOG_NOTICE          =   5,              /* 正常但重要的情况 */
+    LOG_INFO            =   6,              /* 信息 */
+    LOG_DEBUG           =   7,              /* 调试信息 */
+    LOG_VERB            =   8,              /* 详细信息 */
+} log_level_t;
 
-    LOG_MAX_OUTPUT  =   255,
-} log_type_t;
+typedef enum {
+    LOG_ROTATE_TRUE     =   1,              /* 允许分文件 */
+    LOG_ROTATE_FALSE    =   2,              /* 不允许分文件 */
+} log_rotate_t;
 
 
 /**
  * @param type: 输出类型
  */
-int log_init(int type, const char* ident);
+int log_init(log_level_t level, log_rotate_t rotate, int log_size,
+             const char* dir, const char* prefix, const char* suffix);
 
 /**
  * 销毁

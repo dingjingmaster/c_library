@@ -3,6 +3,8 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+LIBS += -lpthread
+
 HEADERS += \
         clib_log.h
 
