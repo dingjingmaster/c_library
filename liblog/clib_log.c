@@ -1,30 +1,32 @@
 #include "clib_log.h"
 
+#include <time.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string.h>
-#include <time.h>
-#include <fcntl.h>
-#include <errno.h>
 #include <pthread.h>
-#include <sys/stat.h>
+#include <sys/uio.h>
 #include <sys/time.h>
-#include <sys/param.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 
+#define LOG_IOVEC_MAX               16
 #define LOG_FILENAME_LEN            (32)
 #define LOG_DIRNAME_LEN             (1024)
 #define LOG_PATH_MAX                (2048)
+#define LOG_BUF_SIZE                (20480)
 #define PATH_SPLIT                  '/'
 
 static const char* _log_level_str[] = {
     "EMERG",
     "ALERT",
     "CRIT",
-    "ERR",
+    "ERROR",
     "WARN",
     "NOTICE",
     "INFO",
@@ -33,182 +35,54 @@ static const char* _log_level_str[] = {
     NULL
 };
 
+static log_type_t _log_type = LOG_TYPE_CONSOLE;                         /* 日志默认输出到控制台 */
 static log_rotate_t _log_rotate;                                        /* 是否允许分文件 */
-static int _log_size = 0;                                               /* 日志文件大小 */
+static unsigned long long _log_size = 0;                                /* 日志文件大小 */
 static log_level_t _log_level;                                          /* 输出日至级别 */
 static char _log_dir[LOG_DIRNAME_LEN] = "./";                           /* 日志输出文件夹 */
 static char _log_prefix[LOG_FILENAME_LEN] = "log";                      /* 日志名称 */
 static char _log_suffix[LOG_FILENAME_LEN] = "log";                      /* 日志扩展名 */
+static char _path_name[LOG_PATH_MAX] = {0};                             /* 完整日志路径 */
 static int _log_fd = 0;                                                 /* 当前打开的日志文件描述符 */
 
 
 static pthread_mutex_t _log_mutex;                                      /* 日志锁 */
-static pthread_once_t thread_once = PTHREAD_ONCE_INIT;                  /* 确保初始化一次 */
+static pthread_once_t _thread_once = PTHREAD_ONCE_INIT;                 /* 确保初始化一次 */
 
 static int _is_log_init = 0;                                            /* 是否完成初始化 */
 
 
+#define FG_BLACK                    30
+#define FG_RED                      31
+#define FG_GREEN                    32
+#define FG_YELLOW                   33
+#define FG_BLUE                     34
+#define FG_MAGENTA                  35
+#define FG_CYAN                     36
+#define FG_WHITE                    37
+#define BG_BLACK                    40
+#define BG_RED                      41
+#define BG_GREEN                    42
+#define BG_YELLOW                   43
+#define BG_BLUE                     44
+#define BG_MAGENTA                  45
+#define BG_CYAN                     46
+#define BG_WHITE                    47
+#define B_RED(str)                  "\033[1;31m" str "\033[0m"
+#define B_GREEN(str)                "\033[1;32m" str "\033[0m"
+#define B_YELLOW(str)               "\033[1;33m" str "\033[0m"
+#define B_BLUE(str)                 "\033[1;34m" str "\033[0m"
+#define B_MAGENTA(str)              "\033[1;35m" str "\033[0m"
+#define B_CYAN(str)                 "\033[1;36m" str "\033[0m"
+#define B_WHITE(str)                "\033[1;37m" str "\033[0m"
+#define RED(str)                    "\033[31m" str "\033[0m"
+#define GREEN(str)                  "\033[32m" str "\033[0m"
+#define YELLOW(str)                 "\033[33m" str "\033[0m"
+#define BLUE(str)                   "\033[34m" str "\033[0m"
+#define MAGENTA(str)                "\033[35m" str "\033[0m"
+#define CYAN(str)                   "\033[36m" str "\033[0m"
+#define WHITE(str)                  "\033[37m" str "\033[0m"
 
-//static int _log_fopen(const char* path) {
-//    check_dir(path);
-//    _log_fp = fopen(path, "a+");
-//    if(NULL == _log_fp) {
-//        fprintf(stderr, "fopen %s failed: %s\n", path, strerror(errno));
-//        fprintf(stderr, "use stderr as output\n");
-//        _log_fp = stderr;
-//    }
-//    return 0;
-//}
-
-//static int _log_fclose(void) {
-//    return fclose(_log_fp);
-//}
-
-//static ssize_t _log_fwrite(struct lovec* vec, int n) {
-//    int i = 0, ret = 0;
-//    char log_rename[FILENAME_LEN] = {0};
-//    unsigned long long tmp_size = get_file_size_by_fp(_log_fp);
-//    if(tmp_size > _log_file_size) {
-//        if(_log_rotate != 0) {
-//            if (EOF == _log_fclose()) {
-//                fprintf(stderr, "_log_fclose errno:%d", errno);
-//            }
-//            _log_fopen_rewrite(_log_name);
-//        } else {
-//            if (1){}
-//            if(EOF == _log_fclose()) {
-//                fprintf(stderr, "_log_fclose errno:%d", errno);
-//            }
-//            log_get_time(_log_name_time, sizeof(_log_name_time), 1);
-//            snprintf(log_rename, sizeof(log_rename), "%s%s_%s",
-//                     _log_path, _log_name_prefix, _log_name_time);
-//            if(-1 == rename(_log_name, log_rename)) {
-//                fprintf(stderr, "log file splited %s errno: %d:%s\n",
-//                        log_rename, errno, strerror(errno));
-//            }
-//            _log_fopen(_log_name);
-//            if(1){}
-//        }
-//    }
-//    for(i = 0; i < n; ++i) {
-//        ret = fprintf(_log_fp, "%s", (char*)vec[i].iov_base);
-//        if(ret != (int)vec[i].iov_len) {
-//            fprintf(stderr, "fprintf failed: %s\n", strerror(errno));
-//            return -1;
-//        }
-//        if(EOF == fflush(_log_fp)) {
-//            fprintf(stderr, "fflush failed: %s\n", strerror(errno));
-//            return -1;
-//        }
-//    }
-//    return 0;
-//}
-
-//static int _log_open(const char* path) {
-//    check_dir(path);
-//    _log_fd = open(path, O_RDWR | O_CREAT | O_APPEND, 0644);
-//    if(-1 == _log_fd) {
-//        fprintf(stderr, "open %s failed: %s\n", path, strerror(errno));
-//        fprintf(stderr, "use STDERR_FILEIO as output\n");
-//        _log_fd = STDERR_FILENO;
-//    }
-//    return 0;
-//}
-
-//static int _log_close(void) {
-//    return close(_log_fd);
-//}
-
-//static ssize_t _log_write(struct iovec *vec, int n) {
-//    char log_rename[FILENAME_LEN] = {0};
-//    unsigned long long tmp_size = get_file_size(_log_name);
-//    if (UNLIKELY(tmp_size > _log_file_size)) {
-//        if (_log_rotate) {
-//            if (-1 == _log_close()) {
-//                fprintf(stderr, "_log_close errno:%d", errno);
-//            }
-//            _log_open_rewrite(_log_name);
-//        } else {
-//        fprintf(stderr, "%s size= %" PRIu64 " reach max %" PRIu64 ", splited\n",
-//                _log_name, (uint64_t)tmp_size, (uint64_t)_log_file_size);
-//            if (-1 == _log_close()) {
-//                fprintf(stderr, "_log_close errno:%d", errno);
-//            }
-//            log_get_time(_log_name_time, sizeof(_log_name_time), 1);
-//            snprintf(log_rename, sizeof(log_rename), "%s%s_%s",
-//                    _log_path, _log_name_prefix, _log_name_time);
-//            if (-1 == rename(_log_name, log_rename)) {
-//                fprintf(stderr, "log file splited %s error: %d:%s\n",
-//                        log_rename, errno , strerror(errno));
-//            }
-//            _log_open(_log_name);
-//            fprintf(stderr, "splited file %s\n", log_rename);
-//        }
-//    }
-
-//    return writev(_log_fd, vec, n);
-//}
-
-
-
-
-
-
-//static int _log_print(int level, const char* tag, const char* file, int line, const char* func, const char* msg) {
-//    int ret = 0, i = 0;
-//    char s_time[LOG_TIME_SIZE] = {0};
-//    char s_level[LOG_LEVEL_SIZE] = {0};
-//    char s_tag[LOG_TAG_SIZE] = {0};
-//    char s_pname[LOG_PNAME_SIZE] = {0};
-//    char s_pid[LOG_PNAME_SIZE] = {0};
-//    char s_tid[LOG_PNAME_SIZE] = {0};
-//    char s_file[LOG_TEXT_SIZE] = {0};
-//    char s_msg[LOG_BUF_SIZE] = {0};
-
-//    pthread_mutex_lock(&_log_mutex);
-//    _log_get_time(s_time, sizeof(s_time));
-//    if(_log_fp == stderr || _log_fd == STDERR_FILENO) {
-//        switch(level) {
-//        case LOG_EMERG:
-//        case LOG_ALERT:
-//        case LOG_CRIT:
-//        case LOG_ERR:
-//            snprintf(s_level, sizeof(s_level), B_RED("%8s"), _log_level_str[level]);
-//            snprintf(s_msg, sizeof(s_msg), RED("%s"), msg);
-//            break;
-//        case LOG_WARNING:
-//            snprintf(s_level, sizeof(s_level), B_YELLOW("[%7s]"), _log_level_str[level]);
-//            snprintf(s_msg, sizeof(s_msg), YELLOW("%s"), msg);
-//            break;
-//        case LOG_INFO:
-//            snprintf(s_level, sizeof(s_level), B_GREEN("[%7s]"), _log_level_str[level]);
-//            snprintf(s_msg, sizeof(s_msg), GREEN("%s"), msg);
-//            break;
-//        case LOG_DEBUG:
-//            snprintf(s_level, sizeof(s_level), B_WHITE("[%7s]"), _log_level_str[level]);
-//            snprintf(s_msg, sizeof(s_msg), WHITE("%s"), msg);
-//            break;
-//        default:
-//            snprintf(s_level, sizeof(s_level), "[%7s]", _log_level_str[level]);
-//            snprintf(s_msg, sizeof(s_msg), "%s", msg);
-//            break;
-//        }
-//    } else {
-//        snprintf(s_level, sizeof(s_level), "[%7s]", _log_level_str[level]);
-//        snprintf(s_msg, sizeof(s_msg), "%s", msg);
-//    }
-//    snprintf(s_pname, sizeof(s_pname), "[%s ", _proc_name);
-//    snprintf(s_pid, sizeof(s_pid), "pid:%d ", getpid());
-//    snprintf(s_tid, sizeof(s_tid), "tid:%d ", (int)pthread_self());
-//    snprintf(s_tag, sizeof(s_tag), "[%s] ", tag);
-//    snprintf(s_file, sizeof(s_file), "[%s:%d: %s] ", file, line, func);
-//    // 写
-////    ret = _log_handle->write()
-//    pthread_mutex_unlock(&_log_mutex);
-//    return 0;
-
-//}
-////
 
 static const char* get_dir(const char* path) {
     char* p = (char*)path + strlen(path);
@@ -229,15 +103,17 @@ static int mkdir_r(const char* path, mode_t mode) {
         return -1;
     }
     temp = strdup(path);
-    if(strncmp(temp, "/", 1) == 0) {
+    pos = temp;
+    if(0 == strncmp(temp, "/", 1)) {
         pos += 1;
-    } else if(strncmp(temp, "./", 2) == 0) {
+    } else if(0 == strncmp(temp, "./", 2)) {
         pos += 2;
     }
-    for(; *pos != '\0'; ++pos) {
+    for(; *pos != '\0'; ++ pos) {
         if(*pos == '/') {
             *pos = '\0';
             if (-1 == (ret = mkdir(temp, mode))) {
+                puts("okk");
                 if(errno == EEXIST) {
                     ret = 0;
                 } else {
@@ -271,7 +147,7 @@ static int check_dir (const char* path) {
     if(NULL != strstr(path, "/")) {
         dir = get_dir(path_tmp);
         if (-1 == access(dir, F_OK | W_OK | R_OK)) {
-            if(-1 == mkdir_r(dir, 0775)) {
+            if(-1 == mkdir_r(dir, 0776)) {
                 fprintf(stderr, "mkdir %s failed\n", path_tmp);
                 goto RET_ERR;
             }
@@ -309,6 +185,27 @@ static void _log_get_time(char* str, int len, int flag) {
     }
 }
 
+static int _open_file() {
+    if(0 != check_dir(_log_dir)) {
+        fprintf(stderr, "check_dir error, log_init failed\n");
+        return -1;
+    }
+    char time_str[LOG_FILENAME_LEN] = {0};
+    _log_get_time(time_str, sizeof(time_str), 1);
+    if(0 >= snprintf(_path_name, sizeof(_path_name), "%s/%s_%s.%s",
+                _log_dir, _log_prefix, time_str, _log_suffix)) {
+        return -1;
+    }
+    _log_fd = open(_path_name, O_CREAT | O_RDWR | O_APPEND, 0664);
+    if(-1 == _log_fd) {
+        fprintf(stderr, "open %s error: %s, log_init failed\n",
+                _path_name, strerror(errno));
+        _log_fd = STDERR_FILENO;
+        return -1;
+    }
+    return 0;
+}
+
 static void log_init_once(void) {
     if(1 == _is_log_init) {
         return;
@@ -317,9 +214,9 @@ static void log_init_once(void) {
     pthread_mutex_init(&_log_mutex, NULL);
 }
 
-int log_init(log_level_t level, log_rotate_t rotate, int log_size,
+int log_init(log_type_t type, log_level_t level, log_rotate_t rotate, unsigned long long log_size,
              const char *dir, const char *prefix, const char *suffix) {
-    if (0 != pthread_once(&thread_once, log_init_once)) {
+    if (0 != pthread_once(&_thread_once, log_init_once)) {
         fprintf(stderr, "pthread_once error, log_init failed\n");
         return -1;
     }
@@ -329,6 +226,7 @@ int log_init(log_level_t level, log_rotate_t rotate, int log_size,
         return -1;
     }
 
+    _log_type = type;
     _log_level = level;
     _log_rotate = rotate;
     if (log_size > 0) {
@@ -337,7 +235,20 @@ int log_init(log_level_t level, log_rotate_t rotate, int log_size,
         _log_size = 2 << 20;
     }
     if (NULL != dir) {
-        strncpy(_log_dir, dir, sizeof(_log_dir));
+        unsigned long dl = strlen(dir);
+        if(dl > 2) {
+            if(0 == strncmp(dir, "./", 2) || 0 == strncmp(dir, "/", 1)) {
+                snprintf(_log_dir, sizeof(_log_dir) - 2, "%s/", dir);
+            } else {
+                snprintf(_log_dir, sizeof(_log_dir) - 4, "./%s/", dir);
+            }
+        } else {
+            if (0 == strncmp(dir, "/", 1)) {
+                strncpy(_log_dir, dir, sizeof(_log_dir) - 1);
+            } else {
+                fprintf(stderr, "dir name is invalide!\n");
+            }
+        }
     }
     if (NULL != prefix) {
         strncpy(_log_prefix, prefix, sizeof(_log_prefix));
@@ -346,28 +257,13 @@ int log_init(log_level_t level, log_rotate_t rotate, int log_size,
         strncpy(_log_suffix, suffix, sizeof(_log_suffix));
     }
 
-    // 创建文件夹
-    if(0 != check_dir(_log_dir)) {
-        fprintf(stderr, "check_dir error, log_init failed\n");
-        goto RET_ERR;
+    if(LOG_TYPE_CONSOLE == _log_type) {
+        _log_fd = STDOUT_FILENO;
+    } else {
+        if(0 != _open_file()) {
+            goto RET_ERR;
+        }
     }
-    // 打开文件
-    char path_name[LOG_PATH_MAX] = {0};
-    char time_str[LOG_FILENAME_LEN] = {0};
-    _log_get_time(time_str, sizeof(time_str), 1);
-    if(0 >= snprintf(path_name, sizeof(path_name), "%s/%s_%s.%s",
-                _log_dir, _log_prefix, time_str, _log_suffix)) {
-        goto RET_ERR;
-    }
-    // 打开文件
-    _log_fd = open(path_name, O_CREAT | O_RDWR | O_APPEND, 0664);
-    if(-1 == _log_fd) {
-        fprintf(stderr, "fopen %s error: %s, log_init failed\n",
-                path_name, strerror(errno));
-        _log_fd = STDERR_FILENO;
-        goto RET_ERR;
-    }
-
 
     if(0 != pthread_mutex_unlock(&_log_mutex)) {
         fprintf(stderr, "pthread_mutex_unlock error, log_init failed\n");
@@ -386,54 +282,146 @@ void log_destroy(void) {
         return;
     }
     _is_log_init = 0;
+    pthread_mutex_lock(&_log_mutex);
+    close(_log_fd);
+    _thread_once = PTHREAD_ONCE_INIT;
+    pthread_mutex_unlock(&_log_mutex);
     pthread_mutex_destroy(&_log_mutex);
 }
 
-//void log_set_level(int level) {
-//    if(level > LOG_VERB || level < LOG_EMERG) {
-//        _log_level = LOG_LEVEL_DEFAULT;
-//    } else {
-//        _log_level = level;
-//    }
-//}
+static unsigned long long get_file_size(const char *path) {
+    struct stat buf;
+    if (stat(path, &buf) < 0) {
+        return 0;
+    }
+    return (unsigned long long)buf.st_size;
+}
 
-//void log_set_split_size(int size) {
-//    if((uint32_t)size > FILESIZE_LEN || size < 0) {
-//        _log_file_size = FILESIZE_LEN;
-//    } else {
-//        _log_file_size = (unsigned long long)size;
-//    }
-//}
+static int _log_open_rewrite(const char *path) {
+    check_dir(path);
+    _log_fd = open(path, O_RDWR | O_CREAT | O_TRUNC, 0644);
+    if (_log_fd == -1) {
+        fprintf(stderr, "open %s failed: %s\n", path, strerror(errno));
+        fprintf(stderr, "use STDERR_FILEIO as output\n");
+        _log_fd = STDERR_FILENO;
+    }
+    return 0;
+}
 
-//void log_set_rotate(int enable) {
-//    _log_rotate = enable;
-//}
+static ssize_t _log_write(struct iovec *vec, int n) {
+    unsigned long long tmp_size = get_file_size(_path_name);
+    if (tmp_size > _log_size) {
+        if (LOG_ROTATE_FALSE == _log_rotate) {
+            if (-1 == close(_log_fd)) {
+                fprintf(stderr, "close file errno:%d", errno);
+            }
+            _log_open_rewrite(_path_name);
+        } else {
 
-//int log_set_path(const char *path) {
-//    if ((NULL == path) || (0 == strlen(path))) {
-//        return -1;
-//    }
-//    strncpy(_log_path, path, FILESIZE_LEN - 1);
+            if (-1 == close(_log_fd)) {
+                fprintf(stderr, "close file errno:%d", errno);
+            }
+            if (-1 == _open_file()) {
+                fprintf(stderr, "rotate fail errno:%d", errno);
+            }
+        }
+    }
 
-//    return 0;
-//}
+    return writev(_log_fd, vec, n);
+}
 
-//int log_print(int level, const char *tag, const char *file, int line, const char* func, const char* fmt, ...) {
-//    va_list ap;
-//    char buf[LOG_BUF_SIZE] = {0};
-//    int n;
-//    if (level > _log_level) {
-//        return 0;
-//    }
-//    if (!_is_log_init) {
-//        log_init(0, NULL);
-//    }
-//    va_start(ap, fmt);
-//    n = vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
-//    va_end(ap);
-//    if(n < 0) {
-//        return -1;
-//    }
+static int _log_print(log_level_t level, const char* tag, const char* file, int line, const char* func, const char* msg) {
+    int ret = 0;
+    struct iovec vec[LOG_IOVEC_MAX];
+    char s_time[LOG_FILENAME_LEN] = {0};
+    char s_level[LOG_FILENAME_LEN] = {0};
+    char s_tag[LOG_FILENAME_LEN] = {0};
+    char s_pid[LOG_FILENAME_LEN] = {0};
+    char s_tid[LOG_FILENAME_LEN] = {0};
+    char s_file[LOG_DIRNAME_LEN] = {0};
+    char s_msg[LOG_BUF_SIZE] = {0};
 
-//    return _log_print(level, tag, file, line, func, buf);
-//}
+    pthread_mutex_lock(&_log_mutex);
+    _log_get_time(s_time, sizeof(s_time), 0);
+    if(STDERR_FILENO == _log_fd || STDOUT_FILENO == _log_fd) {
+        switch(level) {
+        case LOG_EMERG:
+        case LOG_ALERT:
+        case LOG_CRIT:
+        case LOG_ERR:
+            snprintf(s_level, sizeof(s_level), B_RED("[%s] "), _log_level_str[level]);
+            snprintf(s_msg, sizeof(s_msg), RED(" %s"), msg);
+            break;
+        case LOG_WARNING:
+            snprintf(s_level, sizeof(s_level), B_YELLOW("[%s] "), _log_level_str[level]);
+            snprintf(s_msg, sizeof(s_msg), YELLOW(" %s"), msg);
+            break;
+        case LOG_INFO:
+            snprintf(s_level, sizeof(s_level), B_GREEN("[%s] "), _log_level_str[level]);
+            snprintf(s_msg, sizeof(s_msg), GREEN(" %s"), msg);
+            break;
+        case LOG_DEBUG:
+            snprintf(s_level, sizeof(s_level), B_WHITE("[%s] "), _log_level_str[level]);
+            snprintf(s_msg, sizeof(s_msg), WHITE(" %s"), msg);
+            break;
+        default:
+            snprintf(s_level, sizeof(s_level), "[%s] ", _log_level_str[level]);
+            snprintf(s_msg, sizeof(s_msg), " %s", msg);
+            break;
+        }
+    } else {
+        snprintf(s_level, sizeof(s_level), "[%s] ", _log_level_str[level]);
+        snprintf(s_msg, sizeof(s_msg), " %s", msg);
+    }
+    snprintf(s_pid, sizeof(s_pid), "[pid:%d ", getpid());
+    snprintf(s_tid, sizeof(s_tid), "tid:%d] ", (int)pthread_self());
+    snprintf(s_tag, sizeof(s_tag), "[%s] ", tag);
+    snprintf(s_file, sizeof(s_file) - 1, "[%s:%d: %s] ", file, line, func);
+
+    int i = -1;
+    vec[++i].iov_base = (void*)s_time;
+    vec[i].iov_len = strlen(s_time);
+    vec[++i].iov_base = " ";
+    vec[i].iov_len = 1;
+    vec[++i].iov_base = (void*)s_tag;
+    vec[i].iov_len = strlen(s_tag);
+    vec[++i].iov_base = (void*)s_level;
+    vec[i].iov_len = strlen(s_level);
+    vec[++i].iov_base = (void*)s_pid;
+    vec[i].iov_len = strlen(s_pid);
+    vec[++i].iov_base = (void*)s_tid;
+    vec[i].iov_len = strlen(s_tid);
+    vec[++i].iov_base = (void*)s_file;
+    vec[i].iov_len = strlen(s_file);
+    vec[++i].iov_base = (void*)s_msg;
+    vec[i].iov_len = strlen(s_msg);
+    vec[++i].iov_base = "\n";
+    vec[i].iov_len = 1;
+
+    ret = (int)_log_write(vec, ++i);
+    pthread_mutex_unlock(&_log_mutex);
+    return ret;
+}
+
+int log_print(log_level_t level, const char *tag, const char *file,
+              int line, const char *func, const char *fmt,...) {
+    va_list ap;
+    char buf[LOG_BUF_SIZE] = {0};
+    int n;
+    if (level > _log_level) {
+        return 0;
+    }
+
+    if (1 != _is_log_init) {
+        fprintf(stderr, "log has not been invalized!\n");
+        return -1;
+    }
+    va_start(ap, fmt);
+    n = vsnprintf(buf, LOG_BUF_SIZE, fmt, ap);
+    va_end(ap);
+    if(n < 0) {
+        return -1;
+    }
+
+    return _log_print(level, tag, file, line, func, buf);
+}

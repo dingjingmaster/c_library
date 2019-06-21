@@ -11,6 +11,12 @@
 extern "C" {
 #endif
 
+#define LOG_TAG "clib"
+
+typedef enum {
+    LOG_TYPE_FILE       =   0,              /* 输出日志到文件 */
+    LOG_TYPE_CONSOLE,                       /* 输出到控制台 */
+} log_type_t;
 
 typedef enum {
     LOG_EMERG           =   0,              /* 系统不兼容 */
@@ -31,49 +37,39 @@ typedef enum {
 
 
 /**
- * @param type: 输出类型
+ *
+ * 初始化 log 参数
+ *
+ * @param level: 设置 log 输出级别
+ * @param rotate: 是否切分文件
+ * @param log_size: 每个日志文件的大小
+ * @param dir: 日志文件存储文件夹路径
+ * @param prefix: 日志文件名
+ * @param suffix: 日志文件后缀名
+ *
+ * @return 成功: 0; 失败: -1
  */
-int log_init(log_level_t level, log_rotate_t rotate, int log_size,
+int log_init(log_type_t type, log_level_t level, log_rotate_t rotate, unsigned long long log_size,
              const char* dir, const char* prefix, const char* suffix);
 
 /**
- * 销毁
+ * 销毁 log 参数
+ *
  */
 void log_destroy(void);
 
 /**
- * 设置 log 的级别
- * @param level: log 级别
+ *
+ * 输出日志信息到文件
  *
  */
-void log_set_level(int level);
-
-/**
- * 日志大小
- * @param size: log 大小
- */
-void log_set_split_size(int size);
-
-/**
- * 是否允许 log 切分
- * @param enable:
- */
-void log_set_rotate(int enable);
-
-/**
- * 设置 log 存储路径
- *
- * @param path: 存储路径
- * @return 失败: -1; 成功: 0
- */
-int log_set_path(const char* path);
-
-/**
- *
- *
- */
-int log_print(int level, const char* tag, const char* file, int line, const char* func, const char* fmt, ...);
-
+int log_print(log_level_t level, const char* tag, const char* file, int line,
+              const char* func, const char* fmt, ...);
+#define loge(...) log_print(LOG_ERR, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define logw(...) log_print(LOG_WARNING, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define logi(...) log_print(LOG_INFO, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define logd(...) log_print(LOG_DEBUG, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define logv(...) log_print(LOG_VERB, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
 #ifdef __cplusplus
 }
