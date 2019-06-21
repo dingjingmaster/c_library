@@ -1,50 +1,37 @@
-CC = gcc
-CPP = g++
-CH_DIR = cd
-CP = cp
 
 CUR_DIR = $(shell pwd)
-LIB_DIR = $(CUR_DIR)/lib/
-HEAD_DIR = $(CUR_DIR)/head/
-DEMO_DIR = $(CUR_DIR)/demo/
+LIB_DIR = $(CUR_DIR)/package/lib/
+HEAD_DIR = $(CUR_DIR)/package/include/
+EXAMPLE_DIR = $(CUR_DIR)/package/example/
 
-LIB_LIST_DIR = $(CUR_DIR)/src/clib_list/
-LIB_STRING_DIR = $(CUR_DIR)/src/clib_string/
-LIB_TREE_DIR = $(CUR_DIR)/src/clib_tree/
+libs = -lpthread
 
-OBJS = $(LIB_LIST_DIR) 					\
-			 $(LIB_STRING_DIR) 				\
-			 $(LIB_TREE_DIR)
+src = $(wildcard $(CUR_DIR)/*/*.c)
+obj = $(patsubst %.c, %.o, $(src))
+target = $(patsubst %.c, %.run, $(wildcard $(CUR_DIR)/*/*_example.c))
 
+all : $(target) mk_dir
 
-all : mk_dir libs
-
-
-
+%.run : $(obj)
+	gcc -o $@ $^ $(libs)
+%.o : %.c
+	gcc -o $@ -c $< $(libs)
 mk_dir :
-	mkdir $(LIB_DIR)
-	mkdir $(HEAD_DIR)
-	mkdir $(DEMO_DIR)
-
-
-libs : $(OBJS)
-	$(CH_DIR) $< && make
-	$(CP) $</*.a $(LIB_DIR)
-	$(CP) $</*.h $(HEAD_DIR)
-	$(CP) $</*.out $(DEMO_DIR)
-
-
+	mkdir -p $(LIB_DIR)
+	mkdir -p $(HEAD_DIR)
+	mkdir -p $(EXAMPLE_DIR)
+	cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
+	cp $(CUR_DIR)/*/*.run $(EXAMPLE_DIR)
 
 .PHONY : clean
 
-clean: makeClean
-	rm -fr $(LIB_DIR)
-	rm -fr $(HEAD_DIR)
-	rm -fr $(DEMO_DIR)
+
+clean: 
+	rm $(obj)
+	rm $(target)
+	rm -fr $(CUR_DIR)/package/
 
 
-makeClean : $(OBJS)
-	$(CH_DIR) $< && make clean
 
 
 
