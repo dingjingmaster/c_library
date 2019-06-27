@@ -330,6 +330,22 @@ static ssize_t _log_write(struct iovec *vec, int n) {
     return writev(_log_fd, vec, n);
 }
 
+static const char* _file_name(const char* path, int len) {
+    if (NULL == path) {
+        return path;
+    }
+    char* pend = NULL;
+    pend = (char*)path + len;
+    int i = 0;
+    for(i = 1; i < len; ++i) {
+        if((pend - i == path) || (*(pend - i) == '/')
+         || (*(pend - i) == '\\')) break;
+    }
+    if(i >= 2) i--;
+
+    return pend - i;
+}
+
 static int _log_print(log_level_t level, const char* tag, const char* file, int line, const char* func, const char* msg) {
     int ret = 0;
     struct iovec vec[LOG_IOVEC_MAX];
@@ -337,7 +353,6 @@ static int _log_print(log_level_t level, const char* tag, const char* file, int 
     char s_level[LOG_FILENAME_LEN] = {0};
     char s_tag[LOG_FILENAME_LEN] = {0};
     char s_pid[LOG_FILENAME_LEN] = {0};
-    char s_tid[LOG_FILENAME_LEN] = {0};
     char s_file[LOG_DIRNAME_LEN] = {0};
     char s_msg[LOG_BUF_SIZE] = {0};
 
@@ -373,10 +388,9 @@ static int _log_print(log_level_t level, const char* tag, const char* file, int 
         snprintf(s_level, sizeof(s_level), "[%s] ", _log_level_str[level]);
         snprintf(s_msg, sizeof(s_msg), " %s", msg);
     }
-    snprintf(s_pid, sizeof(s_pid), "[pid:%d ", getpid());
-    snprintf(s_tid, sizeof(s_tid), "tid:%d] ", (int)pthread_self());
     snprintf(s_tag, sizeof(s_tag), "[%s] ", tag);
-    snprintf(s_file, sizeof(s_file) - 1, "[%s:%d: %s] ", file, line, func);
+    snprintf(s_pid, sizeof(s_pid), "[pid:%d ", getpid());
+    snprintf(s_file, sizeof(s_file) - 1, "%s:%d: %s] ", _file_name(file, strlen(file)), line, func);
 
     int i = -1;
     vec[++i].iov_base = (void*)s_time;
@@ -389,8 +403,6 @@ static int _log_print(log_level_t level, const char* tag, const char* file, int 
     vec[i].iov_len = strlen(s_level);
     vec[++i].iov_base = (void*)s_pid;
     vec[i].iov_len = strlen(s_pid);
-    vec[++i].iov_base = (void*)s_tid;
-    vec[i].iov_len = strlen(s_tid);
     vec[++i].iov_base = (void*)s_file;
     vec[i].iov_len = strlen(s_file);
     vec[++i].iov_base = (void*)s_msg;
