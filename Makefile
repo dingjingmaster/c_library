@@ -12,6 +12,8 @@ target_obj = $(strip $(patsubst %.run, %.o, $(target)))
 
 all : $(target) mk_dir
 
+test:
+
 %.run : %.c $(obj)
 	gcc -o $@ $^ $(libs)
 
