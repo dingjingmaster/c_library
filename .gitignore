@@ -1,4 +1,5 @@
 package/
+build-*/
 *.pro
 *.run
 *~
