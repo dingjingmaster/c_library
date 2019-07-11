@@ -155,8 +155,19 @@ int avl_tree_subtree_height(avl_tree_node_t* node);
 unsigned int avl_tree_num(avl_tree_t* tree);
 
 /**
- * 树的前序遍历
+ * 树的前序遍历(调试使用)
  */
+void preorder_print_tree(avl_tree_node_t* node, avl_tree_print_key print);
+
+/**
+ * 树的中序遍历(调试使用)
+ */
+void midorder_print_tree(avl_tree_node_t* node, avl_tree_print_key print);
+
+/**
+ * 树的后序遍历(调试使用)
+ */
+void postorder_print_tree(avl_tree_node_t* node, avl_tree_print_key print);
 #ifdef __cplusplus
 }
 #endif

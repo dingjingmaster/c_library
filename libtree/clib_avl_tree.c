@@ -381,3 +381,30 @@ avl_tree_node_t *avl_tree_node_parent(avl_tree_node_t *node) {
 unsigned int avl_tree_num(avl_tree_t *tree) {
     return tree->node_num;
 }
+
+void preorder_print_tree(avl_tree_node_t *node, avl_tree_print_key print) {
+    if(NULL == node || NULL == print) {
+        return;
+    }
+    print(node->key);
+    preorder_print_tree(node->children[AVL_TREE_NODE_LEFT], print);
+    preorder_print_tree(node->children[AVL_TREE_NODE_RIGHT], print);
+}
+
+void midorder_print_tree(avl_tree_node_t *node, avl_tree_print_key print) {
+    if(NULL == node || NULL == print) {
+        return;
+    }
+    midorder_print_tree(node->children[AVL_TREE_NODE_LEFT], print);
+    print(node->key);
+    midorder_print_tree(node->children[AVL_TREE_NODE_RIGHT], print);
+}
+
+void postorder_print_tree(avl_tree_node_t *node, avl_tree_print_key print) {
+    if(NULL == node || NULL == print) {
+        return;
+    }
+    postorder_print_tree(node->children[AVL_TREE_NODE_LEFT], print);
+    postorder_print_tree(node->children[AVL_TREE_NODE_RIGHT], print);
+    print(node->key);
+}
