@@ -1,5 +1,4 @@
 #include "clib_avl_tree.h"
-
 #include <stdlib.h>
 
 /* avl 树 */
@@ -204,10 +203,10 @@ avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, void* key, void* value) {
     avl_tree_node_t* new_node;
     avl_tree_node_t* prev_node;
 
-    rover = &tree->root;
+    rover = &(tree->root);
     prev_node = NULL;
 
-    while (NULL != rover) {
+    while (NULL != *rover) {
         prev_node = *rover;
         if ((tree->cmp_func(key, (*rover)->key) < 0)) {
             rover = &((*rover)->children[AVL_TREE_NODE_LEFT]);

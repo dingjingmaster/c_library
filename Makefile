@@ -5,19 +5,17 @@ EXAMPLE_DIR = $(CUR_DIR)/package/example/
 
 libs = -lpthread
 
-src = $(filter-out %_example.c, $(strip $(subst $(CUR_DIR), ., $(wildcard $(CUR_DIR)/*/*.c))))
+src = $(filter-out [g]test%, $(filter-out %_example.c, $(strip $(subst $(CUR_DIR), ., $(wildcard $(CUR_DIR)/*/*.c)))))
 obj = $(strip $(patsubst %.c, %.o, $(src)))
 target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run, $(wildcard $(CUR_DIR)/*/*_example.c))))
 target_obj = $(strip $(patsubst %.run, %.o, $(target)))
 
-all : $(target) mk_dir
+all:$(target) mk_dir
 
-test:
-
-%.run : %.c $(obj)
+%.run:%.c $(obj)
 	gcc -o $@ $^ $(libs)
 
-%.o : %.c
+%.o:%.c
 	gcc -o $@ -c $< 
 
 mk_dir:
