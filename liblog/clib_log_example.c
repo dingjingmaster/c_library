@@ -3,10 +3,8 @@
 #include "clib_log.h"
 
 int main() {
-    int ret = 0;
-
     /* 控制台输出 */
-    ret = log_init(LOG_TYPE_CONSOLE, LOG_VERB, LOG_ROTATE_TRUE, 2 << 20,
+    log_init(LOG_TYPE_CONSOLE, LOG_VERB, LOG_ROTATE_TRUE, 2 << 20,
                  NULL, NULL, NULL);
     loge("错误示例1");
     loge("错误示例2");
@@ -32,7 +30,7 @@ int main() {
 
 
     /* 文件输出 */
-    ret = log_init(LOG_TYPE_FILE, LOG_VERB, LOG_ROTATE_TRUE, 1 << 10,
+    log_init(LOG_TYPE_FILE, LOG_VERB, LOG_ROTATE_TRUE, 1 << 10,
                  "日志文件夹", "日志", NULL);
 
     for(int i = 0; i < 2; ++i) {

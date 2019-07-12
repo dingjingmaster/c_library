@@ -33,12 +33,14 @@ int main() {
     if (NULL == res) {
         printf("\nNOT FOUND!\n");
     } else {
-        printf("\nvalue is %d\n", *(int*)res);
+        printf("\nlookup value is %d\n", *(int*)res);
     }
 
     printf("\ntree's node number is %d\n", avl_tree_num(tree));
 
     avl_tree_remove_node(tree, res);
+
+    printf("\nafter delete option tree's node number is %d\n", avl_tree_num(tree));
 
     printf("\nbefore order traversal binary tree. result as follow:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
