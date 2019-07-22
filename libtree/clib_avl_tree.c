@@ -199,19 +199,21 @@ static void avl_tree_balance_to_root(avl_tree_t* tree, avl_tree_node_t* node) {
 
 /* 插入 key value */
 avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, void* key, void* value) {
-    avl_tree_node_t** rover;
-    avl_tree_node_t* new_node;
-    avl_tree_node_t* prev_node;
+    avl_tree_node_t** rover = NULL;
+    avl_tree_node_t* new_node = NULL;
+    avl_tree_node_t* prev_node = NULL;
 
     rover = &(tree->root);
     prev_node = NULL;
 
     while (NULL != *rover) {
         prev_node = *rover;
-        if ((tree->cmp_func(key, (*rover)->key) < 0)) {
+        if (tree->cmp_func(key, (*rover)->key) < 0) {
             rover = &((*rover)->children[AVL_TREE_NODE_LEFT]);
-        } else {
+        } else if (tree->cmp_func(key, (*rover)->key) > 0) {
             rover = &((*rover)->children[AVL_TREE_NODE_RIGHT]);
+        } else {
+            return *rover;
         }
     }
 
@@ -250,11 +252,12 @@ static avl_tree_node_t* avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree
     }
     left_height = avl_tree_subtree_height(left);
     right_height = avl_tree_subtree_height(right);
-    if (left_height < right_height) {
-        side = AVL_TREE_NODE_RIGHT;
-    } else {
-        side = AVL_TREE_NODE_LEFT;
-    }
+    side = left_height < right_height ? AVL_TREE_NODE_RIGHT : AVL_TREE_NODE_LEFT;
+    //if (left_height < right_height) {
+    //    side = AVL_TREE_NODE_RIGHT;
+    //} else {
+    //    side = AVL_TREE_NODE_LEFT;
+    //}
     result = node->children[side];
     avl_tree_node_replace(tree, result, child);
     avl_tree_update_height(result->parent);

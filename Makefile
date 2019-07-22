@@ -1,6 +1,7 @@
 CUR_DIR = $(shell pwd)
 LIB_DIR = $(CUR_DIR)/package/lib/
 HEAD_DIR = $(CUR_DIR)/package/include/
+DEBUG_DIR = $(CUR_DIR)/package/debug/
 EXAMPLE_DIR = $(CUR_DIR)/package/example/
 
 libs = -lpthread
@@ -15,7 +16,7 @@ debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wil
 
 all:$(target) mk_dir
 
-debug:$(debug_target)
+debug:$(debug_target) mk_dir_debug
 
 %.run_debug:%.o_debug $(debug_obj)
 	cc $(debug_flag) -o $@ $^ $(libs)
@@ -35,6 +36,14 @@ mk_dir:
 	@mkdir -p $(EXAMPLE_DIR)
 	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
 	@cp $(CUR_DIR)/*/*.run $(EXAMPLE_DIR)
+
+mk_dir_debug:
+	@mkdir -p $(LIB_DIR)
+	@mkdir -p $(HEAD_DIR)
+	@mkdir -p $(DEBUG_DIR)
+	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
+	@cp $(CUR_DIR)/*/*.run_debug $(DEBUG_DIR)
+
 
 .PRECIOUS:%.o
 

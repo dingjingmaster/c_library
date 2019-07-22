@@ -22,7 +22,7 @@ typedef struct _avl_tree_node_t avl_tree_node_t;
 
 typedef enum {
     AVL_TREE_NODE_LEFT = 0,
-    AVL_TREE_NODE_RIGHT
+    AVL_TREE_NODE_RIGHT = 1
 } avl_tree_side_t;
 
 /**
