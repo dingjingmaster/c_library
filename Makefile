@@ -10,8 +10,9 @@ debug_flag = -Wall -Werror -g3 -p
 
 src = $(filter-out [g]test%, $(filter-out %_example.c, $(strip $(subst $(CUR_DIR), ., $(wildcard $(CUR_DIR)/*/*.c)))))
 obj = $(strip $(patsubst %.c, %.o, $(src)))
-debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
 target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run, $(wildcard $(CUR_DIR)/*/*_example.c))))
+
+debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
 debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wildcard $(CUR_DIR)/*/*_example.c))))
 
 all:$(target) mk_dir
@@ -43,9 +44,6 @@ mk_dir_debug:
 	@mkdir -p $(DEBUG_DIR)
 	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
 	@cp $(CUR_DIR)/*/*.run_debug $(DEBUG_DIR)
-
-
-.PRECIOUS:%.o
 
 .PHONY:clean
 
