@@ -22,7 +22,8 @@ int main() {
         puts("初始化失败!");
     }
     unsigned int i;
-    int values[] = { 0, 1, 2, 3, 4, 5, 6 , 7, 7, 1};
+    int values[] = { 0, 1, 2, 3, 4, 5, 6 , 7, 7,
+        1, 10, 11, 12, 13, 14, 15, 16, 17, 18};
 
     printf("要插入的值\n");
     for (i = 0; i < sizeof (values) / sizeof (int); ++ i) {
@@ -48,7 +49,7 @@ int main() {
 
     printf("\n树的节点个数：%d\n", avl_tree_num(tree));
 
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, res));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
 
     printf("\n删除后的节点 %d\n", avl_tree_num(tree));
 
@@ -60,6 +61,42 @@ int main() {
 
     printf("\n后序遍历:\n");
     postorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    puts("\n==删除节点==\n");
+    key = values[2];
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    printf("\n删除2后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    key = values[3];
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    printf("\n删除3后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    key = values[4];
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    printf("\n删除4后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    key = values[6];
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    printf("\n删除6后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    key = values[7];
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    printf("\n删除7后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    key = values[0];
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    printf("\n删除0后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    key = values[5];
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    printf("\n删除5后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     avl_tree_free(tree);
     printf("\n\n");

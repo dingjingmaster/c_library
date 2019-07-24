@@ -89,8 +89,9 @@ static avl_tree_side_t avl_tree_node_parent_sider(avl_tree_node_t* node) {
     return AVL_TREE_NODE_RIGHT;
 }
 
-/* 两节点互换(旋转) */
-static void avl_tree_node_replace(avl_tree_t* tree, avl_tree_node_t* node1, avl_tree_node_t* node2) {
+/* 两节点互换 */
+static void avl_tree_node_replace(avl_tree_t* tree,
+        avl_tree_node_t* node1, avl_tree_node_t* node2) {
     avl_tree_side_t side;
     if(NULL != node2) {
         node2->parent = node1->parent;
@@ -99,6 +100,7 @@ static void avl_tree_node_replace(avl_tree_t* tree, avl_tree_node_t* node1, avl_
         tree->root = node2;
     } else {
         side = avl_tree_node_parent_sider(node1);
+        // node1->parent <==> 要删除的节点
         node1->parent->children[side] = node2;
         avl_tree_update_height(node1->parent);
     }
@@ -235,29 +237,30 @@ avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, void* key, void* value) {
 }
 
 /* 根据给定节点 查找树中节点并替代 */
-static avl_tree_node_t* avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree_node_t* node) {
+static avl_tree_node_t* 
+avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree_node_t* node) {
     avl_tree_node_t* left = NULL;
     avl_tree_node_t* right = NULL;
     avl_tree_node_t* result = NULL;
-    avl_tree_node_t* child = NULL;
     int left_height = 0;
     int right_height = 0;
     int side;
 
     left = node->children[AVL_TREE_NODE_LEFT];
     right = node->children[AVL_TREE_NODE_RIGHT];
-
     if((NULL == left) && (NULL == right)) {
         return NULL;
     }
+
     left_height = avl_tree_subtree_height(left);
     right_height = avl_tree_subtree_height(right);
-    side = left_height < right_height ? AVL_TREE_NODE_RIGHT : AVL_TREE_NODE_LEFT;
+    side = left_height < right_height?AVL_TREE_NODE_RIGHT:AVL_TREE_NODE_LEFT;
     result = node->children[side];
-    avl_tree_node_replace(tree, result, child);
+    // 摘下要删除节点的(某一子节点)
+    avl_tree_node_replace(tree, result, NULL);
     avl_tree_update_height(result->parent);
 
-    return result;
+    return result;/* 返回摘下的子节点 */ 
 }
 
 /* 删除节点 */
@@ -269,8 +272,8 @@ void avl_tree_remove_node(avl_tree_t *tree, avl_tree_node_t *node) {
     avl_tree_node_t* swap_node = NULL;
     avl_tree_node_t* balance_point = NULL;
 
-    swap_node = avl_tree_node_get_replacement(tree, node);              // 查找到要删除节点
-    if(NULL == swap_node) {
+    swap_node = avl_tree_node_get_replacement(tree, node); 
+    if(NULL == swap_node) { // 删除节点是叶子节点 
         avl_tree_node_replace(tree, node, NULL);
         balance_point = node->parent;
     } else {
@@ -284,7 +287,7 @@ void avl_tree_remove_node(avl_tree_t *tree, avl_tree_node_t *node) {
             if(NULL != swap_node->children[i]){
                 swap_node->children[i]->parent = swap_node;
             }
-        }
+        } // ??? 少了取下来节点的 左右子树啊啊啊啊啊？？？？？？？
         swap_node->height = node->height;
         avl_tree_node_replace(tree, node, swap_node);
     }
