@@ -253,11 +253,6 @@ static avl_tree_node_t* avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree
     left_height = avl_tree_subtree_height(left);
     right_height = avl_tree_subtree_height(right);
     side = left_height < right_height ? AVL_TREE_NODE_RIGHT : AVL_TREE_NODE_LEFT;
-    //if (left_height < right_height) {
-    //    side = AVL_TREE_NODE_RIGHT;
-    //} else {
-    //    side = AVL_TREE_NODE_LEFT;
-    //}
     result = node->children[side];
     avl_tree_node_replace(tree, result, child);
     avl_tree_update_height(result->parent);
@@ -274,7 +269,7 @@ void avl_tree_remove_node(avl_tree_t *tree, avl_tree_node_t *node) {
     avl_tree_node_t* swap_node = NULL;
     avl_tree_node_t* balance_point = NULL;
 
-    swap_node = avl_tree_node_get_replacement(tree, node);
+    swap_node = avl_tree_node_get_replacement(tree, node);              // 查找到要删除节点
     if(NULL == swap_node) {
         avl_tree_node_replace(tree, node, NULL);
         balance_point = node->parent;
