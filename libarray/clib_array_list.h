@@ -13,6 +13,7 @@ extern "C" {
 typedef void* array_value_t;
 typedef struct _array_list_t array_list_t;
 typedef int (*array_list_value_cmp) (array_value_t v1, array_value_t v2);
+typedef void(*array_list_print_cb) (array_value_t v);
 
 /**
  * 创建新的 array_list 
@@ -34,6 +35,20 @@ array_list_t* array_list_new(unsigned long cap, array_list_value_cmp cb);
  */
 array_value_t array_list_append(array_list_t* array, array_value_t value);
 
+/**
+ * 获取当前容量
+ *
+ * @param array:
+ * @return 返回动态链表长度
+ */
+unsigned int array_list_length(array_list_t* array);
+
+/**
+ * 打印值
+ * @param array:
+ * @param print: 值的打印函数
+ */
+void array_list_print(array_list_t* array, array_list_print_cb print);
 
 #ifdef __cplusplus
 }

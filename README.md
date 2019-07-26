@@ -22,5 +22,13 @@ make test
 ```shell
 make
 ```
+- `make debug` 生成带有调试信息的程序
 
+```shell
+make debug
+```
+
+- `make clean` 清空非源码文件
+
+- `make` 或 `make all` 生成demo及静态库文件
 
