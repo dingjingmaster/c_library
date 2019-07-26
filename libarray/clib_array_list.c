@@ -88,7 +88,7 @@ array_value_t array_list_append(array_list_t* array, array_value_t value) {
         array->length += 1;
         array->cap += 1;
     } else {
-        puts("ok\n");
+//        puts("ok\n");
         for(i = 0; i < length; ++i) {
             pc = pc->next;
         }

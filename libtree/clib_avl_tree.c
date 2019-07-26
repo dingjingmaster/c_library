@@ -11,14 +11,14 @@ struct _avl_tree_t {
 /* avl 树节点 */
 struct _avl_tree_node_t {
     int                     height;
-    void*                   key;
-    void*                   value;
+    avl_key_t               key;
+    avl_value_t             value;
     avl_tree_node_t*        parent;
     avl_tree_node_t*        children[2];
 };
 
 /* 创建新的 AVL 树 */
-void *avl_tree_new(avl_tree_compare func) {
+avl_tree_t* avl_tree_new(avl_tree_compare func) {
     if (NULL == func) {
         return NULL;
     }
@@ -98,7 +98,6 @@ static void avl_tree_node_replace(avl_tree_t* tree, avl_tree_node_t* node1, avl_
         tree->root = node2;
     } else {
         side = avl_tree_node_parent_sider(node1);
-        // node1->parent <==> 要删除的节点
         node1->parent->children[side] = node2;
         avl_tree_update_height(node1->parent);
     }
@@ -198,7 +197,7 @@ static void avl_tree_balance_to_root(avl_tree_t* tree, avl_tree_node_t* node) {
 }
 
 /* 插入 key value */
-avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, void* key, void* value) {
+avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, avl_key_t key, avl_key_t value) {
     avl_tree_node_t** rover = NULL;
     avl_tree_node_t* new_node = NULL;
     avl_tree_node_t* prev_node = NULL;
@@ -235,8 +234,7 @@ avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, void* key, void* value) {
 }
 
 /* 根据给定节点 查找树中节点并替代 */
-static avl_tree_node_t* 
-avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree_node_t* node) {
+static avl_tree_node_t* avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree_node_t* node) {
     avl_tree_node_t* left = NULL;
     avl_tree_node_t* right = NULL;
     avl_tree_node_t* result = NULL;
@@ -299,7 +297,7 @@ void avl_tree_remove_node(avl_tree_t *tree, avl_tree_node_t *node) {
 }
 
 /* 查询 key 所在节点 */
-avl_tree_node_t* avl_tree_lookup_node(avl_tree_t* tree, void* key) {
+avl_tree_node_t* avl_tree_lookup_node(avl_tree_t* tree, avl_key_t key) {
     if ((NULL == tree) || (NULL == key)) {
         return NULL;
     }
@@ -332,7 +330,7 @@ int avl_tree_remove(avl_tree_t* tree, void* key) {
 }
 
 /* 根据节点返回 key */
-void* avl_tree_node_key(avl_tree_node_t* node) {
+avl_key_t avl_tree_node_key(avl_tree_node_t* node) {
     if (NULL == node) {
         return NULL;
     }
@@ -340,7 +338,7 @@ void* avl_tree_node_key(avl_tree_node_t* node) {
 }
 
 /* 根据节点返回 value */
-void* avl_tree_node_value(avl_tree_node_t* node) {
+avl_value_t avl_tree_node_value(avl_tree_node_t* node) {
     if (NULL == node) {
         return NULL;
     }
@@ -348,7 +346,7 @@ void* avl_tree_node_value(avl_tree_node_t* node) {
 }
 
 /* 根据 key 值获取 value */
-void *avl_tree_lookup_value(avl_tree_t *tree, void *key) {
+avl_value_t avl_tree_lookup_value(avl_tree_t *tree, avl_key_t key) {
     if (NULL == tree || NULL == key) {
         return NULL;
     }
@@ -356,7 +354,7 @@ void *avl_tree_lookup_value(avl_tree_t *tree, void *key) {
     return avl_tree_node_value(node);
 }
 
-avl_tree_node_t *avl_tree_root_node(avl_tree_t *tree) {
+avl_tree_node_t* avl_tree_root_node(avl_tree_t *tree) {
     if (NULL == tree) {
         return NULL;
     }

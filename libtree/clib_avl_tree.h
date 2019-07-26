@@ -19,6 +19,8 @@ extern "C" {
 
 typedef struct _avl_tree_t  avl_tree_t;
 typedef struct _avl_tree_node_t avl_tree_node_t;
+typedef void* avl_value_t;
+typedef void* avl_key_t;
 
 typedef enum {
     AVL_TREE_NODE_LEFT = 0,
@@ -27,8 +29,10 @@ typedef enum {
 
 /**
  * 遍历树的 key
+ *
+ * @param key 树的键
  */
-typedef void (*avl_tree_print_key) (void* key);
+typedef void (*avl_tree_print_key) (avl_key_t key);
 
 /**
  * 比较 tree 节点 key 值的函数指针
@@ -40,19 +44,20 @@ typedef void (*avl_tree_print_key) (void* key);
  *             k1 == k2  返回 0
  *             k1 >  k2  返回 1
  */
-typedef int (*avl_tree_compare)(void* k1, void* v2);
+typedef int (*avl_tree_compare)(avl_key_t k1, avl_key_t v2);
 
 /**
  * 创建 AVL 树
  *
- * @param tree  avl树的句柄
- * @return      成功: 返回AVL树的句柄
+ * @param tree  avl树
+ * @return      成功: 返回AVL树
  *              失败：返回NULL
  */
-void* avl_tree_new(avl_tree_compare func);
+avl_tree_t* avl_tree_new(avl_tree_compare func);
 
 /**
  * 销毁 AVL 树
+ * @param tree: avl树
  */
 void avl_tree_free(avl_tree_t* tree);
 
@@ -61,9 +66,9 @@ void avl_tree_free(avl_tree_t* tree);
  *
  * @param tree  avl树的句柄
  * @param key   要插入的 key
- * @param value 要插入的节点
+ * @param value 要插入的值
  */
-avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, void* k, void* v);
+avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, avl_key_t k, avl_value_t v);
 
 /**
  * 根据 key 查询avl树
@@ -73,7 +78,7 @@ avl_tree_node_t* avl_tree_insert(avl_tree_t* tree, void* k, void* v);
  * @return      成功：返回找到的节点
  *              失败：返回 NULL
  */
-avl_tree_node_t* avl_tree_lookup_node(avl_tree_t* tree, void* key);
+avl_tree_node_t* avl_tree_lookup_node(avl_tree_t* tree, avl_key_t key);
 
 /**
  * 删除一个节点
@@ -92,7 +97,7 @@ void avl_tree_remove_node(avl_tree_t* tree, avl_tree_node_t* node);
  * @return      成功：返回找到的值
  *              失败：返回 NULL
  */
-void* avl_tree_lookup_value(avl_tree_t* tree, void* key);
+avl_value_t avl_tree_lookup_value(avl_tree_t* tree, avl_key_t key);
 
 /**
  * 返回树的根节点
@@ -109,7 +114,7 @@ avl_tree_node_t* avl_tree_root_node(avl_tree_t* tree);
  * @param node  给定节点
  * @return      返回键
  */
-void *avl_tree_node_key(avl_tree_node_t* node);
+avl_key_t avl_tree_node_key(avl_tree_node_t* node);
 
 /**
  * 返回树节点的值
@@ -117,7 +122,7 @@ void *avl_tree_node_key(avl_tree_node_t* node);
  * @param node  给定节点
  * @return      返回给定节点的值
  */
-void* avl_tree_node_value(avl_tree_node_t* node);
+avl_value_t avl_tree_node_value(avl_tree_node_t* node);
 
 /**
  * 查询给定树节点的子节点

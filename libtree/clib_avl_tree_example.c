@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "clib_avl_tree.h"
 
-int my_compare(void* value1, void* value2) {
+int my_compare(avl_key_t value1, avl_key_t value2) {
     if (*(int*)value1 > *(int*)value2) {
         return 1;
     } else if (*(int*)value1 < *(int*)value2) {
@@ -11,7 +11,7 @@ int my_compare(void* value1, void* value2) {
     return 0;
 }
 
-void my_print(void* key) {
+void my_print(avl_key_t key) {
     printf("%d\t", *((int*)key));
 }
 
@@ -32,7 +32,7 @@ int main() {
     printf("要插入的值\n");
     for (i = 0; i < sizeof (values) / sizeof (int); ++ i) {
         printf("%d|%d\t", i, values[i]);
-        avl_tree_insert(tree, &values[i], &values[i]);
+        avl_tree_insert(tree, (avl_key_t)&values[i], (avl_value_t)&values[i]);
     }
 
     printf("\n树的节点的数 %d\n", avl_tree_num(tree));
@@ -44,7 +44,7 @@ int main() {
 
     printf("要查询的值：%d", key);
 
-    void* res = avl_tree_lookup_value(tree, &key);
+    void* res = avl_tree_lookup_value(tree, (avl_key_t)&key);
     if (NULL == res) {
         printf("\nNOT FOUND!\n");
     } else {
@@ -53,7 +53,7 @@ int main() {
 
     printf("\n树的节点个数：%d\n", avl_tree_num(tree));
 
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
 
     printf("\n删除后的节点 %d\n", avl_tree_num(tree));
 
@@ -68,38 +68,45 @@ int main() {
 
     puts("\n==删除节点==\n");
     key = values[2];
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     printf("\n删除2后前序遍历:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     key = values[3];
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     printf("\n删除3后前序遍历:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     key = values[4];
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     printf("\n删除4后前序遍历:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     key = values[6];
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     printf("\n删除6后前序遍历:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     key = values[7];
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     printf("\n删除7后前序遍历:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     key = values[0];
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     printf("\n删除0后前序遍历:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     key = values[5];
-    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (void*)&key));
+    avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     printf("\n删除5后前序遍历:\n");
+    preorder_print_tree(avl_tree_root_node(tree), my_print);
+
+    for(int i = 0; i < sizeof(values); ++i) {
+        key = values[i];
+        avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
+    }
+    printf("\n全部删除后:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
     avl_tree_free(tree);
