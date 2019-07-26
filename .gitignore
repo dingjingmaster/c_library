@@ -2,6 +2,7 @@ cmake-*/
 .idea/
 package/
 build-*/
+*.run_debug
 *.pro
 *.run
 *~
@@ -10,6 +11,7 @@ build-*/
 *.core
 *.moc
 *.o
+*.out
 *.obj
 *.orig
 *.rej
