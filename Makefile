@@ -1,3 +1,4 @@
+LIB_NAME = libjctools.so
 CUR_DIR = $(shell pwd)
 LIB_DIR = $(CUR_DIR)/package/lib/
 HEAD_DIR = $(CUR_DIR)/package/include/
@@ -15,9 +16,12 @@ target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run, $(wildcard $(CUR_
 debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
 debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wildcard $(CUR_DIR)/*/*_example.c))))
 
-all:$(target) mk_dir
+all:$(target) static_lib mk_dir
 
 debug:$(debug_target) mk_dir_debug
+
+static_lib: $(obj)
+	ar rcs -o $(LIB_NAME) $^
 
 %.run_debug:%.o_debug $(debug_obj)
 	cc $(debug_flag) -o $@ $^ $(libs)
@@ -37,6 +41,7 @@ mk_dir:
 	@mkdir -p $(EXAMPLE_DIR)
 	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
 	@cp $(CUR_DIR)/*/*.run $(EXAMPLE_DIR)
+	@mv $(LIB_NAME) $(LIB_DIR)
 
 mk_dir_debug:
 	@mkdir -p $(LIB_DIR)
