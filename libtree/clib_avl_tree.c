@@ -22,7 +22,6 @@ void *avl_tree_new(avl_tree_compare func) {
     if (NULL == func) {
         return NULL;
     }
-
     avl_tree_t*             tree = NULL;
     tree = (avl_tree_t*)malloc(sizeof(avl_tree_t));
     if (NULL == tree) {
@@ -90,8 +89,7 @@ static avl_tree_side_t avl_tree_node_parent_sider(avl_tree_node_t* node) {
 }
 
 /* 两节点互换 */
-static void avl_tree_node_replace(avl_tree_t* tree,
-        avl_tree_node_t* node1, avl_tree_node_t* node2) {
+static void avl_tree_node_replace(avl_tree_t* tree, avl_tree_node_t* node1, avl_tree_node_t* node2) {
     avl_tree_side_t side;
     if(NULL != node2) {
         node2->parent = node1->parent;
@@ -242,6 +240,7 @@ avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree_node_t* node) {
     avl_tree_node_t* left = NULL;
     avl_tree_node_t* right = NULL;
     avl_tree_node_t* result = NULL;
+    avl_tree_node_t* child = NULL;
     int left_height = 0;
     int right_height = 0;
     int side;
@@ -256,8 +255,11 @@ avl_tree_node_get_replacement(avl_tree_t* tree, avl_tree_node_t* node) {
     right_height = avl_tree_subtree_height(right);
     side = left_height < right_height?AVL_TREE_NODE_RIGHT:AVL_TREE_NODE_LEFT;
     result = node->children[side];
-    // 摘下要删除节点的(某一子节点)
-    avl_tree_node_replace(tree, result, NULL);
+    while(result->children[1 - side] != NULL) {
+        result = result->children[1-side];
+    }
+    child = result->children[side];
+    avl_tree_node_replace(tree, result, child);
     avl_tree_update_height(result->parent);
 
     return result;/* 返回摘下的子节点 */ 

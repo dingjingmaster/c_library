@@ -2,7 +2,6 @@
 #include "clib_avl_tree.h"
 
 int my_compare(void* value1, void* value2) {
-
     if (*(int*)value1 > *(int*)value2) {
         return 1;
     } else if (*(int*)value1 < *(int*)value2) {
