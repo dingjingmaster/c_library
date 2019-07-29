@@ -42,6 +42,7 @@ int main(void) {
     printf("\n");
     printf("长度：%d\n", array_list_length(array));
     printf("\n");
+    array_list_free(&array);
 
     return 0;
 }

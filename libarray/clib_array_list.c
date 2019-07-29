@@ -64,6 +64,17 @@ array_list_t* array_list_new(unsigned long cap, array_list_value_cmp cb) {
     return array;
 }
 
+/* 销毁数组 */
+void array_list_free(array_list_t** array) {
+    array_list_node_t*      pc = (*array)->end;
+    while (NULL != pc) {
+        free(pc);
+        pc = pc->prev;
+    }
+    free(*array);
+    *array = NULL;
+}
+
 /* 追加元素 */
 array_value_t array_list_append(array_list_t* array, array_value_t value) {
     if (NULL == value || NULL == array) {

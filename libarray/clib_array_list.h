@@ -26,6 +26,13 @@ typedef void(*array_list_print_cb) (array_value_t v);
 array_list_t* array_list_new(unsigned long cap, array_list_value_cmp cb);
 
 /**
+ * 销毁 array_list
+ *
+ * @param array: 数组
+ */
+void array_list_free(array_list_t** array);
+
+/**
  * 追加新的元素
  *
  * @param array: 
