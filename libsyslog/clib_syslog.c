@@ -13,7 +13,7 @@ void syslog_init(const char *category, int facility) {
     sysFacility = facility;
 }
 
-void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, char* fmt, ...) {
+void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...) {
     char buf[2048] = {0};
     char *logLevelstr = NULL;
     unsigned long tagLen = 0;
@@ -54,7 +54,7 @@ void syslog_info(int logLevel, const char *fileName, const char *functionName, i
     }
     snprintf(buf, sizeof buf - 1, "%s [%s] %s %s line:%-5d ", logLevelstr, sysCategory, fileName, functionName, line);
     tagLen = strlen(buf);
-    snprintf(buf + tagLen, sizeof buf - 1 - tagLen, fmt, para);
+    vsnprintf(buf + tagLen, sizeof buf - 1 - tagLen, (const char*)fmt, para);
     syslog(LOG_INFO, buf);
     closelog();
     va_end(para);

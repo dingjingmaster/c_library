@@ -10,13 +10,13 @@
 extern "C" {
 #endif
 
-#define CT_SYSLOG(logLevel, ...) {\
-    syslog_info(logLevel, __FILE__, __func__, __LINE__, __VA_ARGS__);\
+#define CT_SYSLOG(logLevel,...) {\
+    syslog_info(logLevel, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
 }
 
 void syslog_init(const char *category, int facility);
 
-void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, char* fmt, ...);
+void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...);
 
 
 #ifdef __cplusplus
