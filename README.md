@@ -32,3 +32,5 @@ make debug
 
 - `make` 或 `make all` 生成demo及静态库文件
 
+- `make install` 安装静态库
+

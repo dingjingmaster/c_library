@@ -1,5 +1,4 @@
-VERSION = 0
-LIB_NAME = libdjctools.so.$(VERSION)
+LIB_NAME = libdjctools.a
 CUR_DIR = $(shell pwd)
 LIB_DIR = $(CUR_DIR)/package/lib/
 HEAD_DIR = $(CUR_DIR)/package/include/djctool/
