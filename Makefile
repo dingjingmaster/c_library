@@ -1,9 +1,13 @@
-LIB_NAME = libjctools.so
+VERSION = 0
+LIB_NAME = libdjctools.so.$(VERSION)
 CUR_DIR = $(shell pwd)
 LIB_DIR = $(CUR_DIR)/package/lib/
-HEAD_DIR = $(CUR_DIR)/package/include/
+HEAD_DIR = $(CUR_DIR)/package/include/djctool/
 DEBUG_DIR = $(CUR_DIR)/package/debug/
 EXAMPLE_DIR = $(CUR_DIR)/package/example/
+
+INSTALL_LIB_DIR = /usr/lib/
+INSTALL_HEAD_DIR = /usr/include/djctool/
 
 libs = -lpthread
 flag = -Wall
@@ -17,6 +21,12 @@ debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
 debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wildcard $(CUR_DIR)/*/*_example.c))))
 
 all:$(target) static_lib mk_dir
+
+install:all
+	@mkdir -p $(INSTALL_HEAD_DIR)
+	cp $(HEAD_DIR)/* -r $(INSTALL_HEAD_DIR)
+	cp $(LIB_DIR)/* $(INSTALL_LIB_DIR)
+	@echo "install done!"
 
 debug:$(debug_target) mk_dir_debug
 
