@@ -13,9 +13,12 @@ void syslog_init(const char *category, int facility) {
     sysFacility = facility;
 }
 
-void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* info) {
+void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, char* fmt, ...) {
     char buf[2048] = {0};
-    char *logLevelstr = "";
+    char *logLevelstr = NULL;
+    unsigned long tagLen = 0;
+    va_list para;
+    va_start(para, fmt);
 
     memset(buf, 0, sizeof buf);
 
@@ -49,7 +52,10 @@ void syslog_info(int logLevel, const char *fileName, const char *functionName, i
         logLevelstr = "UNKNOWN";
 
     }
-    snprintf(buf, sizeof buf - 1, "%s [%s] %s %s line:%-5d %s", logLevelstr, sysCategory, fileName, functionName, line, info);
+    snprintf(buf, sizeof buf - 1, "%s [%s] %s %s line:%-5d ", logLevelstr, sysCategory, fileName, functionName, line);
+    tagLen = strlen(buf);
+    snprintf(buf + tagLen, sizeof buf - 1 - tagLen, fmt, para);
     syslog(LOG_INFO, buf);
     closelog();
+    va_end(para);
 }

@@ -10,17 +10,13 @@
 extern "C" {
 #endif
 
-#define CT_SYSLOG(logLevel, fmt, ...) {\
-    char ctsyslogBuf[2048] = {0};\
-    va_list list;\
-    vsnprintf(ctsyslogBuf, 2047, fmt, list);\
-    va_end(list);\
-    syslog_info(logLevel, __FILE__, __func__, __LINE__, ctsyslogBuf);\
+#define CT_SYSLOG(logLevel, ...) {\
+    syslog_info(logLevel, __FILE__, __func__, __LINE__, __VA_ARGS__);\
 }
 
 void syslog_init(const char *category, int facility);
 
-void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char *info);
+void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, char* fmt, ...);
 
 
 #ifdef __cplusplus
