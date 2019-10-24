@@ -113,7 +113,6 @@ static int mkdir_r(const char* path, mode_t mode) {
         if(*pos == '/') {
             *pos = '\0';
             if (-1 == (ret = mkdir(temp, mode))) {
-                puts("okk");
                 if(errno == EEXIST) {
                     ret = 0;
                 } else {
@@ -126,7 +125,6 @@ static int mkdir_r(const char* path, mode_t mode) {
         }
     }
     if(*(pos - 1) != '/') {
-        printf("if %s\n", temp);
         if(-1 == (ret = mkdir(temp, mode))) {
             if(errno == EEXIST) {
                 ret = 0;
@@ -179,9 +177,8 @@ static void _log_get_time(char* str, int len, int flag) {
         snprintf(date_ms, sizeof(date_ms), "%03ld", now_ms);
         snprintf(str, (unsigned long)len, "[%s.%s]", date_fmt, date_ms);
     } else {
-        strftime(date_fmt, 20, "%Y_%m_%d_%H_%M_%S", &now_tm);
-        snprintf(date_ms, sizeof(date_ms), "%03ld", now_ms);
-        snprintf(str, (unsigned long)len, "%s_%s", date_fmt, date_ms);
+        strftime(date_fmt, 20, "%Y_%m_%d", &now_tm);
+        snprintf(str, (unsigned long)len, "%s", date_fmt);
     }
 }
 
