@@ -1,3 +1,5 @@
+# 常用C库整理 [![构建状态 ](https://www.travis-ci.org/dingjingmaster/c_library.svg?branch=master)](https://www.travis-ci.org/dingjingmaster/c_library)
+
 ### 说明
 
 本仓库主要是我工作中遇到的一些常用库，以及对一些开源库的简单单元测试，目的主要为了学习这些库的使用
