@@ -1,0 +1,15 @@
+language: c
+sudo: required
+
+before_install:
+    - make
+
+install:
+    - make install
+
+before_script:
+
+script:
+    - bash bin/demo.sh "package/example/"    # demo 是否通过
+
+
