@@ -102,7 +102,7 @@ int main() {
     printf("\n删除5后前序遍历:\n");
     preorder_print_tree(avl_tree_root_node(tree), my_print);
 
-    for(int i = 0; i < sizeof(values); ++i) {
+    for(i = 0; i < sizeof(values); ++i) {
         key = values[i];
         avl_tree_remove_node(tree, avl_tree_lookup_node(tree, (avl_key_t)&key));
     }

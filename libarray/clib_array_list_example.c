@@ -13,6 +13,7 @@ void print_v (array_value_t v) {
 }
 
 int main(void) {
+    int                 i = 0;
     array_list_t*       array;
     array_value_t*      value;
     int                 values[] = {
@@ -29,7 +30,7 @@ int main(void) {
 
     printf("长度：%d", array_list_length(array));
 
-    for (int i = 0; i < sizeof(values) / sizeof(int); ++i) {
+    for (i = 0; i < sizeof(values) / sizeof(int); ++i) {
         value = array_list_append(array, (array_value_t)&(values[i]));
         if(NULL == value) {
             puts("array_list_append 失败!");
