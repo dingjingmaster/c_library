@@ -9,7 +9,8 @@ INSTALL_LIB_DIR = /usr/lib/
 INSTALL_HEAD_DIR = /usr/include/djctool/
 
 libs = -lpthread
-flag = -Wall -Werror
+flag = -Wall -Werror \
+	   -Wno-error=format-security
 debug_flag = -Wall -Werror -g3 -p
 
 src = $(filter-out [g]test%, $(filter-out %_example.c, $(strip $(subst $(CUR_DIR), ., $(wildcard $(CUR_DIR)/*/*.c)))))
