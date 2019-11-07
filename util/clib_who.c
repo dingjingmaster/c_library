@@ -31,7 +31,7 @@ enum bool {
 };
 
 static enum bool who_array_exist(char** arr, char* user, int size);
-static enum bool who_array_append(char*** arr, char* ele, int* index);
+static enum bool who_array_append(char*** arr, char* user, char* host, int* index);
 static void who_array_free(char*** arr, int size);
 
 int who_user_num () {
@@ -48,7 +48,7 @@ int who_user_num () {
             continue;
         }
         if (USER_PROCESS == u->ut_type) {
-            if (false == who_array_append(&set, u->ut_user, &user)) {
+            if (false == who_array_append(&set, u->ut_user, u->ut_host, &user)) {
                 goto end;
             }
         }
@@ -62,10 +62,15 @@ end:
     return -1;
 }
 
-static enum bool who_array_append (char*** arr, char* ele, int* index) {
+static enum bool who_array_append (char*** arr, char* user, char* host, int* index) {
     char** array = *arr;
     char** array_tmp = NULL;
     static int tim = 1;
+    int name_len = strlen(user) + strlen(host) + 4;
+
+    char* name = (char*) malloc (sizeof (char) * name_len);
+    memset(name, 0, name_len);
+    snprintf(name, name_len, "%s(%s)", user, host);
 
     if (*index >= MAX_USER * tim) {
         ++tim;
@@ -77,11 +82,7 @@ static enum bool who_array_append (char*** arr, char* ele, int* index) {
         free(array);
         array = array_tmp;
     }
-    if (false == who_array_exist(array, ele, *index)) {
-        int name_len = strlen(ele) + 1;
-        char* name = (char*) malloc (sizeof (char) * name_len);
-        memset(name, 0, name_len);
-        strncpy(name, ele, name_len - 1);
+    if (false == who_array_exist(array, name, *index)) {
         array[*index] = name;
         *index += 1;
     }
