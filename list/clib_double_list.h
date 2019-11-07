@@ -10,27 +10,27 @@
 extern "C"{
 #endif
 
-typedef struct _double_list_node double_list_node;
-typedef struct _double_list_iter double_list_iter;
-typedef struct _double_list double_list;
+typedef struct _double_list_node_t double_list_node_t;
+typedef struct _double_list_iter_t double_list_iter_t;
+typedef struct _double_list_t double_list_t;
 
 //  双向链表节点
-struct _double_list_node {
-    double_list_node*    pre;                               //  前置节点
-    double_list_node*    next;                              //  后置节点
-    void*           value;                                  //  值
+struct _double_list_node_t {
+    double_list_node_t* pre;                                //  前置节点
+    double_list_node_t* next;                               //  后置节点
+    void*               value;                              //  值
 };
 
 //  双向链表迭代器
-struct _double_list_iter {
-    double_list_iter*    next;                              //  当前迭代器的节点
-    int             direction;                              //  迭代器的方向
+struct _double_list_iter_t {
+    double_list_node_t* next;                               //  当前迭代器的节点
+    int                 direction;                          //  迭代器的方向
 };
 
 //  双向链表结构
-struct _double_list {
-    double_list_node*   head;                               //  表头结点
-    double_list_node*   tail;                               //  表尾节点
+struct _double_list_t {
+    double_list_node_t* head;                               //  表头结点
+    double_list_node_t* tail;                               //  表尾节点
     void* (*dup)(void* ptr);                                //  节点值复制函数
     void (*free) (void* ptr);                               //  节点值释放函数
     int (*match) (void* ptr, void* key);                    //  节点值对比函数
@@ -57,46 +57,46 @@ struct _double_list {
 #define LIST_GET_MATCH_METHOD(l, m) ((l) ->match)           //  返回链表值的比较函数
 
 /*  创建新的链表  */
-sDjList* list_create(void);
+double_list_t* list_create(void);
 
 /*  释放链表内存  */
-void list_free(sDjList* list);
+void list_free(double_list_t* list);
 
 /*  链表头插    */
-sDjList* list_addNodeHead(sDjList* list, void* value);
+double_list_t* list_add_node_head(double_list_t* list, void* value);
 
 /*  链表尾插    */
-sDjList* list_addNodeTail(sDjList* list, void* value);
+double_list_t* list_add_node_tail(double_list_t* list, void* value);
 
 /*  链表删除指定节点  */
-void* list_delNode(sDjList* list, sDjListNode* delNode);
+void list_del_node(double_list_t* list, double_list_node_t* delNode);
 
 /*  链表获得迭代器 direction = 0 表示向表尾迭代， 1 表示向表头迭代 */
-sDjListIter* list_getIterator(sDjList* list, int direction);
+double_list_iter_t* list_get_iterator(double_list_t* list, int direction);
 
 /*  链表释放迭代器 */
-void list_freeIterator(sDjListIter* iter);
+void list_free_iterator(double_list_iter_t* iter);
 
 /*  链表下一个元素 */
-sDjListNode* list_nextData(sDjListIter* iter);
+double_list_node_t* list_next_data(double_list_iter_t* iter);
 
 /*  链表复制    */
-sDjList* list_dupList(sDjList* origList);
+double_list_t* list_dup_list(double_list_t* origList);
 
 /*  查找链表 list 中值与 value 匹配的节点   */
-sDjListNode* list_search_value(sDjList* list, void* value);
+double_list_node_t* list_search_value(double_list_t* list, void* value);
 
 /*  返回链表给定索引位置的节点    */
-sDjListNode* list_index(sDjList* list, long index);
+double_list_node_t* list_index(double_list_t* list, long index);
 
 /*  将迭代器置到链表的开头位置   */
-void list_rewind_head(sDjList* list, sDjListIter* iter);
+void list_rewind_head(double_list_t* list, double_list_iter_t* iter);
 
 /*  将迭代器置到链表的结尾位置   */
-void list_rewind_tail(sDjList* list, sDjListIter* iter);
+void list_rewind_tail(double_list_t* list, double_list_iter_t* iter);
 
 /*  取出表尾节点放到表头，成为新的链表   */
-void list_rotate(sDjList* list);
+void list_rotate(double_list_t* list);
 
 
 #ifdef __cplusplus
