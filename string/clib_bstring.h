@@ -2,7 +2,7 @@
 > FileName: clib_bstring.h
 > Author  : DingJing
 > Mail    : dingjing@live.cn
-> Created Time: 2019年11月07日 星期四 17时32分59秒
+> Created Time: 2019年11月07日 星期四 22时32分59秒
  ************************************************************************/
 #ifndef _CLIB_BSTRING_H
 #define _CLIB_BSTRING_H
@@ -84,7 +84,6 @@ char* bstring_cat_len(char* str, const void* t, size_t len);
 
 /*  为字符串增加内存, 释放了原来的字符串，创建了新的  */
 char* bstring_expand_room(char* str, size_t addlen);
-
 
 #ifdef __cplusplus
 }
