@@ -141,19 +141,16 @@ char* bstring_expand_room(char* str, size_t addlen) {
     return newsh ->buf;
 }
 
-mDjStr djString_djString_cat(mDjStr str, const mDjStr catStr)
-{
-    return djString_catLen (str, catStr, djString_mDjStr_len (catStr));
+char* bstring_cat_str(char* str, const char* catstr) {
+    return bstring_cat_len (str, catstr, bstring_len (catstr));
 }
 
-mDjStr djString_cpy(mDjStr str, const char *cStr)
-{
-    return djString_cpyLen (str, cStr, strlen(cStr));
+char* bstring_cpy(char* str, const char *cstr) {
+    return bstring_copy_len (str, cstr, strlen(cstr));
 }
 
-mDjStr djString_cpyLen(mDjStr str, const char *cStr, size_t cStrLen)
-{
-    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
+char* bstring_copy_len(char* str, const char *cstr, size_t cstrlen) {
+    bstring_t* sh = (bstring_t*)((void*)str - sizeof(bstring_t));
 
     //  现在长度是否足够装下 cStr
     size_t curLen = sh ->free + sh ->len;
