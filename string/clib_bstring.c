@@ -1,3 +1,9 @@
+/*************************************************************************
+> FileName: clib_bstring.c
+> Author  : DingJing
+> Mail    : dingjing@live.cn
+> Created Time: 2019年11月07日 星期四 17时33分03秒
+ ************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
