@@ -9,39 +9,76 @@
 #include <string.h>
 #include "clib_bstring.h"
 
-char* bstring_new(const char *str) {
-    size_t strLen = (NULL == str) ? 0 : strlen(str);
-    return bstring_new_len(str, strLen);
+char* bstring_new_len(const void* str, size_t strl)
+{
+    bstring_t* sh = NULL;
+
+    if (str)
+    {
+        sh = malloc(sizeof(bstring_t) + strl + 1);
+    }
+    else
+    {
+        size_t len = sizeof(bstring_t) + strl + 1;      //  分配内存大小为 结构体 + 字符串长度 + 1
+        sh = malloc(len);
+        memset(sh, 0, len);
+    }
+
+    if(NULL == sh)
+    {
+        return NULL;
+    }
+
+    sh ->len = strl;
+    sh ->free = 0;                                      //  新的字符串不留有空余空间
+
+    if(str && strl)
+    {
+        memcpy(sh ->buf, str, strl);
+    }
+    sh ->buf[strl] = '\0';
+
+    return (char*)sh ->buf;
 }
 
-char* bstring_empty(void) {
+char* bstring_new(const char *str)
+{
+    size_t strl = (NULL == str) ? 0 : strlen(str);
+    return bstring_new_len(str, strl);
+}
+
+char* bstring_empty(void)
+{
     return bstring_new_len("", 0);
 }
 
-void bstring_free(char* str) {
-    if(NULL == str) {
+void bstring_free(char* str)
+{
+    if(NULL == str)
         return;
-    }
     //  仅仅释放 buf 中的内容, str 之前还有字符串相关信息要一起释放, 释放后为未知内存，不能置空
     free(str - sizeof(char*));
 }
 
-size_t bstring_len(const char* str) {
+size_t bstring_len(const char* str)
+{
     bstring_t* sh = (bstring_t*)((void*)str - sizeof(bstring_t));
     return sh ->len;
 }
 
-size_t bstring_avail(const char* str) {
+size_t bstring_avail(const char* str)
+{
     bstring_t* sh = (bstring_t*)((void*)str - sizeof(bstring_t));
     return sh ->free;
 }
 
-char* bstring_dup(const char* str) {
-    //  复制一个新的 djString
+char* bstring_dup(const char* str)
+{
     return bstring_new(str);
 }
 
-void bstring_clear(char* str) {
+void bstring_clear(char* str)
+{
     bstring_t* sh = (bstring_t* )((void*)str - sizeof(bstring_t));
     sh ->free += sh ->len;
     sh ->len = 0;
@@ -51,33 +88,6 @@ void bstring_clear(char* str) {
 char* bstring_cat(char* str, const char *cstr) {
     return bstring_cat_len(str, cstr, strlen(cstr));
 }
-
-char* bstring_new_len(const void* str, size_t strLen) {
-    bstring_t* sh = NULL;
-
-    if (str) {
-        sh = malloc(sizeof(bstring_t) + strLen + 1);
-    } else {
-        size_t len = sizeof(bstring_t) + strLen + 1;    //  分配内存大小为 结构体 + 字符串长度 + 1
-        sh = malloc(len);
-        memset(sh, 0, len);
-    }
-
-    if(NULL == sh) {
-        return NULL;
-    }
-
-    sh ->len = strLen;
-    sh ->free = 0;                                      //  新的字符串不留有空余空间
-
-    if(str && strLen) {
-        memcpy(sh ->buf, str, strLen);
-    }
-    sh ->buf[strLen] = '\0';
-
-    return (char*)sh ->buf;
-}
-
 char* bstring_cat_len(char* str, const void* t, size_t len) {
     bstring_t* sh = NULL;
 

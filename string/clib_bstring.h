@@ -14,11 +14,24 @@ extern "C"{
 #endif
 
 typedef struct _bstring_t   bstring_t;
-typedef struct _bstring_t {
+
+typedef struct _bstring_t
+{
     unsigned int     len;
     unsigned int     free;
     char   buf[];                                   //  等价于 char* 但是与 char* 不同， 地址连续与否
 }bstring_t;
+
+/*
+ * 为新的字符串分配内存
+ * @param str: 字符串首地址
+ * @param strlen: 长度
+ * @return
+ *      成功: 输出字符串部分首地址
+ *      失败：返回NULL
+ *
+ */
+char* bstring_new_len(const void* str, size_t strlen);
 
 /*
  * 创建字符串
@@ -32,24 +45,50 @@ char* bstring_new(const char *str);
 /*
  * 创建一个空字符串
  * @return
- *      成功:
- *      失败:
+ *      成功: 返回长度为0的空字符串首地址
+ *      失败: NULL
  */
 char* bstring_empty(void);
 
-/*  释放字符串  */
+/*
+ * 释放字符串buffuer中的内容
+ * @param str: 字符串
+ * @return
+ *      无
+ */
 void bstring_free(char* str);
 
-/*  获取字符串长度  */
+/*
+ * 获取字符串长度
+ * @param str: bstring_t 类型
+ * @return 
+ *      字符串长度
+ */
 size_t bstring_len(const char* str);
 
-/*  返回字符串未使用的空间字节数  */
+/*
+ * 返回字符串未使用的空间字节数
+ * @param str: bstring_t类型字符串
+ * @return
+ *      可用空余长度（会自动增加）
+ */
 size_t bstring_avail(const char* str);
 
-/*  字符串复制操作  */
+/*
+ * 字符串复制操作
+ * @param str: bstring_t
+ * @return
+ *      成功: bstring_t
+ *      失败: NULL
+ */
 char* bstring_dup(const char* str);
 
-/*  清空字符串中的数据  */
+/*
+ * 清空字符串中的数据
+ * @param str: bstring_t
+ * @return
+ *      void
+ */
 void bstring_clear(char* str);
 
 /*  将 char 拼接到字符串末尾  */
@@ -75,9 +114,6 @@ char* bstring_strim(char* str, const char* ceilstr);
 
 /*  字符串比较  */
 int bstring_compare(const char* str1, const char* str2);
-
-/*  为新的字符串分配内存  */
-char* bstring_new_len(const void* str, size_t strlen);
 
 /*  字符串追加  */
 char* bstring_cat_len(char* str, const void* t, size_t len);
