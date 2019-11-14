@@ -9,5 +9,7 @@
 int main (int argc, char* argv[]) {
 
     printf("There are %d user logged!\n", who_user_num ());
+    printf("There are %d user logged!\n", who_user_num ());
+    printf("There are %d user logged!\n", who_user_num ());
     return 0;
 }

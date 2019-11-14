@@ -43,6 +43,7 @@ int who_user_num () {
         goto end;
     }
 
+    setutent();
     while (NULL != (u = getutent())) {
         if (EMPTY == u->ut_type) {
             continue;
@@ -53,6 +54,7 @@ int who_user_num () {
             }
         }
     }
+    endutent();
 
     return user;
 end:
