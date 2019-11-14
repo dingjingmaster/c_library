@@ -20,7 +20,7 @@ typedef struct _bstring_t
     unsigned int     len;
     unsigned int     free;
     char   buf[];                                   //  等价于 char* 但是与 char* 不同， 地址连续与否
-}bstring_t;
+} bstring_t;
 
 /*
  * 为新的字符串分配内存
@@ -91,34 +91,95 @@ char* bstring_dup(const char* str);
  */
 void bstring_clear(char* str);
 
-/*  将 char 拼接到字符串末尾  */
+/*
+ * 将 char 拼接到字符串末尾
+ * @param str: bstring_t
+ * @param cstr: 要追加的字符串
+ * @return
+ *      成功: bstring_t
+ *      失败: NULL
+ */
 char* bstring_cat_str(char* str, const char* cstr);
 
-/*  将给定字符串拼接到字符串末尾  */
-char* bstring_cat_str(char* str, const char* catstr);
+/*
+ * 覆盖指定长度字符串(cstr会覆盖str,cstrlen是str总长度)
+ * @param str: bstring_t
+ * @param cstr: c字符串
+ * @param cstrlen: 字符串总长度
+ * @return
+ *      正确：复制得到的
+ *      失败：NULL
+ */
+char* bstring_cover_len(char* str, const char* cstr, size_t cstrlen);
 
-/*  复制指定长度字符串   */
-char* bstring_copy_len(char* str, const char* cstr, size_t cstrlen);
+/*
+ * 给定 char 字符串覆盖原始空间中的数据
+ * @param str: bstring_t
+ * @param cstr: c字符串
+ * @return
+ *      正确: bstring_t
+ *      错误: NULL
+ */
+char* bstring_cover(char* str, const char* cstr);
 
-/*  给定 char 字符串覆盖原始空间中的数据  */
-//char* bstring_cover(char* str, const char* cstr);
-
-/*  用空字符给字符串扩容到指定长度  */
+/*
+ * 用空字符给字符串扩容到指定长度
+ * @param str: bstring_t
+ * @param len: 指定长度
+ * @return
+ *      正确: bstring_t
+ *      错误: NULL
+ */
 char* bstring_grow_by_zero(char* str, size_t len);
 
-/*  保留字符串指定区间内的数据，其它数据被覆盖或者清除  */
+/*
+ * 保留字符串指定区间内的数据，其它数据被覆盖或者清除
+ * @param str: bstring_t
+ * @param start: 开始位置
+ * @param end: 结束位置
+ * @return
+ *      void
+ */
 void bstring_keep_range(char* str, int start, int end);
 
-/*  字符串删除字符 在 str 始末位置删除 ceilStr 中的字符  */
+/*
+ * 字符串删除字符 在 str 始末位置删除 ceilStr 中的字符
+ * @param str: bstring_t
+ * @param ceilstr: 要匹配删除的字符串
+ * @return
+ *      正确: bstring_t
+ *      错误: NULL
+ */
 char* bstring_strim(char* str, const char* ceilstr);
 
-/*  字符串比较  */
+/*  
+ * 字符串比较
+ * @param str1: bstring_t
+ * @param str2: bstring_t
+ * @return
+ *      相等: 0
+ *      大于0: str1 长于 str2 或 str1 memcmp > 0
+ */
 int bstring_compare(const char* str1, const char* str2);
 
-/*  字符串追加  */
+/*
+ * 字符串追加(可以追加二进制串)
+ * @param str: bstring_t
+ * @param t: 要追加的字符串
+ * @param len: 要追加的长度
+ * @return
+ *      正确: bstring_t
+ *      错误: NULL
+ */
 char* bstring_cat_len(char* str, const void* t, size_t len);
 
-/*  为字符串增加内存, 释放了原来的字符串，创建了新的  */
+/*
+ * 为字符串增加内存, 释放了原来的字符串，创建了新的
+ * @param str: bstring_t
+ * @param addlen: 要增加的长度
+ * @return
+ *      正常: bstring_t
+ *      错误: NULL*/
 char* bstring_expand_room(char* str, size_t addlen);
 
 #ifdef __cplusplus

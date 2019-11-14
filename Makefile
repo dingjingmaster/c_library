@@ -63,7 +63,7 @@ mk_dir_debug:
 .PHONY:clean
 
 clean: 
-	@rm -fr package/
+	rm -fr package/
 	@rm -fr $(obj)
 	@rm -fr $(target)
 	@rm -fr $(debug_obj)
