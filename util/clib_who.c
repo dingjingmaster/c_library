@@ -25,7 +25,8 @@
 
 int MAX_USER = 100;
 
-enum bool {
+enum bool
+{
     true,
     false,
 };
@@ -34,29 +35,33 @@ static enum bool who_array_exist(char** arr, char* user, int size);
 static enum bool who_array_append(char*** arr, char* user, char* host, int* index);
 static void who_array_free(char*** arr, int size);
 
-int who_user_num () {
+int who_user_num ()
+{
     int user = 0;
     struct utmp* u;
 
     char** set = (char**)malloc(sizeof(char*) * MAX_USER);
-    if (NULL == set) {
+    if (NULL == set)
         goto end;
-    }
 
     setutent();
-    while (NULL != (u = getutent())) {
-        if (EMPTY == u->ut_type) {
+    while (NULL != (u = getutent()))
+    {
+        if (EMPTY == u->ut_type)
+        {
             continue;
         }
-        if (USER_PROCESS == u->ut_type) {
-            if (false == who_array_append(&set, u->ut_user, u->ut_host, &user)) {
+        if (USER_PROCESS == u->ut_type)
+        {
+            if (false == who_array_append(&set, u->ut_user, u->ut_host, &user))
                 goto end;
-            }
         }
     }
-    endutent();
 
+    endutent();
+    who_array_free(&set, user);
     return user;
+
 end:
     endutent();
     who_array_free(&set, user);
@@ -64,30 +69,59 @@ end:
     return -1;
 }
 
-static enum bool who_array_append (char*** arr, char* user, char* host, int* index) {
+static enum bool who_array_append (char*** arr, char* user, char* host, int* index)
+{
+    int i = 0;
+    int j = 0;
     char** array = *arr;
     char** array_tmp = NULL;
     static int tim = 1;
-    int name_len = strlen(user) + strlen(host) + 4;
+    int hostlen = 0;
+    char hostbuf[64] = {0};
+
+    hostlen = strlen(host);
+    if (hostlen <= 1)
+    {
+        return false;
+    }
+    if (*host == ':')
+    {
+        for (i = 1; i < hostlen; ++i)
+        {
+            if (*(host + i) == '.')
+            {
+                break;
+            } else {
+                hostbuf[j] = *(host + i);
+                ++j;
+            }
+        }
+    } else {
+        snprintf(hostbuf, sizeof hostbuf, "%s", host);
+    }
+
+    int name_len = strlen(user) + strlen(hostbuf) + 6;
 
     char* name = (char*) malloc (sizeof (char) * name_len);
     memset(name, 0, name_len);
-    snprintf(name, name_len, "%s(%s)", user, host);
+    snprintf(name, name_len, "%s(%s)", user, hostbuf);
 
-    if (*index >= MAX_USER * tim) {
+    if (*index >= MAX_USER * tim)
+    {
         ++tim;
         array_tmp = (char**)malloc(sizeof(char*) * MAX_USER * tim);
-        if (NULL == array_tmp) {
+        if (NULL == array_tmp) 
             goto end;
-        }
         array_tmp = memcpy(*array_tmp, *array, MAX_USER * (tim - 1));
         free(array);
         array = array_tmp;
     }
-    if (false == who_array_exist(array, name, *index)) {
+    if (false == who_array_exist(array, name, *index))
+    {
         array[*index] = name;
         *index += 1;
     }
+
     return true;
 end:
     who_array_free (arr, *index);
@@ -96,31 +130,31 @@ end:
     return false;
 }
 
-static enum bool who_array_exist(char** arr, char* user, int size) {
+static enum bool who_array_exist(char** arr, char* user, int size)
+{
     int i = 0;
     int unl = 0;
     enum bool exist = false;
     int ul = strlen(user);
-    for (i = 0; i < size; ++i) {
+    for (i = 0; i < size; ++i)
+    {
         unl = strlen(arr[i]);
-        if ((unl == ul) && (0 == strncmp(arr[i], user, unl)) ) {
+        if ((unl == ul) && (0 == strncmp(arr[i], user, unl)))
             exist = true;
-        }
     }
 
     return exist;
 }
 
-static void who_array_free(char*** arr, int size) {
-    if (NULL == *arr) {
+static void who_array_free(char*** arr, int size)
+{
+    if (NULL == *arr) 
         return;
-    }
     char** array = *arr;
     int i = 0;
 
-    for (i = 0; i < size; ++i) {
+    for (i = 0; i < size; ++i)
         free (array[i]);
-    }
     free (array);
     *arr = NULL;
 }
