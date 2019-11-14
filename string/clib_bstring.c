@@ -52,7 +52,7 @@ char* bstring_cat(char* str, const char *cstr) {
     return bstring_cat_len(str, cstr, strlen(cstr));
 }
 
-char* btring_new_len(const void* str, size_t strLen) {
+char* bstring_new_len(const void* str, size_t strLen) {
     bstring_t* sh = NULL;
 
     if (str) {
@@ -145,7 +145,7 @@ char* bstring_cat_str(char* str, const char* catstr) {
     return bstring_cat_len (str, catstr, bstring_len (catstr));
 }
 
-char* bstring_cpy(char* str, const char *cstr) {
+char* bstring_copy(char* str, const char *cstr) {
     return bstring_copy_len (str, cstr, strlen(cstr));
 }
 
@@ -153,36 +153,36 @@ char* bstring_copy_len(char* str, const char *cstr, size_t cstrlen) {
     bstring_t* sh = (bstring_t*)((void*)str - sizeof(bstring_t));
 
     //  现在长度是否足够装下 cStr
-    size_t curLen = sh ->free + sh ->len;
+    size_t curlen = sh ->free + sh ->len;
 
     //  如果不够就扩展
-    if(curLen < cStrLen)
+    if(curlen < cstrlen)
     {
-        str = djString_expandRoom (str, cStrLen - sh ->len);
+        str = bstring_expand_room (str, cstrlen - sh ->len);
 
         //  检查是否成功
         if(NULL == str)
             return NULL;
 
-        sh = (sDjString*)((void*)str - sizeof(sDjString));
-        curLen = sh ->free + sh ->len;
+        sh = (bstring_t*)((void*)str - sizeof(bstring_t));
+        curlen = sh ->free + sh ->len;
     }
 
     //  复制内容
-    memcpy(str, cStr, cStrLen);
+    memcpy(str, cstr, cstrlen);
 
-    str[cStrLen] = '\0';
+    str[cstrlen] = '\0';
 
     //  添加结束符号
-    sh ->len = cStrLen;
-    sh ->free = curLen - cStrLen;
+    sh ->len = cstrlen;
+    sh ->free = curlen - cstrlen;
 
     return str;
 }
 
-mDjStr djString_grow_by_zero(mDjStr str, size_t len)
+char* bstring_grow_by_zero(char* str, size_t len)
 {
-    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
+    bstring_t* sh = (bstring_t*)((void*)str - sizeof(bstring_t));
     size_t curLen = sh ->len;
     size_t toLen = 0;
 
@@ -191,14 +191,14 @@ mDjStr djString_grow_by_zero(mDjStr str, size_t len)
         return str;
 
     //  开始扩展
-    str = djString_expandRoom (str, len - curLen);
+    str = bstring_expand_room (str, len - curLen);
 
     //  检查是否成功
     if(NULL == str)
         return NULL;
 
     //  将新分配的内存用 0 填充
-    sh = (void*)(str - sizeof(sDjString));
+    sh = (void*)(str - sizeof(bstring_t));
     memset ((void*)str + curLen, 0, (len - curLen + 1));
 
     //  更新属性
@@ -209,11 +209,11 @@ mDjStr djString_grow_by_zero(mDjStr str, size_t len)
     return str;
 }
 
-void djString_range(mDjStr str, int start, int end)
+void bstring_keep_range(char* str, int start, int end)
 {
-    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
+    bstring_t* sh = (bstring_t*)((void*)str - sizeof(bstring_t));
     size_t newLen = 0;
-    size_t len = djString_mDjStr_len(str);
+    size_t len = bstring_len(str);
 
     //  空字符串，不需要执行清除操作
     if(0 == len)
@@ -268,10 +268,9 @@ void djString_range(mDjStr str, int start, int end)
     sh ->len = newLen;
 }
 
-mDjStr djString_strim(mDjStr str, const char *ceilStr)
-{
+char* bstring_strim(char* str, const char *ceilStr) {
     //  还原字符串结构体
-    sDjString* sh = (sDjString*)((void*)str - sizeof(sDjString));
+    bstring_t* sh = (bstring_t*)((void*)str - sizeof(bstring_t));
 
     //
     char*   start = NULL;
@@ -285,7 +284,7 @@ mDjStr djString_strim(mDjStr str, const char *ceilStr)
     ps = start = str;
 
     //  结尾处指针
-    pe = end = str + djString_mDjStr_len (str);
+    pe = end = str + bstring_len (str);
 
     //  开始去除字符
     while(ps <= end && strchr (ceilStr, *ps))
@@ -311,10 +310,9 @@ mDjStr djString_strim(mDjStr str, const char *ceilStr)
     return str;
 }
 
-int djString_compare(const mDjStr str1, const mDjStr str2)
-{
-    size_t len1 = djString_mDjStr_len (str1);
-    size_t len2 = djString_mDjStr_len (str2);
+int bstring_compare(const char* str1, const char* str2) {
+    size_t len1 = bstring_len (str1);
+    size_t len2 = bstring_len (str2);
 
     size_t minLen = (len1 < len2) ? len1 : len2;
     int cmp = memcmp(str1, str2, minLen);

@@ -56,13 +56,13 @@ void bstring_clear(char* str);
 char* bstring_cat_str(char* str, const char* cstr);
 
 /*  将给定字符串拼接到字符串末尾  */
-char* bstring_str_cat(char* str, const char* catstr);
+char* bstring_cat_str(char* str, const char* catstr);
 
 /*  复制指定长度字符串   */
 char* bstring_copy_len(char* str, const char* cstr, size_t cstrlen);
 
 /*  给定 char 字符串覆盖原始空间中的数据  */
-char* bstring_over(char* str, const char* cstr);
+//char* bstring_cover(char* str, const char* cstr);
 
 /*  用空字符给字符串扩容到指定长度  */
 char* bstring_grow_by_zero(char* str, size_t len);
