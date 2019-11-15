@@ -62,9 +62,9 @@ int main(int argc, char* argv[])
     printf("---------------------------------------\n");
     char* str20 = "abcdefg";
     char* tstr20 = bstring_new(str20);
-    printf("test bstring free\n source: |%s|\n djString: |%s|\n", str20, tstr20);
+    printf("test bstring free\n source: |%s|\n bstring_t len: |%lu|\n", str20, bstring_len(tstr20));
     bstring_free(tstr20);
-    printf(" djString_free: |%s|\n", tstr20);
+    printf("bstring_t free avia: |%lu|\n", bstring_avail(tstr20));
     printf("---------------------------------------\n");
     printf("\n");
 
