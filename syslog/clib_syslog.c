@@ -3,7 +3,8 @@
 static char sysCategory[128] = {0};
 static int sysFacility = 0;
 
-void syslog_init(const char *category, int facility) {
+void syslog_init(const char *category, int facility)
+{
     if (NULL == category) {
         return;
     }
@@ -13,7 +14,8 @@ void syslog_init(const char *category, int facility) {
     sysFacility = facility;
 }
 
-void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...) {
+void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...)
+{
     char buf[2048] = {0};
     char *logLevelstr = NULL;
     unsigned long tagLen = 0;
