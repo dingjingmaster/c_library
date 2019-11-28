@@ -21,7 +21,8 @@ debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
 debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wildcard $(CUR_DIR)/*/*_example.c))))
 
 all:$(target) static_lib mk_dir
-	@cd frame && make
+	@cd frame && make all
+	@cd demo && make all
 
 install:all
 	@mkdir -p $(INSTALL_HEAD_DIR)
@@ -70,4 +71,5 @@ clean:
 	@rm -fr $(debug_obj)
 	@rm -fr $(debug_target)
 	@cd frame && make clean
+	@cd demo && make clean
 	@echo "clean all!"
