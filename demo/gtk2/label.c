@@ -15,7 +15,7 @@ int main (int argc, char* argv[])
     
     gtk_init (&argc, &argv);
 
-    window = gtk_window_new (GTK_WINDOW_TOP_LEVEL);
+    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_widget_set_usize (window, 100, 100);
     gtk_signal_connect (GTK_OBJECT(window), "delete_event", G_CALLBACK(gtk_main_quit), NULL);
 
