@@ -18,6 +18,12 @@
 5. 实现类型初始化和类的初始化函数`xxx_init(类型指针 self)...` 和 `xxx_class_init(xxxClass* self)...`
 6. 使用：在`main`函数中1. GObject库的类型管理系统初始化`g_type_init()`；2. 类实例化；3.类销毁
 
+#### gobject 实现类型隐藏
+
+1. 在`.c`文件中声明并定义私有类型结构体
+2. 在`xxx_class_init`中添加私有属性结构体
+3. 定义私有属性获取的宏`xxx_GET_PRIVATE(obj)（这里调用G_TYPE_INSTANCE_GET_PRIVATE((obj), 数据类型, 私有属性类型)）`
+
 ## 工具之 GOB2
 
 > The gobject builder

@@ -9,4 +9,3 @@ all:
 clean:
 	@cd gobject/ && make clean
 	@cd gtk2/ && make clean
-	@echo 'clean all done!'

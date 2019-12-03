@@ -1,12 +1,12 @@
 /*************************************************************************
-> FileName: demo1.c
+> FileName: demo2.c
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年12月02日 星期一 18时30分18秒
  ************************************************************************/
-#include "demo1/double-list.h"
+#include "demo2/double-list.h"
 
-// 第一个GObject类
+// 类对象的私有属性模拟
 
 int main (int argc, char* argv)
 {

@@ -1,20 +1,28 @@
-CC = gcc
-cflag = 
+cflag = -w
 
-gobject_src = $(wildcard *.c)
-gobject_target = $(patsubst %.c, %.run, $(gobject_src))
-src = $(wildcard */*.c)
-obj = $(patsubst %.c, %.o, $(src))
+demo1_src = $(wildcard demo1/*.c)
+demo1_obj = $(patsubst %.c, %.o, $(demo1_src))
+
+demo2_src = $(wildcard demo2/*.c)
+demo2_obj = $(patsubst %.c, %.o, $(demo2_src))
+
+gobject_target =\
+	demo1.run \
+	demo2.run
 
 target = $(gobject_target)
 
 all:$(target)
 
-%.run:%.c $(obj)
-	$(CC) -o $@ $^ $(cflag) -I*/ `pkg-config --cflags --libs gobject-2.0`
+
+demo2.run:demo2.c $(demo2_obj)
+	cc -o $@ $^ $(cflag) -I*/ `pkg-config --cflags --libs gobject-2.0`
+
+demo1.run:demo1.c $(demo1_obj)
+	cc -o $@ $^ $(cflag) -I*/ `pkg-config --cflags --libs gobject-2.0`
 
 %.o:%.c
-	$(CC) -o $@ -c $< $(cflag) `pkg-config --cflags --libs gobject-2.0`
+	cc -o $@ -c $< $(cflag) `pkg-config --cflags --libs gobject-2.0`
 
 
 .PHONY:clean all
@@ -22,4 +30,3 @@ all:$(target)
 clean:
 	@rm -fr $(obj)
 	@rm -fr $(gobject_target)
-	@echo 'clean all done!'
