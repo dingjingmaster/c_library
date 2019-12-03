@@ -9,7 +9,7 @@
  - [x] 可设置对象属性的 set/get 函数
  - [x] 易于使用的信号机制
 
-#### 怎样用C实现一个类（以双向链表声明为例）
+#### 怎样用C实现一个类（以双向链表声明为例demo1）
 
 1. 定义节点数据类型，定义链表数据类型
 2. 定义链表类数据类型 (注意链表类和链表数据类型第一个参数都是 GObject 类型,意味着继承自GObject)
@@ -18,11 +18,29 @@
 5. 实现类型初始化和类的初始化函数`xxx_init(类型指针 self)...` 和 `xxx_class_init(xxxClass* self)...`
 6. 使用：在`main`函数中1. GObject库的类型管理系统初始化`g_type_init()`；2. 类实例化；3.类销毁
 
-#### gobject 实现类型隐藏
+#### gobject 实现类型隐藏 (demo2)
 
 1. 在`.c`文件中声明并定义私有类型结构体
 2. 在`xxx_class_init`中添加私有属性结构体
 3. 定义私有属性获取的宏`xxx_GET_PRIVATE(obj)（这里调用G_TYPE_INSTANCE_GET_PRIVATE((obj), 数据类型, 私有属性类型)）`
+
+#### gobject 私有属性外部访问 (demo3)
+
+> set/get相对直接指针处理的好处：将数据的变化和程序的功能隔开，数据的变化不影响程序的功能(给使用库的程序员一致的使用方式，变化都在底层)。
+
+1. 实现`xxx_set`和`xxx_get`
+2. 在`xxx_class_init`中安装
+    1. `GObjectClass *base_class = G_OBJECT_CLASS (klass);`
+    2. `base_class->set_property = pm_dlist_set_property;`
+    3. `base_class->get_property = pm_dlist_get_property;`
+
+#### 网GObject中安装属性
+
+> 1. GParamSpec 类型对一个键值对打包成一个数据结构，然后将之安装到相应的 GObject 子类中。
+> 2. `g_param_spec_pointer` 函数，可以将“属性名：属性值”参数打包为`GParamSpec`类型的变量，该函数的第一个参数用于设定键名，第二个参数是键名的昵称，第三个参数是对这个键值对的详细描述，第四个参数用于表示键值的访问权限，`G_PARAM_READABLE | G_PARAM_WRITABLE` 是指定属性即可读又可写，`G_PARAM_CONSTRUCT` 是设定属性可以在对象示例化之时被设置
+> 3. `g_object_class_install_property` 函数用于将 `GParamSpec` 类型变量所包含的数据插入到 `GObject` 子类中，其中的细节可以忽略，只需要知道该函数的第一个参数为 `GObject` 子类的类结构体，第二个参数是 `GParamSpec` 对应的属性 `ID`。`GObject` 子类的属性 `ID` 在前文已经提及，它是 GObject 子类设计者定义的宏或枚举类型。第三个参数是要安装值向 `GObject` 子类中的 `GParamSpec` 类型的变量指针。
+> 4. 一定要注意，`g_object_class_install_property` 函数的第二个参数值不能为 0
+
 
 ## 工具之 GOB2
 
