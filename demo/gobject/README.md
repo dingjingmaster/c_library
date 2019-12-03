@@ -34,12 +34,16 @@
     2. `base_class->set_property = pm_dlist_set_property;`
     3. `base_class->get_property = pm_dlist_get_property;`
 
-#### 网GObject中安装属性
+#### GObject中安装属性(demo3)
 
 > 1. GParamSpec 类型对一个键值对打包成一个数据结构，然后将之安装到相应的 GObject 子类中。
 > 2. `g_param_spec_pointer` 函数，可以将“属性名：属性值”参数打包为`GParamSpec`类型的变量，该函数的第一个参数用于设定键名，第二个参数是键名的昵称，第三个参数是对这个键值对的详细描述，第四个参数用于表示键值的访问权限，`G_PARAM_READABLE | G_PARAM_WRITABLE` 是指定属性即可读又可写，`G_PARAM_CONSTRUCT` 是设定属性可以在对象示例化之时被设置
 > 3. `g_object_class_install_property` 函数用于将 `GParamSpec` 类型变量所包含的数据插入到 `GObject` 子类中，其中的细节可以忽略，只需要知道该函数的第一个参数为 `GObject` 子类的类结构体，第二个参数是 `GParamSpec` 对应的属性 `ID`。`GObject` 子类的属性 `ID` 在前文已经提及，它是 GObject 子类设计者定义的宏或枚举类型。第三个参数是要安装值向 `GObject` 子类中的 `GParamSpec` 类型的变量指针。
 > 4. 一定要注意，`g_object_class_install_property` 函数的第二个参数值不能为 0
+
+#### GObject中添加方法(demo4)
+
+1. 直接实现就行，注意要传入数据类型
 
 
 ## 工具之 GOB2
