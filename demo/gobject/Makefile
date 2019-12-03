@@ -12,6 +12,9 @@ demo3_obj = $(patsubst %.c, %.o, $(demo3_src))
 demo4_src = $(wildcard demo4/*.c)
 demo4_obj = $(patsubst %.c, %.o, $(demo4_src))
 
+demo5_src = $(wildcard demo4/*.c)
+demo5_obj = $(patsubst %.c, %.o, $(demo5_src))
+
 gobject_target =\
 	demo4.run \
 	demo3.run \
@@ -21,6 +24,9 @@ gobject_target =\
 target = $(gobject_target)
 
 all:$(target)
+
+#demo5.run:demo5.c $(demo5_obj)
+#	cc -o $@ $^ $(cflag) -I*/ `pkg-config --cflags --libs gobject-2.0`
 
 demo4.run:demo4.c $(demo4_obj)
 	cc -o $@ $^ $(cflag) -I*/ `pkg-config --cflags --libs gobject-2.0`
