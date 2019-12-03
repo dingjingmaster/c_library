@@ -1,5 +1,3 @@
-CC = gcc
-
 all:
 	@cd gobject/ && make all
 	@cd gtk2/ && make all

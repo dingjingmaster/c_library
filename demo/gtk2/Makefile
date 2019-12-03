@@ -1,5 +1,4 @@
-CC = gcc
-cflag = 
+cflag = -w
 
 src = $(wildcard *.c)
 target = $(patsubst %.c, %.run, $(src))
@@ -7,10 +6,9 @@ target = $(patsubst %.c, %.run, $(src))
 all:$(target)
 
 %.run:%.c
-	$(CC) -o $@ $^ $(cflag) `pkg-config --cflags --libs gtk+-2.0`
+	cc -o $@ $^ $(cflag) `pkg-config --cflags --libs gtk+-2.0`
 
 .PHONY:clean all
 
 clean:
 	@rm -fr *.run
-	@echo 'clean all done!'
