@@ -65,11 +65,11 @@ mk_dir_debug:
 .PHONY:clean
 
 clean: 
-	rm -fr package/
-	rm -fr $(obj)
+	@rm -fr $(obj)
 	@rm -fr $(target)
 	@rm -fr $(debug_obj)
 	@rm -fr $(debug_target)
+	@rm -fr package/
 	@cd frame && make clean
 	@cd demo && make clean
 	@echo "clean all!"
