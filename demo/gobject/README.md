@@ -1,6 +1,24 @@
 # gobject
 
-### 工具之 GOB2
+## gobject学习
+
+#### gobject好处
+
+ - [x] 基于引用计数的内存管理
+ - [x] 对象的构造函数与析构函数
+ - [x] 可设置对象属性的 set/get 函数
+ - [x] 易于使用的信号机制
+
+#### 怎样用C实现一个类（以双向链表声明为例）
+
+1. 定义节点数据类型，定义链表数据类型
+2. 定义链表类数据类型 (注意链表类和链表数据类型第一个参数都是 GObject 类型,意味着继承自GObject)
+3. 声明 `GType xxx_get_type(void);` 定义 `p_t_get_type` 宏,即:`#define xxx_TYPE_xxx (xxx_get_type(void))`
+4. 在`.c`文件中生成`p_t_get_type`函数的具体实现，即`G_DEFINE_TYPE(类型, 成员函数前缀, 父类:G_TYPE_OBJECT)`
+5. 实现类型初始化和类的初始化函数`xxx_init(类型指针 self)...` 和 `xxx_class_init(xxxClass* self)...`
+6. 使用：在`main`函数中1. GObject库的类型管理系统初始化`g_type_init()`；2. 类实例化；3.类销毁
+
+## 工具之 GOB2
 
 > The gobject builder
 > GOB2 是一个简单的预处理器，简化了GObject类的创建。
