@@ -5,6 +5,7 @@
 - dbus-daemon 一个dbus的后台守护程序，用于多应用之间消息转发
 - libdbus.so dbus的功能接口
 - 高层封装，如dbus-glib和QT D-bus
+- dbus总线一般分为系统总线和会话总线，所以安全性很好
 
 > 官网中的dubs安装值包含上述1和2
 
@@ -25,3 +26,5 @@
   5. signal 和 method也有自己的名字，随便取名就行
 
 ### dbus守护进程需要配置
+
+
