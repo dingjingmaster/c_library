@@ -39,5 +39,18 @@ CLIB_RET system_user_num (int* user);
 CLIB_RET system_gid_byname (const char* name, int* uid, int* gid,
         char* long_name, int long_name_len, char* home, int home_len);
 
+/**
+ * 根据用户名和进程名返回进程id
+ * @param pname: 进程名字
+ * @param uname: 用户名字
+ * @param pid: 进程id(输出参数)
+ * @param ppid: 父进程id(输出参数)
+ * @return:
+ *      成功: RET_OK
+ *      失败: RET_ERROR
+ */
+CLIB_RET system_pid_byupname (const char* pname, const char* uname,
+        int* pid, int* ppid);
+
 
 #endif

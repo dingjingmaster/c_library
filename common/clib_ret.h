@@ -20,6 +20,7 @@ typedef enum bool
 
 /* 定义全局常量 */
 #define CLIB_SYSTEM_ETC_PASSWD                          "/etc/passwd"
+#define CLIB_SYSTEM_PROC                                "/proc/"
 
 
 #endif

@@ -12,6 +12,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
+#include <unistd.h>
 
 /**
  * ut_type的值：
@@ -31,6 +33,7 @@ int MAX_USER = 100;
 
 /* 公共函数 -- 开始 */
 static CLIB_RET common_read_line (int fd, char* buf, int buf_size);
+static CLIB_RET common_str_is_number (const char* str);
 /* 公共函数 -- 结束 */
 
 /* 用户数量获取 -- 开始 */
@@ -41,7 +44,10 @@ static void who_array_free(char*** arr, int size);
 
 CLIB_RET system_user_num (int* user)
 {
-    if (NULL == user) return RET_ERROR;
+    if (NULL == user) {
+        return RET_ERROR;
+    }
+
     struct utmp* u;
     *user = 0;
 
@@ -75,6 +81,10 @@ end:
 CLIB_RET system_gid_byname (const char* name, int* uid, int* gid,
         char* long_name, int long_name_len, char* home, int home_len) 
 {
+    if (NULL == name || uid == NULL) {
+        return RET_ERROR;
+    }
+
     int i = 0;
     int j = 0;
     int fd = 0;
@@ -116,7 +126,7 @@ CLIB_RET system_gid_byname (const char* name, int* uid, int* gid,
             } else if ((split == 3) && (':' == line_buf[i])) {
                 j = 0;
                 split = 4;
-                *gid = atoi (buf);
+                if (NULL != gid) *gid = atoi (buf);
                 memset (buf, 0, sizeof buf);
             } else if ((split == 4) && (':' == line_buf[i])) {
                 j = 0;
@@ -146,7 +156,70 @@ CLIB_RET system_gid_byname (const char* name, int* uid, int* gid,
     return RET_OK;
 }
 
+
+CLIB_RET system_pid_byupname (const char* pname, const char* uname, int* pid, int* ppid) 
+{
+    if (NULL == pname || NULL == uname || NULL == pid || NULL == ppid) {
+        return RET_ERROR;
+    }
+    
+    int uid = 0;
+    CLIB_RET ret = RET_ERROR;
+    DIR* dir = NULL;
+    struct dirent* ptr;
+    char path[1024] = {0};
+
+    ret = system_gid_byname (uname, &uid, NULL, NULL, 0, NULL, 0);
+    if (RET_OK != ret) {
+        return RET_ERROR;
+    }
+
+    dir = opendir (CLIB_SYSTEM_PROC);
+    if (NULL == dir) {
+        return RET_ERROR;
+    }
+
+    while (NULL != (ptr = readdir(dir))) {
+        if (0 == strcmp(ptr->d_name, ".") || 0 == strcmp(ptr->d_name, "..")) {
+            continue;
+        } else if (4 == ptr->d_type) {                          // 文件夹
+            if (RET_OK == common_str_is_number(ptr->d_name)) {
+                memset (path, 0, sizeof path);
+                snprintf (path, sizeof path - 1, "%s%s/status", CLIB_SYSTEM_PROC, ptr->d_name);
+                // 打开文件并读取
+                int fd = open (path, O_RDONLY);
+                if (fd >= 0) {
+                    printf ("%s\n", path);
+                }
+            }
+        }
+    }
+
+    closedir (dir);
+
+    return RET_OK;
+}
+
+
 /* 一些公共函数 */
+static CLIB_RET common_str_is_number (const char* str)
+{
+    if (NULL == str) {
+        return RET_ERROR;
+    }
+
+    int i = 0;
+    int strnum = strlen (str);
+
+    for (i = 0; i < strnum; ++i) {
+        if (str[i] < 48 || str[i] > 57) {
+            return RET_ERROR;
+        }
+    }
+
+    return RET_OK;
+}
+
 static CLIB_RET common_read_line (int fd, char* buf, int buf_size)
 {
     char tmp = '\0';
