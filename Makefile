@@ -5,6 +5,8 @@ HEAD_DIR = $(CUR_DIR)/package/include/djctool/
 DEBUG_DIR = $(CUR_DIR)/package/debug/
 EXAMPLE_DIR = $(CUR_DIR)/package/example/
 
+HEADS = -I$(CUR_DIR)/common/
+
 INSTALL_LIB_DIR = /usr/lib/
 INSTALL_HEAD_DIR = /usr/include/djctool/
 
@@ -36,16 +38,16 @@ static_lib: $(obj)
 	ar rcs -o $(LIB_NAME) $^
 
 %.run_debug:%.o_debug $(debug_obj)
-	cc $(debug_flag) -o $@ $^ $(libs)
+	cc $(debug_flag) $(HEADS) -o $@ $^ $(libs)
 
 %.run:%.o $(obj)
-	cc ${flag} -o $@ $^ $(libs)
+	cc ${flag} $(HEADS) -o $@ $^ $(libs)
 
 %.o_debug:%.c
-	cc $(debug_flag) -o $@ -c $< 
+	cc $(debug_flag) $(HEADS) -o $@ -c $<
 
 %.o:%.c
-	cc $(flag) -o $@ -c $< 
+	cc $(flag) $(HEADS) -o $@ -c $< 
 
 mk_dir:
 	@mkdir -p $(LIB_DIR)

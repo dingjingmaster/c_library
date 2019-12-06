@@ -5,11 +5,20 @@
 > Created Time: 2019年11月07日 星期四 10时00分21秒
  ************************************************************************/
 #include <stdio.h>
-#include "clib_who.h"
-int main (int argc, char* argv[]) {
+#include "clib_util.h"
 
-    printf("There are %d user logged!\n", who_user_num ());
-    printf("There are %d user logged!\n", who_user_num ());
-    printf("There are %d user logged!\n", who_user_num ());
+int main (int argc, char* argv[])
+{
+    int user_num = 0;
+
+    system_user_num (&user_num);
+    printf("There are %d user logged!\n", user_num);
+
+    system_user_num (&user_num);
+    printf("There are %d user logged!\n", user_num);
+
+    system_user_num (&user_num);
+    printf("There are %d user logged!\n", user_num);
+
     return 0;
 }
