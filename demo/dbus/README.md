@@ -25,6 +25,16 @@
   4. name: 每个interface都有自己的名字，通过interface的名字找到interface，格式：`xxx.xxx.xxx.xxx`
   5. signal 和 method也有自己的名字，随便取名就行
 
+### 术语
+
+- connection: 用于打开到守护进程的连接的结构，可以通过指定`DBUS_BUS_SYSTEM`来打开系统总线守护进程，也可以使用`DBUS_BUS_SESSION`来打开会话总线守护进程。
+- message: 是两个进程之间的一条消息，所有的DBus内部通信都是使用DBus消息完成的，这些消息可以有以下类型，方法调用，方法返回，信号，和错误。DBusMessage结构可以通过附加布尔整数、实数、字符串、数组、…到消息。
+- path: 是远程对象的路径，如: /org/freedesktop/DBus.
+- interface:是要与之对话的给定对象上的接口。
+- signal:用来发出信号
+- method call: 它是用于调用远程对象上的方法的DBus消息。
+- Error: DBusError是通过调用DBus方法来保存错误代码的结构。
+
 ### dbus守护进程需要配置
 
 
