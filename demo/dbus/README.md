@@ -35,6 +35,15 @@
 - method call: 它是用于调用远程对象上的方法的DBus消息。
 - Error: DBusError是通过调用DBus方法来保存错误代码的结构。
 
-### dbus守护进程需要配置
+### dbus守护进程
+
+- dbus 可以代表其它应用程序启动程序（服务），应用程序要求dbus通过其名称启动服务，该名称必须是已知的，dbus查找的服务描述文件通常安装在`/usr/share/dbus-1/services/`扩展名位`.service`
+
+### 例子说明
+
+- `dbus_name` dbus名称选用
+- `dbus_recv_send` dbus发送和接收
+- `dbus_service` dbus启动另一个进程
+
 
 

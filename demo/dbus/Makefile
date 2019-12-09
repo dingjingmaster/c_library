@@ -9,7 +9,12 @@ demo1_obj = $(patsubst %.c, %.o, $(demo1_src))
 demo2_src = $(wildcard dbus_recv_send/*.c)
 demo2_obj = $(patsubst %.c, %.o, $(demo2_src))
 
+demo3_src = $(wildcard dbus_service/*.c)
+demo3_obj = $(patsubst %.c, %.o, $(demo3_src))
+
 gobject_target =\
+	dbus_service/share_service.run\
+	dbus_service/start_service.run\
 	dbus_recv_send/listen.run\
 	dbus_recv_send/send.run\
 	dbus_name/dbus_name.run 
@@ -18,7 +23,10 @@ target = $(gobject_target)
 
 all:$(target)
 
-dbus_recv_send/send.run:dbus_recv_send/send.o
+dbus_service/share_service.run:dbus_service/share_service.o
+	cc -o $@ $^ $(cflag) $(heads) `pkg-config --cflags --libs dbus-1`
+
+dbus_service/start_service.run:dbus_service/start_service.o
 	cc -o $@ $^ $(cflag) $(heads) `pkg-config --cflags --libs dbus-1`
 
 dbus_recv_send/listen.run:dbus_recv_send/listen.o
