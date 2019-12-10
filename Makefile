@@ -24,7 +24,6 @@ debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wil
 
 all:$(target) static_lib mk_dir
 	@cd frame && make all
-	@cd demo && make all
 
 install:all
 	@mkdir -p $(INSTALL_HEAD_DIR)
