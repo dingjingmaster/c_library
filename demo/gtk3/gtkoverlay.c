@@ -8,7 +8,7 @@
 #include <gtk/gtk.h>  
 void gtk_overlay_set_overlay_pass_through (GtkOverlay *overlay, GtkWidget *widget, gboolean pass_through)
 {
-    	g_return_if_fail (GTK_IS_OVERLAY (overlay));
+    g_return_if_fail (GTK_IS_OVERLAY (overlay));
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	gtk_container_child_set (GTK_CONTAINER (overlay), widget,
 	"pass-through", pass_through,
@@ -32,7 +32,7 @@ static void activate (GtkApplication *app , gpointer data)
 	
 	GtkWidget *image_background = NULL;
 	image_background = gtk_image_new_from_file ("pic/1.svg");
-    	gtk_container_add(GTK_CONTAINER(overlay), image_background);
+    gtk_container_add(GTK_CONTAINER(overlay), image_background);
 	gtk_overlay_add_overlay (GTK_OVERLAY (overlay), image);
 	
 	//gtk_overlay_set_overlay_pass_through(GTK_OVERLAY (overlay), label, TRUE);
