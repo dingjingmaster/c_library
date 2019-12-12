@@ -383,7 +383,7 @@ static int _log_print(log_level_t level, const char* tag, const char* file, int 
         }
     } else {
         snprintf(s_level, sizeof(s_level), "[%s] ", _log_level_str[level]);
-        snprintf(s_msg, sizeof(s_msg), " %s", msg);
+        snprintf(s_msg, sizeof(s_msg), " %s", NULL == msg ? "<null>":msg);
     }
     snprintf(s_tag, sizeof(s_tag), "[%s] ", tag);
     snprintf(s_pid, sizeof(s_pid), "[pid:%d ", getpid());
