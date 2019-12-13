@@ -66,7 +66,7 @@
     - GDBusServer 接受连接
     - GDBusProxy 远程对象接入D-Bus接口的代理
 
-![图片](pic/1.png)
+![图片](https://github.com/dingjingmaster/c_library/tree/dev/demo/pic/1.png)
 
 ### GIOModule
 
