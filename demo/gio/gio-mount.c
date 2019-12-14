@@ -11,13 +11,13 @@
 // 挂载点 /data/tmp/mount_demo
 int main (int arg, char* garv[])
 {
-    GFile* upan = NULL;
+    GFile* upan = NULL;             // 相当于文件路径
     guint64 disk_usage = 0;
     guint64 num_dirs = 0;
     guint64 num_files = 0;
     GError* error = NULL;
     gboolean ret = FALSE;
-    GMount* upan_mount = NULL;
+    GMount* upan_mount = NULL;      // 已挂载的系统
 
     upan = g_file_new_for_path ("/data/tmp/mount_demo");
     //upan = g_file_new_for_path ("/dev/sdc");

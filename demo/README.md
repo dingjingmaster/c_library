@@ -204,3 +204,32 @@
 #### GIOModule
 
 > 提供用于加载和卸载模块的接口和默认函数。这在内部用于使GIO可扩展，但也可以被其他人用于实现模块加载。
+
+#### POSIX和GIO对比
+
+| --- | --- |
+| POSIX | `GIO` |
+| char \*path | `GFile *file` |
+| struct stat \*buf | `GFileInfo *info` |
+| struct statvfs \*buf | `GFileInfo *info` |
+| int fd | `GInputStream *in` 与 `GOutputStream *out` |
+| DIR \* | `GFileEnumerator *enum` |
+| fstab entry | `GUnixMountPoint *mount_point` |
+| mtab entry | `GUnixMountEntry *mount_entry` |
+
+#### GnomeVFS与GIO对比
+
+| --- | --- |
+| GnomeVFSUR | GFile |
+| GnomeVFSFileInfo | GFileInfo |
+| GnomeVFSResult | GError, with G_IO_ERROR values|
+| GnomeVFSHandle & GnomeVFSAsyncHandle | GInputStream or GOutputStream |
+| GnomeVFSDirectoryHandle | GFileEnumerator |
+| mime type | content type |
+| GnomeVFSMonitor | GFileMonitor |
+| GnomeVFSVolumeMonitor | GVolumeMonitor |
+| GnomeVFSVolume | GMount |
+| GnomeVFSDrive | GVolume |
+| - | GDrive |
+| GnomeVFSContext | GCancellable |
+| gnome_vfs_async_cancel | g_cancellable_cancel |
