@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <gio/gio.h>
 
-// mount 操作，此例子尽量插个优盘做测试
-// 挂载点 /data/tmp/mount_demo
 int main (int arg, char* garv[])
 {
     GFile* upan = NULL;             // 相当于文件路径
@@ -20,7 +18,6 @@ int main (int arg, char* garv[])
     GMount* upan_mount = NULL;      // 已挂载的系统
 
     upan = g_file_new_for_path ("/data/tmp/mount_demo");
-    //upan = g_file_new_for_path ("/dev/sdc");
 
     // sdc
     printf ("basename:%s\n", g_file_get_basename(upan));
@@ -52,20 +49,6 @@ int main (int arg, char* garv[])
     printf ("num files:%d, num_dirs:%d\n", num_files, num_dirs);
     printf ("========\n");
     
-    upan_mount = g_file_find_enclosing_mount (upan, NULL, &error);
-    if (NULL == upan_mount) {
-        if (NULL != error->message)
-            printf ("error:%s\n", error->message);
-        g_error_free (error);
-        goto end;
-    }
-
-    printf ("\n===========================\n");
-    printf ("mount name:%s\n", g_mount_get_name(upan_mount));
-    printf ("mount uuid:%s\n", g_mount_get_uuid(upan_mount));
-    printf ("===========================\n");
-
-
 end:
     g_object_unref (upan);
     return 0;
