@@ -163,9 +163,9 @@
     - GFileInfo  文件或文件系统相关的信息（类型、是否隐藏、是否可读写执行等、是否可重命名、是否可挂载、是否unix设备、修改时间参数、uid、gid、归属用户和组...）
     - GFileAttribute key-value形式的文件属性（GFileInfo会返回这种类型）
     - GFileEnumerator 列出文件夹中的文件（对一组GFiles进行操作，为每个枚举的文件返回GFileInfo结构 -- 关联了 GFile 和 GFileInfo）
-    - GDrive 表示驱动器
-    - GVolume 表示文件系统
-    - GMount 表示已挂载的文件系统（名字、uuid、图标相关，由GFile得到）
+    - GDrive 表示驱动器 (来源于 GVolumeMonitor)
+    - GVolume 表示文件系统 （来源于 GVolumeMonitor）
+    - GMount 表示已挂载的文件系统（来源于 GVolumeMontor 名字、uuid、图标相关，由GFile得到）
 
 2. 输入输出流
 
