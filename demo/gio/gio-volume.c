@@ -7,11 +7,12 @@
 #include <stdio.h>
 #include <gio/gio.h>
 
+/* 获取挂载卷和磁盘 */
 void volume_func (gpointer data, gpointer udata)
 {
     GVolume* v = (GVolume*)data;
-    printf ("name:%s", g_volume_get_name(v));
-    printf ("uuid:%s", g_volume_get_uuid(v));
+    printf ("name:%s\n", g_volume_get_name(v));
+    printf ("uuid:%s\n", g_volume_get_uuid(v));
 }
 
 // 遍历连接到电脑的驱动器
@@ -54,7 +55,8 @@ int main (int argc, char* argv[])
         return -1;
     }
 
-#if 0
+#if 1
+    printf ("drives 相关\n");
     drives = g_volume_monitor_get_connected_drives (vm);
     if (NULL == drives) {
         printf ("返回错误");
@@ -66,7 +68,8 @@ int main (int argc, char* argv[])
     printf ("===================================\n");
 #endif
 
-#if 0
+#if 1
+    printf ("volumes 相关\n");
     volumes = g_volume_monitor_get_volumes(vm);
     if (NULL == volumes) {
         printf ("no volume\n");
@@ -76,6 +79,7 @@ int main (int argc, char* argv[])
 #endif
 
 #if 1
+    printf ("mounts 相关\n");
     mounts = g_volume_monitor_get_mounts(vm);
     if (NULL == mounts) {
         printf ("no mount\n");
