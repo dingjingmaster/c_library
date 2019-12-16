@@ -2,7 +2,7 @@ language: c
 sudo: required
 
 before_install:
-    - make
+    - make all
 
 install:
     - sudo make install
