@@ -3,7 +3,6 @@ all:
 	@cd gtk2/ && make all
 	@cd gtk3/ && make all
 	@cd cairo/ && make all
-	@cd dbus/ && make all
 
 .PHONY:clean all
 
@@ -12,4 +11,3 @@ clean:
 	@cd gtk2/ && make clean
 	@cd gtk3/ && make clean
 	@cd cairo/ && make clean
-	@cd dbus/ && make clean
