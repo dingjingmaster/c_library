@@ -25,7 +25,7 @@ int main (int argc, char* argv[])
 #if 1
     // 登录会话消息总线
     // 在指定总线上获取名字，并在获取名字时分别调用 name_acquired_handler(名字可以获取) name_lost_handler(名称无法获取)
-    dbus_id = g_bus_own_name (G_BUS_TYPE_SESSION, "top.dingjingmaster.demo",
+    dbus_id = g_bus_own_name (G_BUS_TYPE_SESSION, "org.dingjingmaster.demo.name",
             G_BUS_NAME_OWNER_FLAGS_NONE | G_BUS_NAME_OWNER_FLAGS_REPLACE | G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT,
             dbus_acquired, dbus_name_acquired, NULL, NULL, NULL);
     loop = g_main_loop_new (NULL, FALSE);

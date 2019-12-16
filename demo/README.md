@@ -240,3 +240,4 @@
 
 | --- | --- |
 | dbus-own-name.c | 在DBus上注册一个名字 |
+| dbus-watch-name.c | 在dbus的会话总线上检测指定名字的总线是否存在 |
