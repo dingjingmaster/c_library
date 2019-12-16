@@ -11,31 +11,6 @@
 - `gtest/`      google test
 - `其它目录/`   每个目录都是一个C库，不会相互依赖
 
-### make 命令
-
-- `make test` 生成可执行测试程序
-
-```shell
-make test
-```
-
-- `make 或 make all` 生成 `静态库`、`头文件`、`代码示例` 都会放到 `package` 文件夹下
-
-```shell
-make
-```
-- `make debug` 生成带有调试信息的程序
-
-```shell
-make debug
-```
-
-- `make clean` 清空非源码文件
-
-- `make` 或 `make all` 生成demo及静态库文件
-
-- `make install` 安装静态库
-
 ### 规范
 
 > 仅按我的喜好做到代码统一

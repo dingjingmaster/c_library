@@ -22,7 +22,23 @@ target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run, $(wildcard $(CUR_
 debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
 debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wildcard $(CUR_DIR)/*/*_example.c))))
 
+
+help:
+	@echo '帮助:'
+	@echo '    make help ---- 显示本帮助' 
+	@echo '    make all ---- 编译所有的库文件为.a(静态读), 并把头文件进行打包'
+	@echo '    make frame ---- 编译frame并打包到指定目录'
+	@echo '    make demo ---- C语言一些库的例子，有些可能是图形界面相关，编译后可用单独运行'
+	@echo '    make install ---- 将库文件安装到/lib下，将库文件对应的头文件安装到/usr/inclde下'
+	@echo '    make clean ---- 清空所有编译产生的二进制文件'
+
 all:$(target) static_lib mk_dir
+	@cd frame && make all
+
+demo:
+	@cd demo && make all
+
+frame:
 	@cd frame && make all
 
 install:all
