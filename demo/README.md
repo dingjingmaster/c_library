@@ -233,3 +233,10 @@
 | - | GDrive |
 | GnomeVFSContext | GCancellable |
 | gnome_vfs_async_cancel | g_cancellable_cancel |
+
+## IPC
+
+### dbus 例子
+
+| --- | --- |
+| dbus-own-name.c | 在DBus上注册一个名字 |
