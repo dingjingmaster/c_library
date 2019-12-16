@@ -12,8 +12,6 @@ void driver_func (gpointer data, gpointer udata)
 {
     GDrive* v = (GDrive*) data;
     printf ("name:%s\n", g_drive_get_name(v));
-    
-
 }
 
 // 磁盘/卷 监控
