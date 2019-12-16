@@ -9,7 +9,7 @@
 > 用来获取和修改键值，大多数命令需要 `SCHEMA` 和 `KEY` 来操作值。 当 `SCHEMA` 不在固定目录目录下时，`SCHEMA`需要一个`:PATH`后缀
 > gsetting 需要一个D-Bus会话总线连接来将更改写入dconf数据库
 
-    ```shell
+```shell
     gsettings get SCHEMA [:PATH] KEY
     gsettings monitor SCHEMA [:PATH] [KEY]
     gsettings writable SCHEMA [:PATH] KEY
@@ -24,7 +24,7 @@
     gsettings list-children SCHEMA [:PATH]
     gsettings list-recursively [SCHEMA [:PATH]]
     gsettings help [COMMAND]
-    ```
+```
 
 #### 工具 —— glib-compile-schemas
 
@@ -33,7 +33,7 @@
 > 该工具检查 `XDG_DATA_DIRS` 环境变量中指定的所有目录的 `glib-2.0/schemas`，一般路径是 `/usr/share/glib2.0/schemas`
 > 扩展名`gshema.override`中的键值覆盖默认的键值，要覆盖的文件以`nn_`开头，数字越大优先级越高
 
-    ```shell
+```shell
     帮助选项：
     -h, --help                显示帮助选项
 
@@ -43,13 +43,13 @@
     --strict                  在方案出现任何错误时中止
     --dry-run                 不要对 gschema.compiled 进行写操作
     --allow-any-name          不要强制键名的限制
-    ```
+```
 
 #### 工具 —— glib-compile-resources
 
 > 从文件及其引用的文件中读取资源描述，并创建适合与GResource API 一起使用的二进制资源包。然后按原样或作为链接到应用程序的C源代码写出结果包。
 
-    ```shell
+```shell
     用法：
         glib-compile-resources [OPTION…] FILE
 
@@ -74,13 +74,13 @@
         --internal                   Don’t export functions; declare them G_GNUC_INTERNAL
         --external-data              Don’t embed resource data in the C file; assume it's linked externally instead
         --c-name                     用于生成的源代码的 C 标识符名称
-    ```
+```
 
 #### 工具 —— gdbus
 
 > 处理D-Bus对象的工具
 
-    ```shell
+```shell
     用法：
         gdbus COMMAND
 
@@ -91,7 +91,7 @@
         call         Invoke a method on a remote object
         emit         Emit a signal
         wait         Wait for a bus name to appear
-    ```
+```
 
 #### 工具 —— gdbus-codegen
 
@@ -102,13 +102,13 @@
 > 提供了一个简单的命令行接口，允许列出并提取已编译到资源文件或包含在elf文件（二进制文件或共享库）中的资源
 > 如果一个elf文件中包含多个带有资源的 section，那么可使用 `--section`查找可用的 `section`
 
-    ```shell
+```shell
     list        Lists resources. If SECTION is given, only list resources in this section. If PATH is given, only list matching resources.
     details     Lists resources with details. If SECTION is given, only list resources in this section. If PATH is given, only list matching resources. Details include the section, size and compression of each resource.
     extract     Extracts the resource named by PATH to stdout. Note that resources may contain binary data.
     sections    Lists sections containing resources. This is only interesting if FILE is an elf file.
     help        Prints help and exits.
-    ```
+```
 
 #### 工具 —— gapplication
 
@@ -116,7 +116,7 @@
 > gapplication可用于启动在`.desktop`文件中将`DBusActivatable`设置为`true`的应用程序，并可用于向其它应用程序已经运行的实例发送消息
 > 程序可用在其`.desktop`文件的Exec中引用`gapplication`，来兼容不直接支持`DBusActivitable`的程序
 
-    ```shell
+```shell
     用法：
 
         gapplication COMMAND [ARGS…]
@@ -128,11 +128,11 @@
         launch         启动一个应用程序
         action         激活一个动作
         list-actions   列出可用动作
-    ```
+```
 
 #### 工具 —— gio
 
-    ```shell
+```shell
     help     打印帮助
     version  打印版本
     cat      串接文件，写到标准输出
@@ -151,7 +151,7 @@
     set      设置文件属性
     trash    移动文件或目录到回收站
     tree     在树中列出某位置的内容
-    ```
+```
 
 #### GIO
 
@@ -207,37 +207,40 @@
 
 #### POSIX和GIO对比
 
+| POSIX | GIO |
 | --- | --- |
-| POSIX | `GIO` |
-| char \*path | `GFile *file` |
-| struct stat \*buf | `GFileInfo *info` |
-| struct statvfs \*buf | `GFileInfo *info` |
-| int fd | `GInputStream *in` 与 `GOutputStream *out` |
-| DIR \* | `GFileEnumerator *enum` |
-| fstab entry | `GUnixMountPoint *mount_point` |
-| mtab entry | `GUnixMountEntry *mount_entry` |
+| `POSIX` | `GIO` |
+| `char *path` | `GFile *file` |
+| `struct stat *buf` | `GFileInfo *info` |
+| `struct statvfs *buf` | `GFileInfo *info` |
+| `int fd` | `GInputStream *in` 与 `GOutputStream *out` |
+| `DIR *` | `GFileEnumerator *enum` |
+| `fstab entry` | `GUnixMountPoint *mount_point` |
+| `mtab entry` | `GUnixMountEntry *mount_entry` |
 
 #### GnomeVFS与GIO对比
 
+| `Gnome_VFS` | `GIO` |
 | --- | --- |
-| GnomeVFSUR | GFile |
-| GnomeVFSFileInfo | GFileInfo |
-| GnomeVFSResult | GError, with G_IO_ERROR values|
-| GnomeVFSHandle & GnomeVFSAsyncHandle | GInputStream or GOutputStream |
-| GnomeVFSDirectoryHandle | GFileEnumerator |
-| mime type | content type |
-| GnomeVFSMonitor | GFileMonitor |
-| GnomeVFSVolumeMonitor | GVolumeMonitor |
-| GnomeVFSVolume | GMount |
-| GnomeVFSDrive | GVolume |
-| - | GDrive |
-| GnomeVFSContext | GCancellable |
-| gnome_vfs_async_cancel | g_cancellable_cancel |
+| `GnomeVFSUR` | `GFile` |
+| `GnomeVFSFileInfo` | `GFileInfo` |
+| `GnomeVFSResult` | `GError, with G_IO_ERROR values` |
+| `GnomeVFSHandle & GnomeVFSAsyncHandle` | `GInputStream or GOutputStream` |
+| `GnomeVFSDirectoryHandle` | `GFileEnumerator` |
+| `mime type` | `content type` |
+| `GnomeVFSMonitor` | `GFileMonitor` |
+| `GnomeVFSVolumeMonitor` | `GVolumeMonitor` |
+| `GnomeVFSVolume` | `GMount` |
+| `GnomeVFSDrive` | `GVolume` |
+| `-` | `GDrive` |
+| `GnomeVFSContext` | `GCancellable` |
+| `gnome_vfs_async_cancel` | `g_cancellable_cancel` |
 
 ## IPC
 
 ### dbus 例子
 
+| 例子 | 说明 |
 | --- | --- |
-| dbus-own-name.c | 在DBus上注册一个名字 |
-| dbus-watch-name.c | 在dbus的会话总线上检测指定名字的总线是否存在 |
+| `dbus-own-name.c` | 在DBus上注册一个名字 |
+| `dbus-watch-name.c` | 在dbus的会话总线上检测指定名字的总线是否存在 |
