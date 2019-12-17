@@ -253,6 +253,7 @@
 - dbus总线一般分为系统总线和会话总线，所以安全性很好
 - dbus支持进程间一对一和一对多的对等通信
 - 一个进程发送给另一个进程信息的时候，先是发给后台，由后台转发到另一个/多个进程
+- dbus 可以代表其它应用程序启动程序（服务），应用程序要求dbus通过其名称启动服务，该名称必须是已知的，dbus查找的服务描述文件通常安装在`/usr/share/dbus-1/services/`扩展名位`.service`
 
 > 官网中的dubs安装值包含上述1和2
 
@@ -271,25 +272,21 @@
 
 6. 程序中的各个元素
 
-  1. address: 用来标识ibus-daemon，格式:`unix:path=/var/run/dbus/xxxx`
+  1. address: 用来标识ibus-daemon，格式:`unix:path=/var/run/dbus/xxxx`，service中使用
   2. bus name: 用来标识application的，格式：`com.xxx.xxx`
   3. path: 用于标识Object，格式：`/xxx/xxx/xxx`
   4. name: 每个interface都有自己的名字，通过interface的名字找到interface，格式：`xxx.xxx.xxx.xxx`
   5. signal 和 method也有自己的名字，随便取名就行
 
-#### 术语
+7. 术语
 
-- connection: 用于打开到守护进程的连接的结构，可以通过指定`DBUS_BUS_SYSTEM`来打开系统总线守护进程，也可以使用`DBUS_BUS_SESSION`来打开会话总线守护进程。
-- message: 是两个进程之间的一条消息，所有的DBus内部通信都是使用DBus消息完成的，这些消息可以有以下类型，方法调用，方法返回，信号，和错误。DBusMessage结构可以通过附加布尔整数、实数、字符串、数组、…到消息。
-- path: 是远程对象的路径，如: /org/freedesktop/DBus.
-- interface:是要与之对话的给定对象上的接口。
-- signal:用来发出信号
-- method call: 它是用于调用远程对象上的方法的DBus消息。
-- Error: DBusError是通过调用DBus方法来保存错误代码的结构。
-
-#### dbus守护进程
-
-- dbus 可以代表其它应用程序启动程序（服务），应用程序要求dbus通过其名称启动服务，该名称必须是已知的，dbus查找的服务描述文件通常安装在`/usr/share/dbus-1/services/`扩展名位`.service`
+  1. connection: 用于打开到守护进程的连接的结构，可以通过指定`DBUS_BUS_SYSTEM`来打开系统总线守护进程，也可以使用`DBUS_BUS_SESSION`来打开会话总线守护进程。
+  2. message: 是两个进程之间的一条消息，所有的DBus内部通信都是使用DBus消息完成的，这些消息可以有以下类型，方法调用，方法返回，信号，和错误。DBusMessage结构可以通过附加布尔整数、实数、字符串、数组、…到消息。
+  3. path: 是远程对象的路径，如: /org/freedesktop/DBus.
+  4. interface:是要与之对话的给定对象上的接口。
+  5. signal:用来发出信号
+  6. method call: 它是用于调用远程对象上的方法的DBus消息。
+  7. Error: DBusError是通过调用DBus方法来保存错误代码的结构。
 
 #### 使用
 
@@ -300,7 +297,55 @@
     3. Error消息：触发的函数调用返回一个异常
     4. Signal消息：通知，可用看作为事件消息
 
-#### dbus 类型
+1. dbus 注释
+
+> dbus注释可用到 method、interface、property、signal、argument 元素，用于产生元信息键值对，具体注释有以下几种：
+
+| 注释名称 | 注释可选值 | 注释值含义 |
+| -- | -- | -- |
+| org.freedesktop.DBus.Deprecated | true,false | 实体是否已弃用，默认false |
+| org.freedesktop.DBus.GLib.CSymbol | (string) | c 符号，用于方法和接口 |
+| org.freedesktop.DBus.Method.NoReply | true,false | true不希望回复方法调用，默认false |
+| org.freedesktop.DBus.Property.EmitsChangedSignal | true,invalidates,const,false | false:属性发生改变，则不保证发出该信号；const:属性在其所属对象生存期内不会更改值，不会发送信号；invalidates:会发出信号，但不包含值；true:会发出包含值的信号；默认true |
+
+``` <annotation name="org.freedesktop.DBus.Deprecated" value="true"/> ```
+
+2. dbus XML节点
+    
+    1. <node>: 仅仅root节点可以省略 name,如果根设置了name属性，那值必须是绝对路径；如果子节点具有对象路径，则它们必须是相对的。
+    2. <arg>: arg上的direction元素可省略，在这种情况下，方法调用默认为"in"，信号默认为"out"。信号只允许"out"，所以虽然可指定方向，但没有意义。只有这两值
+    3. <property>: 允许的属性值为 "readwrite", "read", "write"
+    4. <arg>:arg的name属性是可选的
+    5. 多个 <interface> 可用列入一个<node>
+
+``` xml
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+    <node name="/com/example/sample_object0">
+        <interface name="com.example.SampleInterface0">
+            <method name="Frobate">
+                <arg name="foo" type="i" direction="in"/>
+                <arg name="bar" type="s" direction="out"/>
+                <arg name="baz" type="a{us}" direction="out"/>
+                <annotation name="org.freedesktop.DBus.Deprecated" value="true"/>
+            </method>
+            <method name="Bazify">
+                <arg name="bar" type="(iiu)" direction="in"/>
+                <arg name="bar" type="v" direction="out"/>
+            </method>
+            <method name="Mogrify">
+                <arg name="bar" type="(iiav)" direction="in"/>
+            </method>
+            <signal name="Changed">
+                <arg name="new_value" type="b"/>
+            </signal>
+            <property name="Bar" type="y" access="readwrite"/>
+        </interface>
+        <node name="child_of_sample_object"/>
+        <node name="another_child_of_sample_object"/>
+    </node>
+```
+
+1. dbus 类型
 
 | dbus表示 | 类型解释 |
 | --- | --- |
