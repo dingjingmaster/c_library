@@ -37,7 +37,7 @@ int main()
         return 0;
     }
 
-    dbus_message_set_no_reply(message, TRUE); /* We don't want to receive a reply */
+    dbus_message_set_no_reply(message, TRUE);
 
     /* Append the argument to the message, must ends with DBUS_TYPE_UINT32 */
     dbus_message_append_args(message,

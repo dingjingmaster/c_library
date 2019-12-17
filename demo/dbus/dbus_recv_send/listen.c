@@ -32,7 +32,6 @@ int main()
     DBusConnection *connection;
     DBusError error;
 
-    /* glib main loop */
     GMainLoop *loop;
     loop = g_main_loop_new(NULL, FALSE);
 
@@ -47,10 +46,8 @@ int main()
     dbus_bus_add_match (connection, "type='signal',interface='org.share.linux'", NULL);
     dbus_connection_add_filter (connection, dbus_filter, loop, NULL);
 
-    /* dbus-glib call */
     dbus_connection_setup_with_g_main(connection, NULL);
 
-    /* run glib main loop */
     g_main_loop_run(loop);
 
     return 0;

@@ -12,7 +12,6 @@ static void send_config(DBusConnection *connection)
     DBusMessage *message;
     message = dbus_message_new_signal ("/org/share/linux", "org.share.linux", "Customize");
 
-    /* Send the signal */
     dbus_connection_send (connection, message, NULL);
     dbus_message_unref (message);
 }
@@ -23,7 +22,6 @@ static void send_quit (DBusConnection *connection)
 
     message = dbus_message_new_signal ("/org/share/linux", "org.share.linux", "Quit");
 
-    /* Send the signal */
     dbus_connection_send (connection, message, NULL);
     dbus_message_unref (message);
 }
