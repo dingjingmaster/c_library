@@ -181,10 +181,10 @@ static gboolean on_timeout_cb (gpointer udata)
     ivbuilder = g_variant_builder_new (G_VARIANT_TYPE("as"));
     g_variant_builder_add (builder, "{sv}", "Foo", g_variant_new_string (swap_a_b?"Tock":"Tick"));
     g_variant_builder_add (builder, "{sv}", "Bar", g_variant_new_string (swap_a_b?"Tock":"Tick"));
-    //g_dbus_connection_emit_signal (conn, NULL, "/org/dingjingmaster/gdbus/demo1", 
-    //        "org.Freedesktop.DBus.Properties", "PropertiesChanged",
-    //        g_variant_new ("(sa{sv}as)", "org.dingjingmaster.gdbus.demo1, builder, ivbuilder"), &error);
-    //g_assert_no_error (error);
+    g_dbus_connection_emit_signal (conn, NULL, "/org/dingjingmaster/gdbus/demo1", 
+            "org.freedesktop.DBus.Properties", "PropertiesChanged",
+            g_variant_new ("(sa{sv}as)", "org.dingjingmaster.gdbus.demo1, builder, ivbuilder"), &error);
+    g_assert_no_error (error);
 
     return TRUE;
 }
@@ -205,7 +205,7 @@ static void on_bus_acquired (GDBusConnection* conn, const gchar* name, gpointer 
     guint rid;
 
     printf ("bus acquired\n");
-    rid = g_dbus_connection_register_object (conn, "/org/dingjingmaster/gdbus/demo1",
+    rid = g_dbus_connection_register_object (conn, "/org/dingjingmaster/gdbus/demo1client",
             nodeinfo->interfaces[0], &interface_vtable, NULL/* 用户数据 */, NULL/*用户数据释放函数*/, NULL/*GError*/);
     g_assert (rid > 0);
 
@@ -221,7 +221,7 @@ int main (int argc, char* argv[])
     nodeinfo = g_dbus_node_info_new_for_xml (nodeinfo_xml, NULL);
     g_assert (NULL != nodeinfo);
 
-    sid = g_bus_own_name (G_BUS_TYPE_SESSION, "org.dingjingmaster.gdbus.demo1", G_BUS_NAME_OWNER_FLAGS_NONE,
+    sid = g_bus_own_name (G_BUS_TYPE_SESSION, "org.dingjingmaster.gdbus.demo1server", G_BUS_NAME_OWNER_FLAGS_NONE,
             on_bus_acquired, on_name_accquired, on_name_lost, NULL, NULL);
     loop = g_main_loop_new (NULL, FALSE);
     g_main_loop_run (loop);
