@@ -415,10 +415,69 @@
 
 1. 需要实现的宏
 
-  ...
+  
 
 2.
-   
+
+#### 闭包(Closure)
+
+> 闭包就是一个函数加上它能访问的所有非局部变量，动态语言中"函数是第一类对象"，函数可以存储在变量中。
+
+gobject 模拟闭包例子——demo7.c  闭包的c语言实现 demo6.c
+
+##### gobject闭包实现步骤
+
+1. 闭包函数，调用用户实现的回调函数
+2. 用户 --- 实现指定函数类型指针
+3. 实现 GClosure 会直接调用现成实现了的，其主要作用是数据与GValue的相互转换与调用步骤1中的函数
+
+##### gobject闭包实用函数
+
+1. `GClosure* g_cclosure_new(GCallback callback_func, gpointer udata, GClosureNotify destroy_data)` 
+
+    创建一个闭包,调用callback_func，udata作为函数的最后一个参数，当udata不再使用时，调用destroy_data函数
+
+2. `GClosure* g_cclosure_new_swap(GCallback callback_func, gpointer udata, GClosureNotify destroy_data)` 
+
+    创建一个闭包,调用callback_func，udata作为函数的第一个参数，当udata不再使用时，调用destroy_data函数
+
+2. `GClosure* g_closure_ref (GClosure* closure)`
+
+3. `void g_closure_unref (GClosure* closure)`
+
+4. `void g_cclosure_marshal_VOID__VOID(GClosure* c, GValue* return, guint n_param_values, const GValue* param_values, gpointer invocation_hint, gpointer marshal_data)`
+
+    - c: GClosure 闭包
+    - `return_value`:存储value的GValue类型
+    - `n_param_values` `param_values`数组的长度
+    - `param_values` 要调用闭包回调的参数的GValue数组
+    - `invocation_hint` 调用提示，是`g_closure_invoke`最后一个参数
+    - `marshal_data` 其它数据，参见 `g_closure_set_marshal` 和 `g_closure_set_meta_marshal`
+
+5. `G_CCLOSURE_SWAP_dATA(closure) ((((GClosure*) (cclosure))->derivative_flag))` 检查是否应该将GCClosure的用户数据作为第一个参数传递给回调
+
+ 
+
+
+### 工具之 GOB2
+
+
+2. `GClosure* g_closure_ref (GClosure* closure)`
+
+3. `void g_closure_unref (GClosure* closure)`
+
+4. `void g_cclosure_marshal_VOID__VOID(GClosure* c, GValue* return, guint n_param_values, const GValue* param_values, gpointer invocation_hint, gpointer marshal_data)`
+
+    - c: GClosure 闭包
+    - `return_value`:存储value的GValue类型
+    - `n_param_values` `param_values`数组的长度
+    - `param_values` 要调用闭包回调的参数的GValue数组
+    - `invocation_hint` 调用提示，是`g_closure_invoke`最后一个参数
+    - `marshal_data` 其它数据，参见 `g_closure_set_marshal` 和 `g_closure_set_meta_marshal`
+
+5. `G_CCLOSURE_SWAP_dATA(closure) ((((GClosure*) (cclosure))->derivative_flag))` 检查是否应该将GCClosure的用户数据作为第一个参数传递给回调
+
+ 
 
 
 ### 工具之 GOB2
