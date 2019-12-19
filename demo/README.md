@@ -456,7 +456,14 @@ gobject 模拟闭包例子——demo7.c  闭包的c语言实现 demo6.c
 
 5. `G_CCLOSURE_SWAP_dATA(closure) ((((GClosure*) (cclosure))->derivative_flag))` 检查是否应该将GCClosure的用户数据作为第一个参数传递给回调
 
- 
+> 闭包在gobject信号连接中大量使用
+
+#### gobject信号机制
+
+> 信号主要用于特定事件与响应之间的连接，与操作系统级中的信号没有关系。
+
+####
+
 
 
 ### 工具之 GOB2
