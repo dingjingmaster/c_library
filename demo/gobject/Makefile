@@ -27,6 +27,9 @@ demo8_obj = $(patsubst %.c, %.o, $(demo8_src))
 demo9_src = $(wildcard demo9/*.c)
 demo9_obj = $(patsubst %.c, %.o, $(demo9_src))
 
+demo10_src = $(wildcard demo10/*.c)
+demo10_obj = $(patsubst %.c, %.o, $(demo10_src))
+
 gobject_target =\
 	demo9.run \
 	demo8.run \
@@ -40,6 +43,13 @@ gobject_target =\
 target = $(gobject_target)
 
 all:$(target)
+
+demo10:demo10/demo10.run
+	g-ir-scanner --namespace=Kb --nsversion=1.0\
+		--include=GObject-2.0 --pkg=gobject-2.0\
+		--program=demo10/demo10.run demo10/kb-bibtex.h demo10/kb-bibtex.c\
+		-o demo10/Kb-1.0.gir
+	g-ir-compiler demo10/Kb-1.0.gir -o demo10/Kb-1.0.typelib
 
 demo9.run:demo9.c $(demo9_obj)
 	cc -o $@ $^ $(cflag) -Idemo9/ `pkg-config --cflags --libs gobject-2.0`
@@ -71,10 +81,16 @@ demo1.run:demo1.c $(demo1_obj)
 %.o:%.c
 	cc -o $@ -c $< $(cflag) `pkg-config --cflags --libs gobject-2.0`
 
+demo10/demo10.run:demo10.c $(demo10_src)
+	cc -o $@ $^ $(cflag) -Idemo10/ `pkg-config --cflags --libs gjs-1.0 gobject-introspection-1.0`
 
 .PHONY:clean all
 
 clean:
 	@rm -fr *.o
-	@rm -fr *.run
 	@rm -fr */*.o
+	@rm -fr *.run
+	@rm -fr */*.run
+	@rm -fr *.gir
+	@rm -fr */*.gir
+	@rm -fr */*.ob

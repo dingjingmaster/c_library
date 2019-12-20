@@ -11,10 +11,10 @@
 #define CO_TYPE_PRINT (co_print_get_type())
 #define CO_PRINT(obj) G_TYPE_CHECK_INSTANCE_CAST((obj), CO_TYPE_PRINT, co_print_t)
 #define CO_IS_PRINT(obj) G_TYPE_CHECK_INSTANCE_TYPE((obj), CO_TYPE_PRINT)
-#define CO_PRINT_CLASS(kclass) (G_TYPE_CHECK_CLASS_CAST ((kclass), CO_TYPE_PRINT, co_print_class_t))
+#define CO_PRINT_CLASS(kclass) (G_TYPE_CHECK_CLASS_CAST ((kclass), CO_TYPE_PRINT, co_print_tClass))
 #define CO_IS_PRINT_CLASS(kclass) (G_TYPE_CHECK_CLASS_TYPE ((kclass), CO_TYPE_PRINT))
 #define CO_PRINT_GET_CLASS(obj) (\
-        G_TYPE_INSTANCE_GET_CLASS ((obj), CO_TYPE_PRINT, co_print_class_t))
+        G_TYPE_INSTANCE_GET_CLASS ((obj), CO_TYPE_PRINT, co_print_tClass))
 
 typedef struct _co_print_t co_print_t;
 typedef struct _co_print_tClass co_print_tClass;
