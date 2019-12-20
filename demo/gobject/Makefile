@@ -21,7 +21,11 @@ demo6_obj = $(patsubst %.c, %.o, $(demo6_src))
 demo7_src = $(wildcard demo7.c)
 demo7_obj = $(patsubst %.c, %.o, $(demo7_src))
 
+demo8_src = $(wildcard demo8.c)
+demo8_obj = $(patsubst %.c, %.o, $(demo8_src))
+
 gobject_target =\
+	demo8.run \
 	demo7.run \
 	demo6.run \
 	demo4.run \
@@ -32,6 +36,9 @@ gobject_target =\
 target = $(gobject_target)
 
 all:$(target)
+
+demo8.run:$(demo8_obj)
+	cc -o $@ $^ $(cflag) -I*/ `pkg-config --cflags --libs gobject-2.0`
 
 demo7.run:$(demo7_obj)
 	cc -o $@ $^ $(cflag) -I*/ `pkg-config --cflags --libs gobject-2.0`
@@ -61,5 +68,6 @@ demo1.run:demo1.c $(demo1_obj)
 .PHONY:clean all
 
 clean:
+	@rm -fr *.o
 	@rm -fr *.run
 	@rm -fr */*.o
