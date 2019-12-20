@@ -474,6 +474,92 @@ gobject 模拟闭包例子——demo7.c  闭包的c语言实现 demo6.c
 2. gobject子类都具有信号发射的功能
 3. `demo8.c`中文件描述符不能发送信号，所以在gobjct中为了支持信号，所有`对象`需要继承gobject
 
+#### gobject 子类对象析构过程
+
+> 子类对象析构过程分为两个阶段：第一阶段是dispose，第二阶段是finalize
+
+- GObject类及其子类对象，内存管理基于引用计数而实现，具体描述如下：
+
+    1. 使用`g_object_new`进行对象实例化的时候，对象的引用计数为1
+    2. 使用 `g_object_ref` 进行引用对象时候，对象的引用计数会增1
+    3. 每次使用 `g_object_unref` 函数为对象解除引用时候，对象的引用计数减1
+    4. 在`g_object_unref`函数中，如果发现对象的引用计数为0，则调用对象的析构函数释放对象所占用的全部资源
+
+- 引用循环引入的问题
+
+> GObject及其子类不止存在继承关系，还存在相互包容的关系，如：一个GObject子类对象A包含了另一个GObject子类对象B，而对象B反过来又引用了对象A。
+> 此时，对象A的析构函数`a_deconstruct`只能在对象A的引用计数为0的时候被`g_object_unref`函数调用，但是`g_object_new`对象A的时候，由于A中B对象
+> 引用了A，那么A的引用计数就是2，在`g_object_unref`对象A的时候，`g_object_unref`只将A的引用计数减1，不会销毁对象A。上层调用者并不知情此问题。
+
+- 解决方案(...)
+
+> 此方案并不能完全解决循环引入问题，需要程序员写代码时候分析好才能做到内存回收
+
+将GObject类及其子类对象的析构过程分为dispose阶段与finalize阶段，在dispose阶段，只解除对象A对其属性的引用，在finalize阶段释放对象A所占用的资源。
+dispose阶段可被重复执行多次，finalize阶段只能被执行一次。
+
+#### gobject信号相关的函数
+
+1. 建立新的信号
+
+> 被调用的时候，传入3个参数：
+> 1. 默认闭包，在信号注册阶段和信号连接阶段必须，由`g_signal_new`向闭包传递
+> 2. 显式参数，信号默认闭包和信号使用者提供的闭包必须的，由信号发射函数向闭包传递
+> 3. 显式参数，只被信号使用者提供的闭包所关注，这个参数由信号的连接函数向闭包传递
+
+```c
+guint g_signal_new (const gchar        *signal_name,    /* 信号名字 */
+                    GType               itype,          /* 类型id, G_TYPE_FROM_CLASS(xxxclass) 或 直接 gobject 子类的class */
+                    GSignalFlags        signal_flags,   /* 信号默认闭包调用阶段的标识7中，可以多组合，多组合是叠加的形式 */
+                    guint               class_offset,   /* 内存偏移量 G_STRUCT_OFFSET(class, default_handle)获取 */
+                    GSignalAccumulator  accumulator,    /* 此函数在信号所连接的每个闭包(包括信号注册阶段的默认闭包以及信号连接阶段信号使用者提供的闭包)执行之后被调用，其主要功能是收集信号连接的各个闭包返回值 */
+                    gpointer            accu_data,      /* g_signal_new会将其传递给 accumulator函数 */
+                    GSignalCMarshaller  c_marshaller,   /* 设定闭包的marshal */
+                    GType               return_type,    /* marshal返回类型 */
+                    guint               n_params,       /* g_signal_new函数向marshal传递参数的个数 */
+                    ...);                               /* 可变参数，欻如marshal参数列表的类型 */
+```
+
+2. marshal函数回调类型
+
+```c
+void (*callback) (gpointer instance,
+        const gchar* arg1,
+        gpointer user_data                              /* 用户输入 */
+        )
+```
+
+3. GSignalAccumulator函数类型
+
+```c
+gboolean (*GSignalAccumulator) (GSignalInvocationHint *ihint,
+                                GValue *return_accu,
+                                const GValue *handler_return,
+                                gpointer data);
+```
+
+4. 信号连接
+
+```c
+/* 第四个参数是用户传递给闭包的参数 */
+g_signal_connect (sd_obj, "signal_name", G_CALLBACK(signal_handle), userdata);
+```
+
+### GObject Instrospection(demo10.c)
+
+> gobject 被javascript调用
+> Gjs解析器，是火狐javascript引擎 SpiderMonkey 和 GObject Introspection 实现，前者可以执行javascript脚本，后者可以帮助javascript调用GObject子类的方法
+
+- 步骤
+
+    1. 编写gobject类
+    2. 写js代码引用gobject类
+    3. 写C代码调用js代码
+    4. 编译1和3中的代码
+    5. 使用g-ir-scanner产生xxx.gir文件
+    6. 使用g-ir-compiler产生二进制文件xxx.typelib
+
+- 这一切意味着，所有编程语言都可以与C混合编程，可以基于GObject Introspection与一些.typelib文件调用一些其它函数
 
 ### 工具之 GOB2
 
