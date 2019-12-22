@@ -15,9 +15,10 @@ demo3_obj = $(patsubst %.c, %.o, $(demo3_src))
 gobject_target =\
 	dbus_service/share_service.run\
 	dbus_service/start_service.run\
-	dbus_recv_send/listen.run\
-	dbus_recv_send/send.run\
 	dbus_name/dbus_name.run 
+
+	#dbus_recv_send/listen.run\
+	dbus_recv_send/send.run\
 
 target = $(gobject_target)
 
