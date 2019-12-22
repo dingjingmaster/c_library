@@ -79,7 +79,7 @@ mk_dir_debug:
 	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
 	@cp $(CUR_DIR)/*/*.run_debug $(DEBUG_DIR)
 
-.PHONY:clean
+.PHONY:clean demo help all frame install
 
 clean: 
 	@rm -fr $(obj)
