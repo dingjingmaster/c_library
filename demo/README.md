@@ -678,3 +678,54 @@ g_signal_connect (sd_obj, "signal_name", G_CALLBACK(signal_handle), userdata);
 
 ```
 
+## Cairo
+
+> cairo 是一个功能强大的2d图形库
+
+### cairo 绘图模型
+
+> 相关名词：nouns、destination、source、mask、path、context
+
+#### nouns
+
+#### destination
+
+> 目标就是要画的画布，可以是像素数组、svg、pdf文件或其它。
+
+#### source
+
+> source是你绘画要使用的东西，它可以是单一的颜色、一个图案或是之前创建的目标表面，它可以设置透明。
+
+#### mask
+
+> mask是最重要的部分，它控制source哪部分可以显示
+
+#### path
+
+> path位于mask的一部分和context之间的一些线条。
+
+1. 创建path使用: `cairo_stroke()` `cairo_fill()`
+2. moving: `cairo_move_to`由当前点为参考点，`cairo_rel_move_to`绝对座标点
+3. 点与点的方式: 
+    1. 直线连接: `cairo_line_to` `cairo_rel_line_to`
+    2. 角度连接: `cairo_arc_negative`
+    3. 开罗曲线(三次贝塞尔曲线):从当前参考点，平滑地沿着另外两个点的方向到达第三个指定点 `cairo_curve_to` `cairo_rel_curve_to`
+4. 闭合路径：`cairo_close_path()`
+
+> 可使用`cairo_text_path()`将文本转换为路径，如果处理大量文本应该使用`cairo_show_text()`
+
+#### context
+
+> context记录和跟踪一切动作，它跟踪一个source、一个destination、和一个mask、path、它还跟踪几个辅助变量，比如：行宽、字体字面和大小等。
+> 在开始使用cairo绘制内容之前，需要创建context，其存储在cairo的类型`cairo_t`中，当创建cairo的context时，必须绑定到特定的surface，surface类型为`cairo_surface_t`
+
+#### verbs
+
+> 使用cairo的目的是绘图。cairo内部使用一个基础的绘图操作：将source和mask自由的放置在destination的某个地方，然后把这些层压在一起，在source上绘制的图通过中间各个层之后就是人眼看到的图形了。
+
+1. stroke: `cairo_stroke()` 绘制虚线
+2. fill: `cairo_fill()` 填充操作
+3. show Text/Glyphs
+4. Paint
+5. Mask
+
