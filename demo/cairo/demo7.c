@@ -135,7 +135,6 @@ static void draw_shapes(cairo_t *cr, int x, int y, int fill)
         cairo_fill(cr);
     else
         cairo_stroke(cr);
-
     cairo_restore(cr);
 }
 
@@ -144,8 +143,7 @@ static void fill_shapes(cairo_t *cr, int x, int y)
     draw_shapes(cr, x, y, 1);
 }
 
-static void
-stroke_shapes(cairo_t *cr, int x, int y)
+static void stroke_shapes(cairo_t *cr, int x, int y)
 {
     draw_shapes(cr, x, y, 0);
 }
@@ -219,7 +217,6 @@ static void win_draw(win_t *win)
 static void win_init(win_t *win)
 {
     Window root;
-
     win->width = 400;
     win->height = 400;
 
