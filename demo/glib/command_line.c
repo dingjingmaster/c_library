@@ -6,6 +6,10 @@
  ************************************************************************/
 #include <glib.h>
 
+/**
+ * 命令行参数解析，暂时没有解决中文描述问题
+ */
+
 static gint repeats = 2;
 static gint max_size = 8;
 static gboolean verbose = FALSE;
@@ -14,7 +18,7 @@ static gboolean randomize = FALSE;
 static char* c = NULL;
 
 static GOptionEntry entries[] = {
-    {"repeats", 'r', 0, G_OPTION_ARG_INT, &repeats, "Average over N repetitions", "N"},
+    {"repeats", 'r', 0, G_OPTION_ARG_INT, &repeats, "中文是否正常", "N"},
     {"max-size", 'm', 0, G_OPTION_ARG_INT, &max_size, "Test up to 2^M items", "M"},
     {"verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose, "Be verbose", NULL},
     {"beep", 'b', 0, G_OPTION_ARG_NONE, &beep, "Beep whe done", NULL},
@@ -23,14 +27,21 @@ static GOptionEntry entries[] = {
     {NULL}
 };
 
+const gchar* translate_chinese (const gchar* str, gpointer data)
+{
+    printf ("%s\n", str);
+    return str;
+}
+
 int main (int argc, char* argv[])
 {
     GError* error = NULL;
     GOptionContext* context = NULL;
 
-    context = g_option_context_new ("............");
+    context = g_option_context_new ("绕过中文显示");
 
     g_option_context_add_main_entries (context, entries, NULL);
+    g_option_context_set_translate_func (context, translate_chinese, NULL, NULL);
 
     if (!g_option_context_parse(context, &argc, &argv, &error)) {
         g_print ("option parsing failed:%s\n", error->message);
