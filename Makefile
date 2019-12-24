@@ -10,9 +10,12 @@ HEADS = -I$(CUR_DIR)/common/
 INSTALL_LIB_DIR = /usr/lib/
 INSTALL_HEAD_DIR = /usr/include/djctool/
 
-libs = -lpthread
+libs = -lpthread `pkg-config --cflags --libs gobject-2.0`
+target_flag = -w
 flag = -Wall -Werror \
-	   -Wno-error=format-security
+	   -Wno-error=format-security \
+	   -w
+
 debug_flag = -Wall -Werror -g3 -p
 
 src = $(filter-out [g]test%, $(filter-out %_example.c, $(strip $(subst $(CUR_DIR), ., $(wildcard $(CUR_DIR)/*/*.c)))))
@@ -22,6 +25,8 @@ target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run, $(wildcard $(CUR_
 debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
 debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wildcard $(CUR_DIR)/*/*_example.c))))
 
+all:$(target) static_lib mk_dir
+	@cd frame && make all
 
 help:
 	@echo '帮助:'
@@ -31,9 +36,6 @@ help:
 	@echo '    make demo ---- C语言一些库的例子，有些可能是图形界面相关，编译后可用单独运行'
 	@echo '    make install ---- 将库文件安装到/lib下，将库文件对应的头文件安装到/usr/inclde下'
 	@echo '    make clean ---- 清空所有编译产生的二进制文件'
-
-all:$(target) static_lib mk_dir
-	@cd frame && make all
 
 demo:
 	@cd demo && make all
@@ -53,16 +55,16 @@ static_lib: $(obj)
 	ar rcs -o $(LIB_NAME) $^
 
 %.run_debug:%.o_debug $(debug_obj)
-	cc $(debug_flag) $(HEADS) -o $@ $^ $(libs)
+	cc $(debug_flag) $(HEADS) $(libs) -o $@ $^ $(libs) $(libs)
 
 %.run:%.o $(obj)
-	cc ${flag} $(HEADS) -o $@ $^ $(libs)
+	cc ${target_flag} $(HEADS) $(libs) -o $@ $^ $(libs)
 
 %.o_debug:%.c
-	cc $(debug_flag) $(HEADS) -o $@ -c $<
+	cc $(debug_flag) $(HEADS) $(libs) -o $@ -c $<
 
 %.o:%.c
-	cc $(flag) $(HEADS) -o $@ -c $< 
+	cc $(flag) $(HEADS) $(libs) -o $@ -c $< 
 
 mk_dir:
 	@mkdir -p $(LIB_DIR)
@@ -86,6 +88,7 @@ clean:
 	@rm -fr $(target)
 	@rm -fr $(debug_obj)
 	@rm -fr $(debug_target)
+	@rm -f */*.o
 	@rm -fr package/
 	@cd frame && make clean
 	@cd demo && make clean
