@@ -2,18 +2,23 @@ LIB_NAME = libdjctools.a
 CUR_DIR = $(shell pwd)
 LIB_DIR = $(CUR_DIR)/package/lib/
 HEAD_DIR = $(CUR_DIR)/package/include/djctool/
+SYSTEM_HEAD_DIR = /usr/include/
 DEBUG_DIR = $(CUR_DIR)/package/debug/
 EXAMPLE_DIR = $(CUR_DIR)/package/example/
 
-HEADS = -I$(CUR_DIR)/common/
+HEADS = -I$(CUR_DIR)/common/\
+		-I$(SYSTEM_HEAD_DIR)/libgtop-2.0/
 
 INSTALL_LIB_DIR = /usr/lib/
 INSTALL_HEAD_DIR = /usr/include/djctool/
 
-libs = -lpthread `pkg-config --cflags --libs gobject-2.0`
+libs = `pkg-config --cflags --libs gobject-2.0`	\
+	   -lpthread								\
+	   -lgtop-2.0
+
 target_flag = -w
-flag = -Wall -Werror \
-	   -Wno-error=format-security \
+flag = -Wall -Werror							\
+	   -Wno-error=format-security 				\
 	   -w
 
 debug_flag = -Wall -Werror -g3 -p

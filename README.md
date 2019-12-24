@@ -2,8 +2,8 @@
 
 ### 依赖的开源库
 
-- [ ] glibtop
-- [ ] gobject
+- [x] glibtop-2.0
+- [x] gobject-2.0
 
 ### 说明
 
