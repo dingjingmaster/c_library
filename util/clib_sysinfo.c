@@ -104,6 +104,17 @@ CLIB_RET clib_sysinfo_cpuinfo_cpunum (GObject* obj, guint64* cpunum)
     return RET_OK;
 }
 
+CLIB_RET clib_sysinfo_total_cpuinfo_hz (GObject* obj, guint64* hz)
+{
+    if (NULL == hz || NULL == obj) return RET_ERROR;
+    glibtop_cpu buf;
+    glibtop_get_cpu (&buf);
+
+    *hz = buf.total;
+
+    return RET_OK;
+}
+
 CLIB_RET clib_sysinfo_cpuinfo_keynum (GObject* obj, guint64 cpuid, guint* keynum)
 {
     if (NULL == keynum || NULL == obj) return RET_ERROR;

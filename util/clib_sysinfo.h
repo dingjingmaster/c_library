@@ -40,6 +40,17 @@ GType clib_sysinfo_get_type (void);
 CLIB_RET clib_sysinfo_cpuinfo_cpunum (GObject* obj, guint64* cpunum);
 
 /**
+ * CPU 总体情况
+ * @param obj: 此类
+ * @param hz: 输出的主频
+ * @return:
+ *      成功: RET_OK;
+ *      失败: RET_ERROR 错误
+ */
+CLIB_RET clib_sysinfo_total_cpuinfo_hz (GObject* obj, guint64* hz);
+
+
+/**
  * 获取指定 cpuinfo 键的数量
  * @param obj: 此类
  * @param keynum: 输出cpu数量
@@ -61,6 +72,11 @@ CLIB_RET clib_sysinfo_cpuinfo_keynum (GObject* obj, guint64 cpuid, guint* keynum
  */
 CLIB_RET clib_sysinfo_cpuinfo_get_value_by_key (GObject* obj, guint64 cpuid, const char* key, char* value, guint64 value_len);
 
+/**
+ * 输出cpu的所有信息
+ * @param obj: 此类
+ * @return:
+ */
 void clib_sysinfo_cpuinfo_all_kv_debug (GObject* obj);
 
 

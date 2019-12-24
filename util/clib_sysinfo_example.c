@@ -11,6 +11,7 @@ int main (void)
     ClibSysinfo* sys = NULL;
     guint keynum = 0;
     guint64 cpunum = 0;
+    guint64 hz = 0;
     char* value[100] = {0};
 
     g_type_init ();
@@ -21,10 +22,14 @@ int main (void)
         return -1;
     }
 
-    clib_sysinfo_cpuinfo_all_kv_debug (sys);
+    //clib_sysinfo_cpuinfo_all_kv_debug (sys);
     clib_sysinfo_cpuinfo_get_value_by_key (sys, 7, "model name", value, sizeof (value));
     clib_sysinfo_cpuinfo_cpunum (sys, &cpunum);
     clib_sysinfo_cpuinfo_keynum (sys, 7, &keynum);
+
+    clib_sysinfo_total_cpuinfo_hz (sys, &hz);
+
+    printf ("hz:%d\n", hz);
 
     printf ("cpus:%d\n", cpunum);
     printf ("keys:%d\n", keynum);
