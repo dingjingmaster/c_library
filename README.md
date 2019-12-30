@@ -1,4 +1,4 @@
-# 常用C库整理 [![Build Status](https://www.travis-ci.org/dingjingmaster/c_library.svg?branch=master)](https://www.travis-ci.org/dingjingmaster/c_library)
+# 常用C库整理 <a href="https://www.travis-ci.org/dingjingmaster/c_library"><img src="https://www.travis-ci.org/dingjingmaster/c_library.svg?branch=master" alt="status"/></a>
 
 ### 说明
 
