@@ -2,6 +2,9 @@
 all:
 	@echo "make all"
 
-.PHONY:clean
+install:
+	@echo "未定义"
+
+.PHONY:all install clean
 
 clean: 
