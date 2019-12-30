@@ -1,9 +1,4 @@
-# 常用C库整理 [![](https://www.travis-ci.org/dingjingmaster/c_library.svg?branch=master)](https://www.travis-ci.org/dingjingmaster/c_library)
-
-### 依赖的开源库
-
-- [x] glibtop-2.0
-- [x] gobject-2.0
+# 常用C库整理 [![Build Status](https://www.travis-ci.org/dingjingmaster/c_library.svg?branch=master)](https://www.travis-ci.org/dingjingmaster/c_library)
 
 ### 说明
 
@@ -28,3 +23,9 @@
 - [ ] 函数声明地方必须注明输入与输出以及返回值大致情况
 - [ ] 每个`.h`和`.c`必须对应一个`_demo.c`文件，这是一个例子,并不是测试
 - [ ] 以后要加测试
+
+### gnome目录下依赖的开源库
+
+- [x] glibtop-2.0
+- [x] gobject-2.0
+
