@@ -110,7 +110,7 @@ CLIB_RET clib_sysinfo_total_cpuinfo_hz (GObject* obj, guint64* hz)
     glibtop_cpu buf;
     glibtop_get_cpu (&buf);
 
-    *hz = buf.total;
+    *hz = buf.frequency;
 
     return RET_OK;
 }

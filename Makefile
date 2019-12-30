@@ -32,6 +32,7 @@ debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wil
 
 all:$(target) static_lib mk_dir
 	@cd frame && make all
+	@cd tools && make all
 
 help:
 	@echo '帮助:'
@@ -39,6 +40,7 @@ help:
 	@echo '    make all ---- 编译所有的库文件为.a(静态读), 并把头文件进行打包'
 	@echo '    make frame ---- 编译frame并打包到指定目录'
 	@echo '    make demo ---- C语言一些库的例子，有些可能是图形界面相关，编译后可用单独运行'
+	@echo '    make tools ---- 常用工具'
 	@echo '    make install ---- 将库文件安装到/lib下，将库文件对应的头文件安装到/usr/inclde下'
 	@echo '    make clean ---- 清空所有编译产生的二进制文件'
 
@@ -48,10 +50,14 @@ demo:
 frame:
 	@cd frame && make all
 
+tools:
+	@cd tools && make all
+
 install:all
 	@mkdir -p $(INSTALL_HEAD_DIR)
 	cp $(HEAD_DIR)/* -r $(INSTALL_HEAD_DIR)
 	cp $(LIB_DIR)/* $(INSTALL_LIB_DIR)
+	@cd tools && make install
 	@echo "install done!"
 
 debug:$(debug_target) mk_dir_debug
@@ -86,7 +92,7 @@ mk_dir_debug:
 	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
 	@cp $(CUR_DIR)/*/*.run_debug $(DEBUG_DIR)
 
-.PHONY:clean demo help all frame install
+.PHONY:clean demo tools help all frame install
 
 clean: 
 	@rm -fr $(obj)
