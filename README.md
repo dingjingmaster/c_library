@@ -1,4 +1,4 @@
-# 常用C库整理 [![构建状态 ](https://www.travis-ci.org/dingjingmaster/c_library.svg?branch=master)](https://www.travis-ci.org/dingjingmaster/c_library)
+# 常用C库整理 [![](https://www.travis-ci.org/dingjingmaster/c_library.svg?branch=master)](https://www.travis-ci.org/dingjingmaster/c_library)
 
 ### 依赖的开源库
 
