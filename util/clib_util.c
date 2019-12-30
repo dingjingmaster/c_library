@@ -247,9 +247,7 @@ static CLIB_RET who_array_append (char*** arr, char* user, char* host, int* inde
     char hostbuf[64] = {0};
 
     hostlen = strlen(host);
-    if (hostlen <= 1) {
-        return RET_FALSE;
-    }
+    if (hostlen <= 1) return RET_FALSE;
     if (*host == ':') {
         for (i = 1; i < hostlen; ++i) {
             if (*(host + i) == '.') {
