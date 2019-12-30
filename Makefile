@@ -6,20 +6,16 @@ SYSTEM_HEAD_DIR = /usr/include/
 DEBUG_DIR = $(CUR_DIR)/package/debug/
 EXAMPLE_DIR = $(CUR_DIR)/package/example/
 
-HEADS = -I$(CUR_DIR)/common/\
-		-I$(SYSTEM_HEAD_DIR)/libgtop-2.0/
+HEADS = -I$(CUR_DIR)/common/					\
 
 INSTALL_LIB_DIR = /usr/lib/
 INSTALL_HEAD_DIR = /usr/include/djctool/
 
-libs = `pkg-config --cflags --libs gobject-2.0`	\
-	   -lpthread								\
-	   -lgtop-2.0
+libs = -lpthread
 
 target_flag = -w
 flag = -Wall -Werror							\
-	   -Wno-error=format-security 				\
-	   -w
+	   -Wno-error=format-security
 
 debug_flag = -Wall -Werror -g3 -p
 
