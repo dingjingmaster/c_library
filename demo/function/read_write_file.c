@@ -11,6 +11,8 @@ int main (int argc, char* argv[])
 {
     GFile* file = NULL;
     char* path = NULL;
+    GFileInfo* fileinfo = NULL;
+    char** fileattr = NULL;
     GFileIOStream* fileio = NULL;
     GInputStream* inputio = NULL;       // 无须释放
     GInputStream* outputio = NULL;      // 无须释放
@@ -45,6 +47,20 @@ int main (int argc, char* argv[])
 
     // 关闭流
     g_io_stream_close (fileio, NULL, NULL);
+
+    // 文件信息
+    char* attrvalue = NULL;
+    printf ("\n============================ 文件信息 =========================\n");
+    fileinfo = g_file_query_info (file, "*", G_FILE_QUERY_INFO_NONE, NULL, NULL);
+    fileattr = g_file_info_list_attributes (fileinfo, NULL);
+    for (int i = 0; fileattr[i] != NULL; ++i) {
+        attrvalue = g_file_info_get_attribute_as_string (fileinfo, fileattr[i]);
+        printf ("%s --- %s\n", fileattr[i], attrvalue);
+        g_free (fileattr[i]);
+        g_free (attrvalue);
+    }
+    g_free (fileattr);
+
 
     // 关闭资源
     g_object_unref (fileio);

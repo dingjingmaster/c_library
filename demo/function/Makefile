@@ -23,4 +23,6 @@ clean:
 	@rm -fr */*.o
 	@rm -fr *.run
 	@rm -fr */*.run
+	@rm -fr *.txt
+	@rm -fr */*.txt
 
