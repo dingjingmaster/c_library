@@ -62,7 +62,7 @@ CLIB_RET system_user_num (int* user)
         }
         if (USER_PROCESS == u->ut_type) {
             if (RET_FALSE == who_array_append(&set, u->ut_user, u->ut_host, user))
-                goto end;
+                continue;
         }
     }
 
