@@ -1,5 +1,11 @@
 # gnome 全家桶
 
+### 需要编译安装的内容
+
+1. glib `glib-2.63.3`
+    
+    tar xvf glib-2.63.3 && mkdir glib && cd glib && meson ../glib-2.63.3 && meson install 
+
 ## GIO
 
 #### 工具 —— gio-querymodules
@@ -793,4 +799,48 @@ g_signal_connect (sd_obj, "signal_name", G_CALLBACK(signal_handle), userdata);
 
 - Testing 测试
 
+## gio
 
+> i/o高级接口
+> libgio.so
+
+### I/O文件
+
+- GFile             文件
+- GFileInfo         文件信息
+- GFileEnumerator   文件夹中遍历文件
+- GDrive            驱动器
+- GVolume           文件系统
+- GMount            挂载的的文件系统
+
+### 输入输出流
+
+- GInputStream      读取数据
+- GOutputStream     写入数据
+- GIOStream         读写数据
+- GSeekable         文件流操作
+
+### 应用程序和要处理文件类型相关
+
+- GAppInfo          已安装程序
+- GIcon             文件或程序图标
+
+### 保存和获取程序设置
+
+- GSettings         存储和检索程序设置
+
+### 网络、连接监视、域名解析、低级网络编程和高级客户端服务器
+
+- GSocket           低级socket
+- GResolver         DNS
+- GSocketClient     高级网络客户端
+- GSocketService    高级网络服务端
+- GSocketConnection 网络连接流
+- GNetworkMonitor   网络监听
+
+### 连接到D-Bus，接收/发送信息、分配bus名
+
+- GDBConnection     D-Bus连接
+- GDBusMethodInvocation 处理远程调用
+- GDBusServer       接收连接
+- GDBusProxy        远程对象接入D-BUS接口的代理
