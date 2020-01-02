@@ -32,7 +32,7 @@ int main (int argc, char* argv[])
     cairo = gdk_cairo_create(win);
 
 
-#if 0
+#if 1
 
     gdk_window_fullscreen (win);
     gdk_window_show (win);
