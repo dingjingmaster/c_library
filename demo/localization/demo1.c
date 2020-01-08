@@ -14,11 +14,8 @@
  
 int main (int argc, char* argv[])
 {
-   //setlocale (LC_CTYPE, ""); 
-   //setlocale (LC_MESSAGES, ""); 
-
-   setlocale (LC_CTYPE, "zh_CN.UTF-8"); 
-   setlocale (LC_MESSAGES, "zh_CN.UTF-8"); 
+   setlocale (LC_CTYPE, ""); 
+   setlocale (LC_MESSAGES, ""); 
 
     bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
