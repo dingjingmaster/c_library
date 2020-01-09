@@ -107,7 +107,7 @@
 
 > 以下为 pam_authenticate 函数执行流程图。其他的认证API函数（pam_open_session等）执行过程前面五个步骤同上图，只是在最后一步时传递给_pam_dispatch_aux的指针参数不同，传递3.1节表中每个API函数相对应的那个handler型指针，然后执行相对应的SPI服务函数链。
 
-![pam图](pic/pam02.gif)
+![pam图](pic/pam03.gif)
 
 ### PAM 模块开发
 
