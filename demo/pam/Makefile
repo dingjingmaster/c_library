@@ -6,7 +6,7 @@ test_target = $(patsubst %.c, %.run, $(wildcard pam_test_*.c))
 all:$(target) $(test_target)
 
 %.run:%.c
-	cc $< -o $@ $(cflag) -lpam
+	cc $< -o $@ $(cflag) -lpam -lpam_misc
 
 %.so:%.c
 	cc $< -o $@ $(cflag) -fPIC -shared

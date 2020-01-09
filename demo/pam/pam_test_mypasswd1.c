@@ -23,6 +23,7 @@ static struct pam_conv conv = {
     NULL
 };
 
+/*
 struct pam_message
 {
     int msg_style;
@@ -41,6 +42,7 @@ struct pam_conv
     void *appdata_ptr;
 };
 
+*/
 int main(int argc, char *argv[])
 {
     pam_handle_t *pamh=NULL;
