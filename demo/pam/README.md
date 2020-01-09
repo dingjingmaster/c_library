@@ -1,15 +1,17 @@
-## PAM开发
+## PAM
 
 > PAM 可插拔认证模块，设计初衷是将不同的底层认证机制集中到一个高层的API中。免去应用程序中进行认证逻辑。
 
-### PAM 的认证类别(type)
+### PAM 概述
+
+#### PAM 的认证类别(type)
 
 - account: 在用户能不能使用某服务上具有发言权，但不负责身份认证。比如，account 这个 type 可以检查用户能不能在一天的某个时间段登录系统、这个用户有没有过期、以及当前的登录用户数是否已经饱和等等。通常情况下，在登录系统时，如果你连 account 这个条件都没满足的话，即便有密码也还是进不去系统的。
 - auth: 一般来说，询问你密码的就是这个 type。假如你的验证方式有很多，比如一次性密码、指纹、虹膜等等，都应该添加在 auth 下。auth 做的另外一件事情是权限授予，比如赋给用户某个组的组员身份等等。
 - password: 主要负责和密码有关的工作。修改密码的时候有时会提示“密码不够长”、“密码是个常用单词”之类的，就是在这里设置的。在这里还设置了保存密码时使用了哪种加密方式（比如现在常用的 SHA-512）。请注意，这里的密码不局限于 /etc/shadow 中的密码，有关认证 token 的管理都应该在此设置：如果你使用指纹登录 Linux，在设置新指纹时，如果希望首先验证这是人的指纹而不是狗的指纹，也应该放在这里。
 - session: 一个“忙前忙后”的 type，它要在某个服务提供给用户之前和之后做各种工作。比如用户登录之前要将用户家目录准备好，或者在用户登录之后输出 motd 等等
 
-### PAM 配置
+#### PAM 配置
 
 > 模块文件路径`/lib/security`或`/lib64/security`以动态库形式存在，取决于操作系统的位数。
 > 配置文件路径:`/etc/pam.d/`和`/etc/pam.conf`。`/etc/pam.d/`存在，则忽略`/etc/pam.conf`
@@ -63,7 +65,7 @@
 
     模块参数用空格与模块路径相隔。该参数将只和特定模块相关，因此某个模块的文档中一定包含其参数的信息。如果需要在单个参数中使用空格，可以将整个参数用方括号（[]）包裹起来。
 
-### PAM 架构
+#### PAM 架构
 
 1. PAM框架结构图
 
@@ -118,6 +120,88 @@
 7. PAM 够通过调用`pam_setcred()`设置和删除用户凭据。在用户经过身份验证之后，并在向用户提供服务之前，应始终调用此 function。
 8. 用户账户是否已过期 `pam_chauthtok()`
 9. 会话`pam_open_session()`和`pam_close_session()`
+
+#### PAM 模块API功能一览
+
+1. 获取和设置 PAM ITEM 和 数据
+
+    ```
+    /**
+     * pam_handle_t *pamh;
+     * const char *module_data_name;
+     * void *data;
+     * void (*cleanup)(pam_handle_t *pamh, void *data, int error_status);
+     */
+    int pam_set_data (pamh, module_data_name, data, (*cleanup)(pam_handle_t* pamh, void* data, int error_status));
+
+    /**
+     * const pam_handle_t *pamh;
+     * const char *module_data_name;
+     * const void **data;
+     */
+    int pam_get_data (pamh, module_data_name, data);
+    ```
+
+> `pam_set_item` 允许程序和PAM服务模块访问和更新 item_type 的PAM信息
+
+    - PAM_SERVICE 服务名
+    - PAM_USER 提供身份服务的实体用户名
+    - PAM_USER_PROMPT 提示用户输入 name 时使用的 string。此string的默认值是 'login:' 的本地化
+    - PAM_TTY 终端名，如果是设备文件，则以`/dev/`为前缀，对于图形界面，此值是 $DISPLAY 变量
+    - PAM_RUSER 请求用户名，本地请求用户的本地名或远程请求用户的远程名
+    - PAM_RHOST 正在请求的主机名
+    - PAM_AUTHTOK 认证令牌（通常是密码）。除`pam_sm_authenticate()` 和 `pam_sm_chauthok()`外，所有模块功能都应该忽略此令牌
+    - PAM_OLDAUTHTOK 旧的身份令牌。除`pam_sm_chauthtok`外所有模块都应该忽略此令牌
+    - PAM_CONV pam_conv结构
+    - PAM_FAIL_DELAY 用于重定向集中管理的故障延迟 (特定Linux-PAM)
+    - PAM_XDISPLAY X显示的名称 （特定Linux-PAM）
+    - PAM_XAUTHDATA 指向包含X认证数据结构的指针，该数据需要与 PAM_XDISPLAY 指定的显示器建立连接。`pam_xauth_data()` （特定Linux-PAM）
+    - PAM_AUTHTOK_TYPE 默认操作是在请求密码时使用以下提示： "New UNIX password:" 和 "Retype UNIX password:"默认情况下未空`pam_get_authtok`（特定Linux-PAM）
+
+>  返回值
+    - PAM_BAD_ITEM application尝试设置未定义或无法访问的item
+    - PAM_BUF_ERR 内存缓冲区错误
+    - PAM_SUCCESS 数据更新成功
+    - PAM_CONV_ERR 应用程序提供的对话方法无法获取用户名
+    - PAM_SYSTEM_ERR 作为第一个参数传递的 `pam_handle_t`
+
+2. PAM对话
+
+> PAM库使用应用程序定义的回调来允许已加载的模块和应用程序之间的直接通信。该回调由 事务开始时传递给 `pam_start()` 的 `struct pam_conv` 指定 
+> 当模块调用引用的`conv()`函数时，参数`appdata_ptr`设置为该结构的第二个元素。
+> `num_msg`: 持有指针数组msg的长度。成功返回之后，指针resp指向`pam_response`结构的数组，其中包含应用程序提供的文本。调用要使用 free() 释放此数组和响应本身
+
+- 消息的类型，由`struct pam_message`的`msg_style`成员指定
+
+| 类型 | 解释 |
+| --- | --- |
+| `PAM_PROMPT_ECHO_OFF` | 获取字符串而不回显任何文本 |
+| `PAM_PROMPT_ECHO_ON` | 回显文本的同时获取字符串 |
+| `PAM_ERROR_MSG` | 显示错误信息 |
+| `PAM_TEXT_INFO` | 显示一些文字 |
+
+
+
+```c
+#include <security/pam_appl.h>
+
+struct pam_message {
+    int msg_style;
+    const char *msg;
+};
+
+struct pam_response {
+    char *resp;
+    int resp_retcode;
+};
+
+struct pam_conv {
+    int (*conv)(int num_msg, const struct pam_message **msg,
+                struct pam_response **resp, void *appdata_ptr);
+    void *appdata_ptr;
+};
+```
+
 
 - 头文件
 
