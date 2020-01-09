@@ -11,7 +11,7 @@ all:$(target) $(test_target)
 %.so:%.c
 	cc $< -o $@ $(cflag) -fPIC -shared
 
-.PHONY:clean all target test_target
+.PHONY:clean all target test_target pic
 
 clean:
 	@rm -fr *.so
