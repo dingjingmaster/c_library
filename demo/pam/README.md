@@ -65,8 +65,49 @@
 
 ### PAM 架构
 
-![pam加构图](pic/pam01.gif)
+1. PAM框架结构图
 
+> 系统管理员通过PAM配置文件来制定不同应用程序的不同认证策略；应用程序开发者通过在服务程序中使用PAM API(pam_xxxx( ))来实现对认证方法的调用；而PAM服务模块的开发者则利用PAM SPI来编写模块（主要是引出一些函数pam_sm_xxxx( )供PAM接口库调用），将不同的认证机制加入到系统中；PAM接口库（libpam）则读取配置文件，将应用程序和相应的PAM服务模块联系起来
+
+![pam图](pic/pam01.gif)
+
+2. PAM 接口库源代码分析
+
+> pam_handle和其他几个主要的数据结构（见../libpam/pam_private.h）及其之间的关系如下图所示
+
+![pam图](pic/pam02.gif)
+
+其中pam_handle包含认证的用户的token、用户名、应用程序名、终端名等信息，以及一个service结构。service结构包含服务模块的相关信息，各个域的含义是：
+
+- module--该结构包含装载的模块的名字、类型（静态或动态模块）、链接句柄（装载模块时的句柄）
+- modules_allocated--分配的模块数。
+- modules_used--已使用的模块数。
+- handlers_loaded--是否对操作(handlers结构)进行了初始化，handlers结构和初始化handlers见下面的介绍。
+
+    | handle指针 | API 函数 | SPI函数 |
+    | --- | --- | --- |
+    | authenticate | pam_authenticate() | pam_sm_authenticate() |
+    | setcred | pam_setcred() | pam_sm_setcred() |
+    | acct_mgmt | pam_acct_mgmt() | pam_sm_acct_mgmt() |
+    | open_session | pam_open_session() | pam_sm_open_session() |
+    | close_session | pam_close_session() | pam_sm_close_session() |
+    | chauthtok | pam_chauthtok() | pam_sm_chauthtok() |
+
+    handler数据结构是最直接保存服务模块的SPI服务函数的地址及参数的结构，其包含的主要的域的含义如下：
+    1. `(*func)`   该函数指针指向handlers所装载的服务模块的服务函数。
+    2. `argc`、`**argv`   分别为`*func`所指向的函数的参数个数和参数列表。
+    3. `*next`    指向堆栈模块中的下一个服务模块的服务函数。由此指针形成所有堆栈模块的服务函数链。
+
+- conf--由应用程序相对应的配置文件指定的服务模块的handlers。
+- other--为缺省配置文件指定的服务模块的handlers。
+
+3. PAM认证 API 的实现
+
+> 以下为 pam_authenticate 函数执行流程图。其他的认证API函数（pam_open_session等）执行过程前面五个步骤同上图，只是在最后一步时传递给_pam_dispatch_aux的指针参数不同，传递3.1节表中每个API函数相对应的那个handler型指针，然后执行相对应的SPI服务函数链。
+
+![pam图](pic/pam02.gif)
+
+### PAM 模块开发
 
 1. Linux-PAM(Linux 的可插入身份验证模块)是一个 library，使本地系统管理员可以选择各个 applications 对用户进行身份验证的方式。
 2. 在编写基于 PAM 的 application 时，必须以对 application 透明的方式提供这些服务。也就是说，在编写 application 时，不能对 client 的身份验证进行任何假设。
