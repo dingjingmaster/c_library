@@ -570,6 +570,159 @@ Header file with interfaces for Linux-PAM applications.
 Header file for useful library functions for making applications easier to write.
 ```
 
+### PAM模块开发
+
+```c
+#include <security / pam_modules.h>
+
+gcc -fPIC -c pam_module.c
+gcc -shared -o pam_module.so pam_module.o -lpam
+```
+
+1. 获取/设置`PAM_ITEM`
+
+```c
+#include <security/pam_modules.h>
+
+/*
+PAM模块可以是可动态加载的对象。通常，此类文件不应包含静态变量。该函数及其对应的 pam_get_data（3）为模块提供了一种机制，以将某些数据与句柄pamh关联。通常，模块会调用该 pam_set_data函数以（希望）唯一的module_data_name注册一些数据。数据也可以供其他模块使用，但 不能由应用程序使用。由于此函数仅存储指向数据的指针，因此模块不应修改或释放其内容
+ */
+int pam_set_data (pamh, module_data_name, data, (*cleanup)(pam_handle_t *pamh, void *data, int error_status));	 
+
+pam_handle_t *pamh;
+const char *module_data_name;
+void *data;
+void (*cleanup)(pam_handle_t *pamh, void *data, int error_status);
+```
+- `error_status`取值：
+    | 宏 | 含义 |
+    | --- | --- |
+    | `PAM_DATA_REPLACE` | 替换数据使用此选项 |
+    | `PAM_DATA_SILENT` | 该进程希望 cleanup 安静的进行，不向用户发送日志/消息 |
+
+- 返回值
+    | 宏 | 含义 |
+    | --- | --- |
+    | `PAM_BUF_ERR` | 内存错误 |
+    | `PAM_SUCCESS` | 数据保存成功 |
+    | `PAM_SYSTEM_ERR` | 系统错误 |
+
+2. 获取模块内部数据
+
+> 在pamh参数指定的上下文中查找模块数据名相关联的对象。调用成功则返回数据。返回数据不是副本
+
+```c
+#include <security/pam_modules.h>
+int pam_get_data(	pamh,	 
+ 	module_data_name,	 
+ 	data);	 
+const pam_handle_t *pamh;
+const char *module_data_name;
+const void **data;
+```
+
+3. 设置PAM item
+
+```c
+#include <security/pam_modules.h>
+int pam_set_item(pamh, item_type, item);	 
+
+pam_handle_t *pamh;
+int item_type;
+const void *item;
+```
+
+- `item_type`
+
+    | 宏 | 含义 |
+    | --- | --- |
+    | `PAM_SERVICE` | 服务名称 |
+    | `PAM_USER` | 提供身份服务实体的用户名 |
+    | `PAM_USER_PROMPT` | 提示用户输入用户名时使用的字符串，该串默认为"login:"的本地化版本 |
+    | `PAM_TTY` | 终端名,如果是一个设备文件,前缀为"/dev/".如果时图形应用程序,值为`$DISPLAY`变量 |
+    | `PAM_RUSER` | 请求用户名:本地请求用户的本地名称或远程请求用户的远程用户名称 |
+    | `PAM_RHOST` | 请求主机名(`PAM_RUSER@PAM_RHOST`确定了发出请求的用户) |
+    | `PAM_AUTHTOK` | 认证令牌 |
+    | `PAM_OLDAUTHTOK` | 旧的身份验证令牌 |
+    | `PAM_CONV` | `pam_conv`结构 |
+    | `PAM_FAIL_DELAY` | 用于重定向集中管理的故障延迟的功能指针 |
+    | `PAM_XDISPLAY` | X显示的名称,对于基于X的图形应用程序,此项的值应为`$DISPLAY`变量.可用独立于`PAM_TTY`使用此值来传递显示名称 |
+    | `PAM_XAUTHDATA` | 指向包含X认证数据的结构的指针,如果需要,该X认证数据需要建立与`PAM_XDISPLAY`指定的显示的连接 |
+    | `PAM_AUTHTOK_TYPE` | 对于模块,默认操作是在请求密码时使用一些提示:"New UNIX password" 和 "Retype UNIX password:" |
+
+- 返回值
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_BAD_ITEM | 应用程序试图设置一个未定义或不可访问的项目 |
+    | PAM_BUF_ERR | 内存缓冲区错误 |
+    | PAM_SUCESS | 数据更新成功 |
+    | PAM_SYSTEM_ERR | 作为第一个参数传递的`pam_handle_t`无效 |
+
+4. 获取PAM item
+
+```c
+#include <security/pam_modules.h>
+
+int pam_get_item (pamh, item_type, item);
+
+const pam_handle_t *pamh;
+int item_type;
+const void **item;
+```
+
+5. 获取用户名
+
+```c
+#include <security/pam_modules.h>
+
+int pam_get_user (pamh, user, prompt);	 
+
+const pam_handle_t *pamh;
+const char **user;
+const char *prompt;
+```
+- 该user是应用层`pam_start`指定的用户名,如果没有指定(返回NULL)则通过`pam_conv`获取
+- prompt 表示提示的信息,默认为"login:"
+
+5. 对话功能
+
+```c
+#include <security/pam_appl.h>
+struct pam_message {
+    int msg_style;
+    const char *msg;
+};
+
+struct pam_response {
+    char *resp;
+    int resp_retcode;
+};
+
+struct pam_conv {
+    int (*conv)(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr);
+    void *appdata_ptr;
+};
+```
+
+6. 设置或更改PAM环境变量
+
+```c
+#include <security/pam_appl.h>
+
+int pam_putenv(pamh, name_value);	 
+pam_handle_t *pamh;
+const char *name_value;
+```
+
+8. 获取PAM环境变量
+
+```c
+#include <security/pam_appl.h>
+const char *pam_getenv(pamh, name);	 
+pam_handle_t *pamh;
+const char *name;
+```
+
 
 ### 文档
 
