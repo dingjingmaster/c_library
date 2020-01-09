@@ -142,43 +142,48 @@
     int pam_get_data (pamh, module_data_name, data);
     ```
 
-> `pam_set_item` 允许程序和PAM服务模块访问和更新 item_type 的PAM信息
+    - `pam_set_item` 允许程序和PAM服务模块更新 item_type 的PAM信息
+    - `pam_get_item` 允许程序和PAM服务模块访问 item_type 的PAM信息
 
-    - PAM_SERVICE 服务名
-    - PAM_USER 提供身份服务的实体用户名
-    - PAM_USER_PROMPT 提示用户输入 name 时使用的 string。此string的默认值是 'login:' 的本地化
-    - PAM_TTY 终端名，如果是设备文件，则以`/dev/`为前缀，对于图形界面，此值是 $DISPLAY 变量
-    - PAM_RUSER 请求用户名，本地请求用户的本地名或远程请求用户的远程名
-    - PAM_RHOST 正在请求的主机名
-    - PAM_AUTHTOK 认证令牌（通常是密码）。除`pam_sm_authenticate()` 和 `pam_sm_chauthok()`外，所有模块功能都应该忽略此令牌
-    - PAM_OLDAUTHTOK 旧的身份令牌。除`pam_sm_chauthtok`外所有模块都应该忽略此令牌
-    - PAM_CONV pam_conv结构
-    - PAM_FAIL_DELAY 用于重定向集中管理的故障延迟 (特定Linux-PAM)
-    - PAM_XDISPLAY X显示的名称 （特定Linux-PAM）
-    - PAM_XAUTHDATA 指向包含X认证数据结构的指针，该数据需要与 PAM_XDISPLAY 指定的显示器建立连接。`pam_xauth_data()` （特定Linux-PAM）
-    - PAM_AUTHTOK_TYPE 默认操作是在请求密码时使用以下提示： "New UNIX password:" 和 "Retype UNIX password:"默认情况下未空`pam_get_authtok`（特定Linux-PAM）
+        | set/get宏 | 说明 |
+        | --- | --- |
+        | `PAM_SERVICE` | 服务名 |
+        | `PAM_USER` | 提供身份服务的实体用户名 |
+        | `PAM_USER_PROMPT` | 提示用户输入 name 时使用的 string。此string的默认值是 'login:' 的本地化 |
+        | `PAM_TTY` | 终端名，如果是设备文件，则以`/dev/`为前缀，对于图形界面，此值是 $DISPLAY 变量 |
+        | `PAM_RUSER` | 请求用户名，本地请求用户的本地名或远程请求用户的远程名 |
+        | `PAM_RHOST` | 正在请求的主机名 |
+        | `PAM_AUTHTOK` | 认证令牌（通常是密码）。除`pam_sm_authenticate()` 和 `pam_sm_chauthok()`外，所有模块功能都应该忽略此令牌 |
+        | `PAM_OLDAUTHTOK` | 旧的身份令牌。除`pam_sm_chauthtok`外所有模块都应该忽略此令牌 |
+        | `PAM_CONV` | `pam_conv` 结构 |
+        | `PAM_FAIL_DELAY` | 用于重定向集中管理的故障延迟 (特定Linux-PAM) |
+        | `PAM_XDISPLAY` | X显示的名称 （特定Linux-PAM）|
+        | `PAM_XAUTHDATA` | 指向包含X认证数据结构的指针，该数据需要与 `PAM_XDISPLAY` 指定的显示器建立连接。`pam_xauth_data()` （特定Linux-PAM）|
+        | `PAM_AUTHTOK_TYPE` | 默认操作是在请求密码时使用以下提示： "New UNIX password:" 和 "Retype UNIX password:"默认情况下未空`pam_get_authtok`（特定Linux-PAM）|
 
->  返回值
-    - PAM_BAD_ITEM application尝试设置未定义或无法访问的item
-    - PAM_BUF_ERR 内存缓冲区错误
-    - PAM_SUCCESS 数据更新成功
-    - PAM_CONV_ERR 应用程序提供的对话方法无法获取用户名
-    - PAM_SYSTEM_ERR 作为第一个参数传递的 `pam_handle_t`
+    - 返回值
+        | 返回宏 | 说明 |
+        | --- | --- |
+        | PAM_BAD_ITEM | application尝试设置未定义或无法访问的item |
+        | PAM_BUF_ERR | 内存缓冲区错误 |
+        | PAM_SUCCESS | 数据更新成功 |
+        | PAM_CONV_ERR | 应用程序提供的对话方法无法获取用户名 |
+        | PAM_SYSTEM_ERR | 作为第一个参数传递的 `pam_handle_t` |
 
 2. PAM对话
 
-> PAM库使用应用程序定义的回调来允许已加载的模块和应用程序之间的直接通信。该回调由 事务开始时传递给 `pam_start()` 的 `struct pam_conv` 指定 
-> 当模块调用引用的`conv()`函数时，参数`appdata_ptr`设置为该结构的第二个元素。
-> `num_msg`: 持有指针数组msg的长度。成功返回之后，指针resp指向`pam_response`结构的数组，其中包含应用程序提供的文本。调用要使用 free() 释放此数组和响应本身
+    - PAM库使用应用程序定义的回调来允许已加载的模块和应用程序之间的直接通信。该回调由 事务开始时传递给 `pam_start()` 的 `struct pam_conv` 指定 
+    - 当模块调用引用的`conv()`函数时，参数`appdata_ptr`设置为该结构的第二个元素。
+    - `num_msg`: 持有指针数组msg的长度。成功返回之后，指针resp指向`pam_response`结构的数组，其中包含应用程序提供的文本。调用要使用 free() 释放此数组和响应本身
 
-- 消息的类型，由`struct pam_message`的`msg_style`成员指定
+    - 消息的类型，由`struct pam_message`的`msg_style`成员指定
 
-| 类型 | 解释 |
-| --- | --- |
-| `PAM_PROMPT_ECHO_OFF` | 获取字符串而不回显任何文本 |
-| `PAM_PROMPT_ECHO_ON` | 回显文本的同时获取字符串 |
-| `PAM_ERROR_MSG` | 显示错误信息 |
-| `PAM_TEXT_INFO` | 显示一些文字 |
+        | 类型 | 解释 |
+        | --- | --- |
+        | `PAM_PROMPT_ECHO_OFF` | 获取字符串而不回显任何文本 |
+        | `PAM_PROMPT_ECHO_ON` | 回显文本的同时获取字符串 |
+        | `PAM_ERROR_MSG` | 显示错误信息 |
+        | `PAM_TEXT_INFO` | 显示一些文字 |
 
 
 
