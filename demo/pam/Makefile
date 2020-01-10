@@ -1,4 +1,4 @@
-cflag = -Wall
+cflag = -w #-Wall
 
 target = $(patsubst %.c, %.so, $(wildcard pam_module_*.c))
 test_target = $(patsubst %.c, %.run, $(wildcard pam_test_*.c))
