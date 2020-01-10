@@ -29,21 +29,22 @@
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc, const char *argv[])
 {
     syslog_init("PAM服务端", LOG_LOCAL6);
-    CT_SYSLOG (LOG_ERR, "");
 
     struct passwd *pwd;
     const char *user;
     char *crypt_password, *password;
     int pam_err, retry;
 
+    pam_set_item(pamh, PAM_USER_PROMPT, "用户名: ");
+
     // identify user
     if ((pam_err = pam_get_user(pamh, &user, NULL)) != PAM_SUCCESS)
         return (pam_err);
-    CT_SYSLOG (LOG_INFO, "authenticate --- user name:%s", user);
 
     if ((pwd = getpwnam(user)) == NULL)
         return (PAM_USER_UNKNOWN);
-    CT_SYSLOG (LOG_INFO, "authenticate --- user name:%s, true password:%s", user, pwd);
+    // 没法输出
+    //CT_SYSLOG (LOG_ERR, "user name:%s, true password:%s", user, pwd);
 
     // get password 
     for (retry = 0; retry < 3; ++retry) {
@@ -51,9 +52,14 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc, const
         if (pam_err == PAM_SUCCESS)
             break;
     }
-    CT_SYSLOG (LOG_INFO, "authenticate --- user name:%s, true password:%s, input password:%s", user, pwd, password);
 
-    CT_SYSLOG (LOG_ERR, "======================================= 服务端信息 ====================================================");
+    
+    pam_prompt (pamh, PAM_PROMPT_ECHO_OFF, NULL, "XXX%s^^^^", "测试提示!");
+
+    // 没法输出
+    CT_SYSLOG (LOG_ERR, "user name:%s, true password:%s, input password:%s", (char*)user, pwd->pw_passwd, (char*)password);
+
+    CT_SYSLOG (LOG_ERR, "============= 服务端信息 =============");
     char** var = pam_getenvlist(pamh);
     if (*var != NULL) {
         int i = 0;
@@ -61,8 +67,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc, const
             CT_SYSLOG (LOG_ERR, "%s", var[i])
         }
     }
-
-    CT_SYSLOG (LOG_ERR, "=======================================================================================================");
+    CT_SYSLOG (LOG_ERR, "======================================");
 
     if (pam_err == PAM_CONV_ERR)
         return (pam_err);
@@ -71,6 +76,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc, const
         return (PAM_AUTH_ERR);
 
     // 比较密码是否相同
+
     return (PAM_SUCCESS);
 }
 
