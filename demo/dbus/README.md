@@ -54,8 +54,87 @@
 > D-Bus对象可能支持 org.freedesktop.DBus.Introspectable 接口. 此接口有一个方法 Introspect, 它不接收参数并返回一个XML字符串, XML字符串描述对象的接口、方法和信号. 具体描述参看D-Bus 规范
 > 总线守护进程不会对收到的消息进行排序之类的处理, 若一个进程向同一进程连续发送两条方法调用消息, 被调用方不用考虑调用顺序,和返回值顺序, 因为方法具有唯一序列号, 方法调用方使用此序列号应答消息与调用消息相匹配.
 
+### D-Bus 协议介绍
+
+- D-Bus具有低开销，因为它使用二进制协议，并且不必与XML之类的文本格式进行相互转换。因为D-Bus用于潜在的高分辨率同机IPC，而不是主要用于Internet IPC
+- 基本D-Bus协议是一对一(对等或客户端-服务器)协议, 消息总线接收来自多个用用程序的连接, 并在其中转发消息.
+- D-Bus的使用包括系统更改的通知(通知照相机何时插入计算机或已安装某些软件的新版本)或桌面互操作性，例如文件监视服务或配置服务。
+- D-Bus设计用于两种特定用例
+
+    1. 系统总线”，用于从系统到用户会话的通知，并允许系统请求来自用户会话的输入
+    2. 用于实现桌面环境(例如GNOME和KDE)的“会话总线”。
+
+#### 类型系统
+
+> D-Bus具有类型系统，在该系统中，各种类型的值都可以以标准方式序列化在字节序列和对应值之间转换. 类型包含 *简单类型* 和 *复合类型*
+> 基础类型分为 *固定长度类型* 和 *字符串类型*
+>    - 固定长度类型:`BYTE` `BOOLEAN` `DOUBLE`  `NUIX_FD` `SIGNED`  `UNSIGNED INT`
+
+- 固定类型
+
+    | 类型名 | ascii 类型码 | 解释 |
+    | --- | --- | --- |
+    | `BYTE` | y(121) | 无符号8位整数 |
+    | `BOOLEAN` | b(98) | 布尔值：0为false，1为true，编组格式允许的任何其他值无效 |
+    | `INT16` | n(110) | 有符号(二进制补码)16位整数 |
+    | `UINT16` | q(113) | 无符号16位整数 |
+    | `INT32` | i(105) | 有符号(二进制补码)32位整数 |
+    | `UINT32` | u(117) | 无符号32位整数 |
+    | `INT64` | x(120) | 有符号(二进制补码)的64位整数(助记符：x和t是“ sixty”中的第一个字符，尚未用于更常见的功能) |
+    | `UINT64` | t(116) | 无符号64位整数 |
+    | `DOUBLE` | d(100) | IEEE 754双精度浮点 |
+    | `UNIX_FD` | h(104) | 无符号的32位整数，表示文件描述符带外数组的索引，并通过某些平台特定的机制传输(助记符：h表示句柄) |
+
+- 类字符串类型: 是具有可变长度的基本类型。从概念上讲，任何类似字符串的类型的值都为0或多个以UTF-8编码的Unicode代码点。类字符串类型的编组格式都以单个零（NUL）字节结尾，但是该字节不被视为文本的一部分
+
+- 类字符串类型的特征
+
+| 类型 | ascii 类型码 | 解释 |
+| --- | --- | --- |
+| `STRING` | s(115) | 没有额外的限制 |
+| `OBJECT_PATH` | o(111) | 必须是 语法上有效的对象路径 |
+| `SIGNATURE` | g(103) | 零个或多个单一完整类型 |
+
+- 有效对象路径
+- 有效签名
+- 容器类型
+   - `STRUCT` --- (ii) 可以潜逃结构 (i(ii)) 
+   - `ARRAY` --- "ai" a表示数组, 后边必须根一个完整的类型 a(ii) 表示32为整数数组
+   - `VARIANT`
+   - `DICT_ENTRY`
+
+- dbus 完整的类型
+
+| Category | Conventional Name | Code | Description |
+| --- | --- | --- | --- |
+| reserved INVALID | 0(ASCII NUL) | Not a valid type code, used to terminate signatures |
+| fixed, basic | BYTE | 121(ASCII 'y') | 8-bit unsigned integer |
+| fixed, basic | BOOLEAN | 98(ASCII 'b') | Boolean value, 0 is FALSE and 1 is TRUE. Everything else is invalid. |
+| fixed, basic | INT16 | 110 (ASCII 'n') | 16-bit signed integer |
+| fixed, basic | UINT16 | 113 (ASCII 'q') | 16-bit unsigned integer |
+| fixed, basic | INT32 | 105 (ASCII 'i')	 | 32-bit signed integer |
+| fixed, basic | UINT32 | 117 (ASCII 'u') | 32-bit unsigned integer |
+| fixed, basic | INT64 | 120 (ASCII 'x') | 64-bit signed integer |
+| fixed, basic | UINT64 | 116 (ASCII 't') | 64-bit unsigned integer |
+| fixed, basic | DOUBLE | 100 (ASCII 'd') | IEEE 754 double |
+| string-like, basic | STRING | 115 (ASCII 's') | UTF-8 string (must be valid UTF-8). Must be nul terminated and contain no other nul bytes.|
+| string-like, basic | OBJECT_PATH | 111 (ASCII 'o') | Name of an object instance |
+| string-like, basic | SIGNATURE | 103 (ASCII 'g') | A type signature |
+| container | ARRAY | 97 (ASCII 'a') | Array |
+| container | STRUCT | 114 (ASCII 'r'), 40 (ASCII '('), 41 (ASCII ')') | Struct; type code 114 'r' is reserved for use in bindings and implementations to represent the general concept of a struct, and must not appear in signatures used on D-Bus. |
+| container | VARIANT | 118 (ASCII 'v')	| Variant type (the type of the value is part of the value itself) |
+| container | DICT_ENTRY | 101 (ASCII 'e'), 123 (ASCII '{'), 125 (ASCII '}') | Entry in a dict or map (array of key-value pairs). Type code 101 'e' is reserved for use in bindings and implementations to represent the general concept of a dict or dict-entry, and must not appear in signatures used on D-Bus. |
+| fixed, basic | UNIX_FD | 104 (ASCII `'h'`) | Unix file descriptor |
+| reserved | (reserved) | 109 (ASCII `'m'`) | Reserved for a 'maybe' type compatible with the one in GVariant, and must not appear in signatures used on D-Bus until specified here |
+| reserved | (reserved) | 42 (ASCII `'*'`) | Reserved for use in bindings/implementations to represent any single complete type, and must not appear in signatures used on D-Bus. |
+| reserved | (reserved) | 63 (ASCII `'?'`) | Reserved for use in bindings/implementations to represent any basic type, and must not appear in signatures used on D-Bus. |
+| reserved | (reserved) | 64 (ASCII `'@'`), 38 (ASCII '&'), 94 (ASCII '^') | Reserved for internal use by bindings/implementations, and must not appear in signatures used on D-Bus. GVariant uses these type-codes to encode calling conventions. |
+
+
 ### 参考文档
 
+- [dbus低级API文档](https://dbus.freedesktop.org/doc/api/html/index.html)
+- [dbus低级API](https://dbus.freedesktop.org/doc/api/html/annotated.html)
 - [dbus简介](https://dbus.freedesktop.org/doc/dbus-tutorial.html)
 - [gdbus使用](https://developer.gnome.org/gio/stable/gdbus-convenience.html)
 - [python dbus](https://dbus.freedesktop.org/doc/dbus-python/tutorial.html)
