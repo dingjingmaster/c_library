@@ -151,6 +151,29 @@
 
 ![gdbus1](pic/gdbus1.png)
 
+#### GDBus和DBus API对比
+
+| dbus-glib | GDBus |
+| --- | --- |
+| DBusGConnection | GDBusConnection |
+| DBusGProxy | GDBusProxy, GDBusInterface - also see GDBusObjectProxy |
+| DBusGObject | GDBusInterfaceSkeleton, GDBusInterface - also see GDBusObjectSkeleton |
+| DBusGMethodInvocation | GDBusMethodInvocation |
+| dbus_g_bus_get() | g_bus_get_sync(), also see g_bus_get() |
+| dbus_g_proxy_new_for_name() | g_dbus_proxy_new_sync() and g_dbus_proxy_new_for_bus_sync(), also see g_dbus_proxy_new() |
+| dbus_g_proxy_add_signal() | not needed, use the generic "g-signal" |
+| dbus_g_proxy_connect_signal() | use g_signal_connect() with "g-signal" |
+| dbus_g_connection_register_g_object() | g_dbus_connection_register_object() - also see g_dbus_object_manager_server_export() |
+| dbus_g_connection_unregister_g_object() | g_dbus_connection_unregister_object() - also see g_dbus_object_manager_server_unexport() |
+| dbus_g_object_type_install_info() | introspection data is installed while registering an object, see g_dbus_connection_register_object() |
+| dbus_g_proxy_begin_call() | g_dbus_proxy_call() |
+| dbus_g_proxy_end_call() | g_dbus_proxy_call_finish() |
+| dbus_g_proxy_call() | g_dbus_proxy_call_sync() |
+| dbus_g_error_domain_register() | g_dbus_error_register_error_domain() |
+| dbus_g_error_has_name() | no direct equivalent, see g_dbus_error_get_remote_error() |
+| dbus_g_method_return() | g_dbus_method_invocation_return_value() |
+| dbus_g_method_return_error() | g_dbus_method_invocation_return_error() and variants |
+| dbus_g_method_get_sender() | g_dbus_method_invocation_get_sender() |
 
 ### 参考文档
 
