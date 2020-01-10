@@ -1,49 +1,63 @@
 ## dbus
 
-### 概念介绍
+### dbus 专有名词
 
-- dbus-daemon 一个dbus的后台守护程序，用于多应用之间消息转发
-- libdbus.so dbus的功能接口
-- 高层封装，如dbus-glib和QT D-bus
-- dbus总线一般分为系统总线和会话总线，所以安全性很好
+- 本地对象(native objects):低级D-Bus不在乎，为了高级语言绑定与使用
+- 对象路径(object paths):使同一个进程不同代码模块不会混淆
+- 对象成员(method and signals):
+    1. 方法:可以在对象上调用的操作，可以有输入和输出
+    2. 信号:从对象广播信息传递到关心该信号的观察者那里，可能包含数据
+- 接口(interfaces):
+- 代理(proxies):代理对象是一种本地对象，方便在另一个进程调用。低级D-Bus需要创建方法调用消息，发送消息，然后手动接收和处理消息等过程。高级的API提供代理绑定替代以上操作。代理看起来像是一个普通的本地对象。但是挡在代理上调用方法时，会将其转换为DBus方法调用消息，等待消息，解压消息返回值，然后从本机方法返回。
+    1. 无代理的代码
+        ```c
+        Message message = new Message("/remote/object/path", "MethodName", arg1, arg2);
+        Connection connection = getBusConnection();
+        connection.send(message);
+        Message reply = connection.waitForReply(message);
+        if (reply.isError()) {
+        } else {
+            Object returnValue = reply.getReturnValue();
+        }        
+        ```
+    2. 有代理的代码
+        ```c
+        Proxy proxy = new Proxy(getBusConnection(), "/remote/object/path");
+        Object returnValue = proxy.MethodName(arg1, arg2);
+        ```
+- 连接名(Bus Name):应用程序连到总线守护程序时, 守护程序立即为其分配一个名称, 此为连接名,连接名以':'开头, 此名称一旦分配, 那么在总线守护程序生命周期就会唯一的对应一个应用程序. 名称成功映射到某一程序,表示该程序连接成功. 当然程序中可用针对此名称定义另一个人类友好的名称使用. 连接名的作用:1. 名称唯一的确定一个连接; 2. 方便总线后台进程跟踪程序生命周期. 3.总线可用协调单例程序,确保系统只运行一个此应用实例.
+- 地址: D-Bus 程序既可以时服务器,也可以是客户机. 服务器和客户端的区别只在连接时才重要. D-Bus 地址将确定服务端监听的位置和客户端要连接的位置.比如"unix:path=/tmp/abcdef". 当将D-Bus与消息总线守护进程一起使用的时候,libdbus通过读取环境变量自动发现每个会话总线守护进程的地址. 它通过检查一个总所周知的UNIX域套接字路径来发现系统范围的总线守护进程. 如果使用不带地址总线的D-Bus, 则由自己决定哪个程序是服务器,哪个是客户端,并为它们指定一种在服务器地址上达成一致的机制. 这种情况不多用.
 
-> 官网中的dubs安装值包含上述1和2
+> 将所有概念统一起来, 假设调用指定方法则是如下使用:
+> 地址 -> [总线名/或称连接名] -> 对象路径 -> 接口 -> 方法
+> 总线名可选是在没有总线守护进程使用的时候无须使用, 否则必须使用
 
-1. 运行一个dbus-daemon就是创建了一条通信的总线Bus，当一个application链接到这条Bus上时，就产生了一个Connection
-2. 从dbus 的概念上说，通信的双方是Object，一个application可以包含多个Object
-3. 一个Object中会有不同的Interface，Interface可以看作是要传输的数据
-4. dbus的两种通信方式：
-  
-  1. signal: 也就是广播
-  2. method: 是一对一通信。
+- 消息: D-Bus通过在进程间发送消息来工作，若使用的是高级API, 消息可能会被API透明, 4种消息
+    1. 方法调用的消息, 要求调用某对象的方法. 方法调用过程
+        1.1 语言绑定可以提供代理, 以便在进程内对象上调用方法可以在另一个进程种调用远程对象上的方法. 如果是, 则应用程序调用代理上的方法, 代理构造方法调用消息并发送到远程.
+        1.2 底层API, 应用程序可以自行构造方法调用消息,无序使用代理
+        1.3 方法调用消息包含：远程进程的总线名、方法名、方法参数、对象路径、指定方法的接口名称(可选)
+        1.4 调用消息的方法是发送到dbus的守护进程
+        1.5 总线守护进程查找目标总线名称是否存在, 如果存在, 则总线守护进程将方法调用转达给该进程, 否则总线守护进程将创建一条错误消息并将其作为对方法调用的答复消息返回去
+        1.6 接收放解包方法调用消息. 在低级API下, 它可以立即运行该方法并向总线守护进程发送方法应答消息. 如果是高级API, 会检查对象路径、接口、方法名, 将方法调用消息转为本地对象上的调用, 然后将此方法调用结果以消息的方式返回去.
+        1.7 总线守护进程接收到方法应答消息并将其转发给方法调用的进程.
+        1.8 调用的进程查看方法应答并使用应答种包含的返回值. 答复种还可能发生了错误. 使用绑定时可以将应答消息转为代理方法的返回值或异常.
+    2. 方法返回消息, 返回调用方法的结果
+    3. 错误消息, 返回由调用方法引起的异常
+    4. 信号消息, 某给定信号已发出(事件): D-Bus种信号由单个消息组成, 由一个进程发送任意给任意数量的其它进程(信号是单向广播, 不具有返回值), 发送信号的人不知道信号的接受者, 是接收者向总线守护进程注册以接收感兴趣的信号, 轴线守护进程只将每个信号发送给对该信号感兴趣的接收者.具体流程如下:
+        4.1 创建一个信号message,并将其发送到总线守护进程, 低级API需要手动完成, 高级API通过绑定完成
+        4.2 信号消息包含指定信号的接口的名称, 信号名称, 发送信号的总线名称, 和参数
+        4.3 消息总线上的任何进程都可以注册"匹配规则"以指示感兴趣的信号. 信号总线上有已注册"匹配规则"的列表
+        4.4 总线守护程序检查信号并确定哪些进程对此信号感兴趣. 它将信号消息发送到这些进程
+        4.5 接收信号的每个进程决定如何处理它, 如果使用绑定, 绑定可以选择在代理对象上发出本机信号. 如果使用低级API, 进程可以只查看信号发送方和名称, 并根据它决定要做什么.
 
-5. 程序中的各个元素
+> D-Bus对象可能支持 org.freedesktop.DBus.Introspectable 接口. 此接口有一个方法 Introspect, 它不接收参数并返回一个XML字符串, XML字符串描述对象的接口、方法和信号. 具体描述参看D-Bus 规范
+> 总线守护进程不会对收到的消息进行排序之类的处理, 若一个进程向同一进程连续发送两条方法调用消息, 被调用方不用考虑调用顺序,和返回值顺序, 因为方法具有唯一序列号, 方法调用方使用此序列号应答消息与调用消息相匹配.
 
-  1. address: 用来标识ibus-daemon，格式:`unix:path=/var/run/dbus/xxxx`
-  2. bus name: 用来标识application的，格式：`com.xxx.xxx`
-  3. path: 用于标识Object，格式：`/xxx/xxx/xxx`
-  4. name: 每个interface都有自己的名字，通过interface的名字找到interface，格式：`xxx.xxx.xxx.xxx`
-  5. signal 和 method也有自己的名字，随便取名就行
+### 参考文档
 
-### 术语
-
-- connection: 用于打开到守护进程的连接的结构，可以通过指定`DBUS_BUS_SYSTEM`来打开系统总线守护进程，也可以使用`DBUS_BUS_SESSION`来打开会话总线守护进程。
-- message: 是两个进程之间的一条消息，所有的DBus内部通信都是使用DBus消息完成的，这些消息可以有以下类型，方法调用，方法返回，信号，和错误。DBusMessage结构可以通过附加布尔整数、实数、字符串、数组、…到消息。
-- path: 是远程对象的路径，如: /org/freedesktop/DBus.
-- interface:是要与之对话的给定对象上的接口。
-- signal:用来发出信号
-- method call: 它是用于调用远程对象上的方法的DBus消息。
-- Error: DBusError是通过调用DBus方法来保存错误代码的结构。
-
-### dbus守护进程
-
-- dbus 可以代表其它应用程序启动程序（服务），应用程序要求dbus通过其名称启动服务，该名称必须是已知的，dbus查找的服务描述文件通常安装在`/usr/share/dbus-1/services/`扩展名位`.service`
-
-### 例子说明
-
-- `dbus_name` dbus名称选用
-- `dbus_recv_send` dbus发送和接收
-- `dbus_service` dbus启动另一个进程
-
-
+- [dbus简介](https://dbus.freedesktop.org/doc/dbus-tutorial.html)
+- [gdbus使用](https://developer.gnome.org/gio/stable/gdbus-convenience.html)
+- [python dbus](https://dbus.freedesktop.org/doc/dbus-python/tutorial.html)
+- [qt dbus](http://qt-project.org/doc/qt-5/qtdbus-index.html)
 
