@@ -13,6 +13,15 @@
     - [ ] PAM服务端密码验证
     - [ ] PAM应用层解析服务端返回的提示信息
 
+- 例子说明
+
+    | 例子 | 例子说明 |
+    | --- | --- |
+    | [pam_module_mypasswd1.c](pam/pam_module_mypasswd.c) | PAM服务端模块密码验证 |
+    | [pam_test_mypasswd1.c](pam/pam_test_mypasswd1.c) | PAM应用层密码验证调用 |
+    | [pam_module_conversation.c](pam/pam_module_conversation.c) | PAM服务端模块返回交互信息 |
+    | [pam_test_conversation.c](pam/pam_test_conversation.c) | PAM应用层验证例子(可交互) |
+
 ### xlib
 
 1. 服务器将用户输入分配到位于同一台计算机上或网络中其他位置的各种客户端程序，并接受来自这些客户端程序的输出请求, Xlib的是ç子例程库，应用程序（客户端）使用它来通过流连接与窗口系统进行接口。
