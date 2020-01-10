@@ -17,7 +17,7 @@
 
     | 例子 | 例子说明 |
     | --- | --- |
-    | [pam_module_mypasswd1.c](pam/pam_module_mypasswd.c) | PAM服务端模块密码验证 |
+    | [pam_module_mypasswd1.c](pam/pam_module_mypasswd1.c) | PAM服务端模块密码验证 |
     | [pam_test_mypasswd1.c](pam/pam_test_mypasswd1.c) | PAM应用层密码验证调用 |
     | [pam_module_conversation.c](pam/pam_module_conversation.c) | PAM服务端模块返回交互信息 |
     | [pam_test_conversation.c](pam/pam_test_conversation.c) | PAM应用层验证例子(可交互) |
