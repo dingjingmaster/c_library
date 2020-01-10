@@ -54,6 +54,11 @@
 > D-Bus对象可能支持 org.freedesktop.DBus.Introspectable 接口. 此接口有一个方法 Introspect, 它不接收参数并返回一个XML字符串, XML字符串描述对象的接口、方法和信号. 具体描述参看D-Bus 规范
 > 总线守护进程不会对收到的消息进行排序之类的处理, 若一个进程向同一进程连续发送两条方法调用消息, 被调用方不用考虑调用顺序,和返回值顺序, 因为方法具有唯一序列号, 方法调用方使用此序列号应答消息与调用消息相匹配.
 
+![dbus1](pic/dbus1.png)
+![dbus1](pic/dbus2.png)
+![dbus1](pic/dbus3.png)
+![dbus1](pic/dbus4.png)
+
 ### D-Bus 协议介绍
 
 - D-Bus具有低开销，因为它使用二进制协议，并且不必与XML之类的文本格式进行相互转换。因为D-Bus用于潜在的高分辨率同机IPC，而不是主要用于Internet IPC
@@ -130,9 +135,27 @@
 | reserved | (reserved) | 63 (ASCII `'?'`) | Reserved for use in bindings/implementations to represent any basic type, and must not appear in signatures used on D-Bus. |
 | reserved | (reserved) | 64 (ASCII `'@'`), 38 (ASCII '&'), 94 (ASCII '^') | Reserved for internal use by bindings/implementations, and must not appear in signatures used on D-Bus. GVariant uses these type-codes to encode calling conventions. |
 
+> 未完 待续 ...
+
+### GDBus
+
+#### GDBus与dbus-glib差距
+
+- dbus-glib使用libdbus实现, GDBus依赖于GIO流作为传输层, 并有自己的实现来进行D-Bus 连接设置和身份验证. GDBus还解决了一些多线程问题.
+- dbus-glib使用GObject类型系统来获取方法参数和返回值, GDBus依赖于明确为D-Bus类型设计的GVariant类型系统.
+- dbus-glib只对D-Bus接口建模, 不为对象提供任何类型. GDBus对D-Bus接口通过GDBusInterface、GDBProxy和GDBusInterfaceSkeleton类型和对象(通过GDBusObject、GDBusObjectSkeleton和GDBusObjectProxy类型)进行建模
+- GDBus 包括对`org.freedesktop.DBus.Properties`(通过`GDBusProxy`类型)和`org.freedesktop.DBus.ObjectManager` D-Bus接口的本地支持, 而dbus-glib不支持
+- dbus-glib中导出对象的典型方法包括使用dbus-binding-tool从XML数据生成代码, GDBus提供了类似工具gdbus-codegen用来生成D-Bus接口文档
+- dbus-glib不提供任何遍历API来拥有和查看总线名称, GDBus提供了g_bus_own_name() 和 g_bus_watch_name() 系累功能
+- GDBus 提供了API来解析、生成和使用 'Introspection XML', dbus-glib 没有
+
+![gdbus1](pic/gdbus1.png)
+
 
 ### 参考文档
 
+- [dbus协议介绍](https://dbus.freedesktop.org/doc/dbus-specification.html)
+- [dbus 守护进程](https://dbus.freedesktop.org/doc/dbus-daemon.1.html)
 - [dbus低级API文档](https://dbus.freedesktop.org/doc/api/html/index.html)
 - [dbus低级API](https://dbus.freedesktop.org/doc/api/html/annotated.html)
 - [dbus简介](https://dbus.freedesktop.org/doc/dbus-tutorial.html)
