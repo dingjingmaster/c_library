@@ -32,7 +32,9 @@ int main (int argc, char *argv[])
 			| GDK_EXPOSURE_MASK
 			| GDK_ENTER_NOTIFY_MASK
 			| GDK_LEAVE_NOTIFY_MASK;
-	  attributes.type_hint = GDK_WINDOW_TYPE_HINT_NORMAL;
+	  //attributes.type_hint = GDK_WINDOW_TYPE_HINT_NORMAL;
+	  //attributes.type_hint = GDK_WINDOW_TYPE_HINT_DESKTOP;
+	  attributes.type_hint = GDK_WINDOW_TYPE_HINT_UTILITY;
       attributes.visual = gdk_screen_get_system_visual(gdk_screen_get_default()) ;
       attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_CURSOR | GDK_WA_VISUAL | GDK_WA_NOREDIR ;//|GDK_WA_WMCLASS
 	  window = gdk_window_new(NULL, &attributes, attributes_mask);
