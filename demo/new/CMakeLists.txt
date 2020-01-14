@@ -19,4 +19,4 @@ include_directories(${GOBJECT2_INCLUDE_DIRS})
 include_directories(${GTK3_INCLUDE_DIRS})
 
 #add_executable(new main.c)
-add_executable(new xlib1.c)
+add_executable(new xlib1.c gtk4_application.c)

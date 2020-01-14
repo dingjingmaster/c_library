@@ -62,6 +62,8 @@ int main (int argc, char *argv[]) {
      */
     window = gdk_window_new (NULL, &attributes, attributes_mask);
 
+    gdk_window_set_keep_below (window, TRUE);
+
     /* show the window.
      */
     gdk_window_show (window);
