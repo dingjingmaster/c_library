@@ -18,15 +18,19 @@
 
 - 配置格式:
 1. 服务名称就是PAM配置文件名
-    ```
-    工作类别        控制模式        模块路径        模块参数
-    ```
+
+```
+工作类别        控制模式        模块路径        模块参数
+```
+
 2. 每一条前的'-'短线，表示若找不到模块导致无法被加载时，不会被记录在日志中
 3. 工作类别、流程栈、控制模式
     - 工作类别: -
     - 流程栈: 它是认证时执行步骤和规则的堆叠。在某个服务的配置文件中，它体现在了配置文件中的自上而下的执行顺序中。栈是可以被引用的，即在一个栈（或者流程）中嵌入另一个栈。
     - 控制模式: 用于定义各个认证模块在给出各种结果时 PAM 的行为，或者调用在别的配置文件中定义的认证流程栈。该列有两种形式，一种是比较常见的“关键字”模式，另一种则是用方括号（[]）包含的“返回值=行为”模式。
+
 4. 控制模式——关键字模式下
+
     ```
     session    include      postlogin
     -session   optional     pam_ck_connector.so
@@ -37,7 +41,9 @@
     - optional: 仅在整个栈中只有一个条目时才起作用，否则不起作用。
     - include: 将其它配置文件中的流程栈包含到当前未知
     - substack: 运行其它配置文件中的流程，并将整个运行结果作为该行的结果输出。同include区别：类似宏函数与函数的调用区别。
+
 5. 控制模式——“"返回值=行为"模式
+
     ```c
     [value1=action1 value2=action2 ...]
     ```
@@ -96,6 +102,7 @@
     | chauthtok | pam_chauthtok() | pam_sm_chauthtok() |
 
     handler数据结构是最直接保存服务模块的SPI服务函数的地址及参数的结构，其包含的主要的域的含义如下：
+
     1. `(*func)`   该函数指针指向handlers所装载的服务模块的服务函数。
     2. `argc`、`**argv`   分别为`*func`所指向的函数的参数个数和参数列表。
     3. `*next`    指向堆栈模块中的下一个服务模块的服务函数。由此指针形成所有堆栈模块的服务函数链。
@@ -144,153 +151,158 @@
 
 1. 应用程序编译
 
-    ```c
-    #include <security/pam_appl.h>
-    cc -o application .... -lpam
-    ```
+```c
+#include <security/pam_appl.h>
+cc -o application .... -lpam
+```
 
-    ```c
-    #include <security/pam_appl.h>
-    #include <security/pam_misc.h>
-    cc -o application .... -lpam -lpam_misc
-    ```
+```c
+#include <security/pam_appl.h>
+#include <security/pam_misc.h>
+cc -o application .... -lpam -lpam_misc
+```
 
 2. 初始化PAM
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_start(service_name, user, pam_conversation, pamh);
+```c
+#include <security/pam_appl.h>
+int pam_start(service_name, user, pam_conversation, pamh);
     
-    // 该服务名参数指定服务的名称申请，将被存储在新的环境PAM_SERVICE项目。
-    // 该服务的策略将从文件中读取，/etc/pam.d/service_name或者如果该文件不存在，则从中读取/etc/pam.conf。
-    const char *service_name;
+// 该服务名参数指定服务的名称申请，将被存储在新的环境PAM_SERVICE项目。
+// 该服务的策略将从文件中读取，/etc/pam.d/service_name或者如果该文件不存在，则从中读取/etc/pam.conf。
+const char *service_name;
 
-    // 指定目标用户的名称，将被存储为PAM_USER项目
-    // 参数为NULL,则模块必须在必要时询问该项目
-    const char *user;
+// 指定目标用户的名称，将被存储为PAM_USER项目
+// 参数为NULL,则模块必须在必要时询问该项目
+const char *user;
 
-    // pam_conversation 指向一个描述会话功能的结构体
-    // 可以在加载的模块和应用程序之间进行直接通信
-    const struct pam_conv *pam_conversation;
+// pam_conversation 指向一个描述会话功能的结构体
+// 可以在加载的模块和应用程序之间进行直接通信
+const struct pam_conv *pam_conversation;
 
-    // 调用返回 PAM_SUCCESS 之后，pamh内容是一个句柄，其中包含用于后续调用PAM函数的PAM上下文。
-    // 错误返回 NULL
-    pam_handle_t **pamh;
-    ```
+// 调用返回 PAM_SUCCESS 之后，pamh内容是一个句柄，其中包含用于后续调用PAM函数的PAM上下文。
+// 错误返回 NULL
+pam_handle_t **pamh;
+```
+
 > 该`pam_start`函数创建PAM上下文并启动PAM事务。它是应用程序需要调用的第一个PAM函数。事务状态完全包含在此句柄标识的结构内，因此可以并行处理多个事务。
 
-    - 返回值
-        | 宏 | 含义 |
-        | --- | --- |
-        | `PAM_ABORT` | 一般失败 |
-        | `PAM_BUF_ERR` | 内存缓冲区错误 |
-        | `PAM_SUCCESS` | 事务已成功创建 |
-        | `PAM_SYSTEM_ERR` | 系统错误，例如提供了NULL指针，而不是数据指针 |
+- 返回值
+    | 宏 | 含义 |
+    | --- | --- |
+    | `PAM_ABORT` | 一般失败 |
+    | `PAM_BUF_ERR` | 内存缓冲区错误 |
+    | `PAM_SUCCESS` | 事务已成功创建 |
+    | `PAM_SYSTEM_ERR` | 系统错误，例如提供了NULL指针，而不是数据指针 |
 
 3. 终止PAM
     
-    ```c
-    #include <security/pam_appl.h>
-    int pam_end (pamh, pam_status);
+```c
+#include <security/pam_appl.h>
+int pam_end (pamh, pam_status);
 
-    pam_handle_t *pamh;
+pam_handle_t *pamh;
 
-    // 此为最后的PAM库调用返回给应用程序的值
-    int pam_status;
-    ```
+// 此为最后的PAM库调用返回给应用程序的值
+int pam_status;
+```
 
-    - 返回值
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_SUCCESS | 成功 |
-        | PAM_SYSTEM_ERR | 系统错误 |
+- 返回值
+
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_SUCCESS | 成功 |
+    | PAM_SYSTEM_ERR | 系统错误 |
 
 4. 获取和设置 PAM ITEM 和 数据
 
-    ```c
-    /**
-     * pam_handle_t *pamh;
-     * const char *module_data_name;
-     * void *data;
-     * void (*cleanup)(pam_handle_t *pamh, void *data, int error_status);
-     */
-    int pam_set_data (pamh, module_data_name, data, (*cleanup)(pam_handle_t* pamh, void* data, int error_status));
+```c
+/**
+ * pam_handle_t *pamh;
+ * const char *module_data_name;
+ * void *data;
+ * void (*cleanup)(pam_handle_t *pamh, void *data, int error_status);
+ */
+int pam_set_data (pamh, module_data_name, data, (*cleanup)(pam_handle_t* pamh, void* data, int error_status));
 
-    /**
-     * const pam_handle_t *pamh;
-     * const char *module_data_name;
-     * const void **data;
-     */
-    int pam_get_data (pamh, module_data_name, data);
-    ```
+/**
+ * const pam_handle_t *pamh;
+ * const char *module_data_name;
+ * const void **data;
+ */
+int pam_get_data (pamh, module_data_name, data);
+```
 
-    - `pam_set_item` 允许程序和PAM服务模块更新 `item_type` 的PAM信息
-    - `pam_get_item` 允许程序和PAM服务模块访问 `item_type` 的PAM信息
+- `pam_set_item` 允许程序和PAM服务模块更新 `item_type` 的PAM信息
+- `pam_get_item` 允许程序和PAM服务模块访问 `item_type` 的PAM信息
 
-        | set/get宏 | 说明 |
-        | --- | --- |
-        | `PAM_SERVICE` | 服务名 |
-        | `PAM_USER` | 提供身份服务的实体用户名 |
-        | `PAM_USER_PROMPT` | 提示用户输入 name 时使用的 string。此string的默认值是 'login:' 的本地化 |
-        | `PAM_TTY` | 终端名，如果是设备文件，则以`/dev/`为前缀，对于图形界面，此值是 $DISPLAY 变量 |
-        | `PAM_RUSER` | 请求用户名，本地请求用户的本地名或远程请求用户的远程名 |
-        | `PAM_RHOST` | 正在请求的主机名 |
-        | `PAM_AUTHTOK` | 认证令牌（通常是密码）。除`pam_sm_authenticate()` 和 `pam_sm_chauthok()`外，所有模块功能都应该忽略此令牌 |
-        | `PAM_OLDAUTHTOK` | 旧的身份令牌。除`pam_sm_chauthtok`外所有模块都应该忽略此令牌 |
-        | `PAM_CONV` | `pam_conv` 结构 |
-        | `PAM_FAIL_DELAY` | 用于重定向集中管理的故障延迟 (特定Linux-PAM) |
-        | `PAM_XDISPLAY` | X显示的名称 （特定Linux-PAM）|
-        | `PAM_XAUTHDATA` | 指向包含X认证数据结构的指针，该数据需要与 `PAM_XDISPLAY` 指定的显示器建立连接。`pam_xauth_data()` （特定Linux-PAM）|
-        | `PAM_AUTHTOK_TYPE` | 默认操作是在请求密码时使用以下提示： "New UNIX password:" 和 "Retype UNIX password:"默认情况下未空`pam_get_authtok`（特定Linux-PAM）|
+    | set/get宏 | 说明 |
+    | --- | --- |
+    | `PAM_SERVICE` | 服务名 |
+    | `PAM_USER` | 提供身份服务的实体用户名 |
+    | `PAM_USER_PROMPT` | 提示用户输入 name 时使用的 string。此string的默认值是 'login:' 的本地化 |
+    | `PAM_TTY` | 终端名，如果是设备文件，则以`/dev/`为前缀，对于图形界面，此值是 $DISPLAY 变量 |
+    | `PAM_RUSER` | 请求用户名，本地请求用户的本地名或远程请求用户的远程名 |
+    | `PAM_RHOST` | 正在请求的主机名 |
+    | `PAM_AUTHTOK` | 认证令牌（通常是密码）。除`pam_sm_authenticate()` 和 `pam_sm_chauthok()`外，所有模块功能都应该忽略此令牌 |
+    | `PAM_OLDAUTHTOK` | 旧的身份令牌。除`pam_sm_chauthtok`外所有模块都应该忽略此令牌 |
+    | `PAM_CONV` | `pam_conv` 结构 |
+    | `PAM_FAIL_DELAY` | 用于重定向集中管理的故障延迟 (特定Linux-PAM) |
+    | `PAM_XDISPLAY` | X显示的名称 （特定Linux-PAM）|
+    | `PAM_XAUTHDATA` | 指向包含X认证数据结构的指针，该数据需要与 `PAM_XDISPLAY` 指定的显示器建立连接。`pam_xauth_data()` （特定Linux-PAM）|
+    | `PAM_AUTHTOK_TYPE` | 默认操作是在请求密码时使用以下提示： "New UNIX password:" 和 "Retype UNIX password:"默认情况下未空`pam_get_authtok`（特定Linux-PAM）|
 
-    - 返回值
-        | 返回宏 | 说明 |
-        | --- | --- |
-        | PAM_BAD_ITEM | application尝试设置未定义或无法访问的item |
-        | PAM_BUF_ERR | 内存缓冲区错误 |
-        | PAM_SUCCESS | 数据更新成功 |
-        | PAM_CONV_ERR | 应用程序提供的对话方法无法获取用户名 |
-        | PAM_SYSTEM_ERR | 作为第一个参数传递的 `pam_handle_t` |
+- 返回值
+
+    | 返回宏 | 说明 |
+    | --- | --- |
+    | PAM_BAD_ITEM | application尝试设置未定义或无法访问的item |
+    | PAM_BUF_ERR | 内存缓冲区错误 |
+    | PAM_SUCCESS | 数据更新成功 |
+    | PAM_CONV_ERR | 应用程序提供的对话方法无法获取用户名 |
+    | PAM_SYSTEM_ERR | 作为第一个参数传递的 `pam_handle_t` |
 
 5. 描述PAM错误的字符串
 
-    ```c
-    #include <security/pam_appl.h>
+```c
+#include <security/pam_appl.h>
     
-    const char *pam_strerror (pamh, errnum);	 
+const char *pam_strerror (pamh, errnum);	 
 
-    pam_handle_t *pamh;
-    int errnum;
-    ```
+pam_handle_t *pamh;
+int errnum;
+```
+
 > 该`pam_strerror`函数返回指向描述在参数errnum中传递的错误代码的字符串的指针，可能使用当前语言环境的`LC_MESSAGES`部分来选择适当的语言。该字符串不得由应用程序修改。没有库函数将修改此字符串。
 
-    - 返回值：此函数始终返回指向字符串的指针
+- 返回值：此函数始终返回指向字符串的指针
 
 6. 请求失败延迟
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_fail_delay (pamh, usec);	 
+```c
+#include <security/pam_appl.h>
+int pam_fail_delay (pamh, usec);	 
 
-    pam_handle_t *pamh;
-    unsigned int usec;
-    ```
+pam_handle_t *pamh;
+unsigned int usec;
+```
+
 > 该`pam_fail_delay`功能提供了一种机制，应用程序或模块可通过该机制建议usc微秒的最小延迟。该功能记录该功能请求的最长时间。如果`pam_authenticate`失败，则失败的返回到应用程序的时间将延迟大约此最长值随机分布的时间（最多25％）。
 > 与成功无关，当PAM服务模块将控制权返回给应用程序时，延迟时间将重置为其默认值零。在调用所有身份验证模块之后，但在将 控制权返回给服务应用程序之前，将发生延迟。
 
-    - 使用此功能须检查功能是否可用
+- 使用此功能须检查功能是否可用
     
-        ```c
-        #ifdef HAVE_PAM_FAIL_DELAY
-        ...
-        #endif
-        ```
+```c
+#ifdef HAVE_PAM_FAIL_DELAY
+...
+#endif
+```
 
 > 对于事件驱动的程序，使用此延迟是不被希望的，对于其它程序可能希望以其它方式注册延迟。可用`pam_get_item`/`pam_set_item` 查询设置函数指针
 
-        ```c
-        void (*delay_fn)(int retval, unsigned usec_delay, void *appdata_ptr);
-        ```
+```c
+void (*delay_fn)(int retval, unsigned usec_delay, void *appdata_ptr);
+```
 
 7. 验证
 
@@ -298,237 +310,244 @@
 > PAM服务模块可以请求用户通过对话机制输入其用户名(参看`pam_start`和 `pam_conv`)
 > 通过身份验证的用户名将出现在PAM项`PAM_USER`中。可以通过调用`pam_get_item`来恢复该项目 。
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_authenticate (pamh, flags);	 
-    pam_handle_t *pamh;
-    int flags;
-    ```
+```c
+#include <security/pam_appl.h>
+int pam_authenticate (pamh, flags);	 
+pam_handle_t *pamh;
+int flags;
+```
 
-    - flags 参数可以是如下：
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_SILENT | 不要发出任何消息 |
-        | PAM_DISALLOW_NULL_AUTHTOK | 如果用户没有注册的身份验证令牌，则PAM模块服务应返回PAM_AUTH_ERR |
+- flags 参数可以是如下：
 
-    - 返回值
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_SILENT | 不要发出任何消息 |
+    | PAM_DISALLOW_NULL_AUTHTOK | 如果用户没有注册的身份验证令牌，则PAM模块服务应返回PAM_AUTH_ERR |
 
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_ABORT | 调用pam_end之后调用此值 |
-        | PAM_AUTH_ERR | 用户未通过身份验证 |
-        | PAM_CRED_INSUFFICIENT | 由于某种原因，程序没有足够的凭据验证用户身份 |
-        | PAM_AUTHINFO_UNVAIL | 模块无法访问身份验证信息。可能是网络或硬件故障引起 |
-        | PAM_MAXTRIES | 一个或多个身份验证模块已达到尝试对用户进行身份验证的限制，不要再试一次 |
-        | PAM_SUCCESS | 用户已成功认证 |
-        | PAM_USER_UNKNOWN | 身份验证服务未知的用户 |
+- 返回值
+
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_ABORT | 调用pam_end之后调用此值 |
+    | PAM_AUTH_ERR | 用户未通过身份验证 |
+    | PAM_CRED_INSUFFICIENT | 由于某种原因，程序没有足够的凭据验证用户身份 |
+    | PAM_AUTHINFO_UNVAIL | 模块无法访问身份验证信息。可能是网络或硬件故障引起 |
+    | PAM_MAXTRIES | 一个或多个身份验证模块已达到尝试对用户进行身份验证的限制，不要再试一次 |
+    | PAM_SUCCESS | 用户已成功认证 |
+    | PAM_USER_UNKNOWN | 身份验证服务未知的用户 |
 
 8. 用户身份凭证
 
-    ```c
-    #include <security/pam_appl.h>
+```c
+#include <security/pam_appl.h>
 
-    int pam_setcred(pamh, flags);	 
-    pam_handle_t *pamh;
-    int flags;
-    ```
+int pam_setcred(pamh, flags);	 
+pam_handle_t *pamh;
+int flags;
+```
 
-    - flag
+- flag
 
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_ESTABLISH_CRED | 初始化用户的凭据 |
-        | PAM_DELETE_CRED | 删除用户的凭据 |
-        | PAM_REINITIALIZE_CRED | 完全重新初始化用户的凭据 |
-        | PAM_REFRESH_CRED | 延长现有凭证的寿命 |
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_ESTABLISH_CRED | 初始化用户的凭据 |
+    | PAM_DELETE_CRED | 删除用户的凭据 |
+    | PAM_REINITIALIZE_CRED | 完全重新初始化用户的凭据 |
+    | PAM_REFRESH_CRED | 延长现有凭证的寿命 |
 
-    - 返回值
+- 返回值
 
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_BUF_ERR | 内存缓冲区错误 |
-        | PAM_CRED_ERR | 设置用户凭证失败 |
-        | PAM_CRED_EXPIRED | 用户凭证已过期 |
-        | PAM_CRED_UNAVAIL | 无法检索用户凭据 |
-        | PAM_SUCCESS | 数据已成功存储 |
-        | PAM_SYSTEM_ERR | 系统错误 |
-        | PAM_USER_UNKNOWN | 身份验证模块未知用户 |
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_BUF_ERR | 内存缓冲区错误 |
+    | PAM_CRED_ERR | 设置用户凭证失败 |
+    | PAM_CRED_EXPIRED | 用户凭证已过期 |
+    | PAM_CRED_UNAVAIL | 无法检索用户凭据 |
+    | PAM_SUCCESS | 数据已成功存储 |
+    | PAM_SYSTEM_ERR | 系统错误 |
+    | PAM_USER_UNKNOWN | 身份验证模块未知用户 |
 
 9. 账户验证管理
 
 > 该`pam_acct_mgmt`函数用于确定用户帐户是否有效。它检查身份验证令牌和帐户到期并验证访问限制。通常在用户通过身份验证后调用。
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_acct_mgmt(pamh, flags);	 
+```c
+#include <security/pam_appl.h>
+int pam_acct_mgmt(pamh, flags);	 
 
-    pam_handle_t *pamh;
-    int flags;
-    ```
+pam_handle_t *pamh;
+int flags;
+```
 
-    - flags 取值
+- flags 取值
 
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_ACCT_EXPIRED | 用户账户已过期 |
-        | PAM_AUTH_ERR | 验证失败 |
-        | PAM_NEW_AUTHTOK_REQD | 用户账户有效，但其身份验证令牌已过期。此返回值的正确响应是要求用户pam_chauthtok()在获得服务之前满足该功能。某些应用程序可能无法执行此操作。在这种情况下，应拒绝用户访问权限，直到他们可以更新密码为止。|
-        | PAM_PERM_DENIED | 没有权限 |
-        | PAM_SUCCESS | 身份验证令牌已成功更新 |
-        | PAM_USER_UNKNOWN | 密码服务未知的用户 |
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_ACCT_EXPIRED | 用户账户已过期 |
+    | PAM_AUTH_ERR | 验证失败 |
+    | PAM_NEW_AUTHTOK_REQD | 用户账户有效，但其身份验证令牌已过期。此返回值的正确响应是要求用户pam_chauthtok()在获得服务之前满足该功能。某些应用程序可能无法执行此操作。在这种情况下，应拒绝用户访问权限，直到他们可以更新密码为止。|
+    | PAM_PERM_DENIED | 没有权限 |
+    | PAM_SUCCESS | 身份验证令牌已成功更新 |
+    | PAM_USER_UNKNOWN | 密码服务未知的用户 |
 
 10. 更新身份验证令牌
 
 > 该`pam_chauthtok`功能用于更改给定用户的身份验证令牌
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_chauthtok(pamh, flags);	 
+```c
+#include <security/pam_appl.h>
+int pam_chauthtok(pamh, flags);	 
 
-    pam_handle_t *pamh;
-    int flags;
-    ```
+pam_handle_t *pamh;
+int flags;
+```
 
-    - flags 参数和含义
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_SILENT | 不发出任何消息 |
-        | PAM_CHANGE_EXPIRED_AUTHTOK | 此参数向模块只是仅当用户身份验证令牌已过期时才对其进行更改。如果没传递此参数，应用程序更改所有身份验证令牌 |
+- flags 参数和含义
 
-    - 返回值
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_SILENT | 不发出任何消息 |
+    | PAM_CHANGE_EXPIRED_AUTHTOK | 此参数向模块只是仅当用户身份验证令牌已过期时才对其进行更改。如果没传递此参数，应用程序更改所有身份验证令牌 |
 
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_AUTHTOK_ERR | 模块无法获取新的身份验证令牌 |
-        | PAM_AUTHTOK_RECOVERY_ERR | 模块无法获取旧的身份验证令牌 |
-        | PAM_AUTHTOK_LOCK_BUSY | 一个或多个模块无法更改身份验证令牌，因为它处于锁定状态 |
-        | PAM_AUTHTOK_DISABLE_AGING | 至少其中一个模块的身份验证令牌过期已禁用 |
-        | PAM_PERM_DENIED | 没有权限 |
-        | PAM_SUCCESS | 身份验证令牌已成功更新 |
-        | PAM_TRY_AGAIN | 并非所有模块都可以更新身份验证令牌。这种情况下，不会更新用户身份验证令牌 |
-        | PAM_USER_UNKNOWN | 密码服务未知的用户 |
+- 返回值
+
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_AUTHTOK_ERR | 模块无法获取新的身份验证令牌 |
+    | PAM_AUTHTOK_RECOVERY_ERR | 模块无法获取旧的身份验证令牌 |
+    | PAM_AUTHTOK_LOCK_BUSY | 一个或多个模块无法更改身份验证令牌，因为它处于锁定状态 |
+    | PAM_AUTHTOK_DISABLE_AGING | 至少其中一个模块的身份验证令牌过期已禁用 |
+    | PAM_PERM_DENIED | 没有权限 |
+    | PAM_SUCCESS | 身份验证令牌已成功更新 |
+    | PAM_TRY_AGAIN | 并非所有模块都可以更新身份验证令牌。这种情况下，不会更新用户身份验证令牌 |
+    | PAM_USER_UNKNOWN | 密码服务未知的用户 |
 
 11. 开始PAM会话管理
 
 > 该`pam_open_session`功能为先前成功通过身份验证的用户设置用户会话。稍后应通过调用`pam_close_session`终止会话 。
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_open_session (pamh, flags);	 
+```c
+#include <security/pam_appl.h>
+int pam_open_session (pamh, flags);	 
 
-    pam_handle_t *pamh;
-    int flags;
-    ```
+pam_handle_t *pamh;
+int flags;
+```
 
-    - flags
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_SILENT | 不要发出任何消息 |
+- flags
 
-    - 返回值
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_SILENT | 不要发出任何消息 |
 
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_ABORT | 一般失败 |
-        | PAM_BUF_ERR | 内部缓冲区错误 |
-        | PAM_SESSION_ERR | 会话失败 |
-        | PAM_SUCCESS | 会话创建成功 |
+- 返回值
+
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_ABORT | 一般失败 |
+    | PAM_BUF_ERR | 内部缓冲区错误 |
+    | PAM_SESSION_ERR | 会话失败 |
+    | PAM_SUCCESS | 会话创建成功 |
 
 12. 终止PAM会话管理
 
 > 该`pam_close_session`功能用于指示已认证的会话已结束。
 > 有效的uid geteuid 应具有足够的特权来执行诸如卸载用户主目录之类的任务
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_close_session (pamh, flags);	 
+```c
+#include <security/pam_appl.h>
+int pam_close_session (pamh, flags);	 
 
-    pam_handle_t *pamh;
-    int flags;
-    ```
+pam_handle_t *pamh;
+int flags;
+```
 
-    - flags
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_SILENT | 不要发出任何消息 |
+- flags
 
-    - 返回值
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_SILENT | 不要发出任何消息 |
 
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_ABORT | 一般失败 |
-        | PAM_BUF_ERR | 内存缓冲区错误 |
-        | PAM_SESSION_ERR | 会话失败 |
-        | PAM_SUCCESS | 会话已成功终止 |
+- 返回值
+
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_ABORT | 一般失败 |
+    | PAM_BUF_ERR | 内存缓冲区错误 |
+    | PAM_SESSION_ERR | 会话失败 |
+    | PAM_SUCCESS | 会话已成功终止 |
 
 13. 设置/更改PAM环境变量
 
-    ```c
-    #include <security/pam_appl.h>
-    int pam_putenv (pamh, name_value);	 
+```c
+#include <security/pam_appl.h>
+int pam_putenv (pamh, name_value);	 
 
-    pam_handle_t *pamh;
-    const char *name_value;
-    ```
+pam_handle_t *pamh;
+const char *name_value;
+```
 
 > 该`pam_putenv`函数用于添加或更改与pamh句柄关联的PAM环境变量的值
 
-    - `name_value`格式: "NAME=VALUE"，NAME已存在则被覆盖，否则将添加到PAM环境中;"NAME="表示空值，允许这样设置; "NAME"表示删除PAM环境中相应的变量
-    - 返回值
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_PERM_DENIED | 给定参数name_value是NULL指针 |
-        | PAM_BAD_ITEM | 当前未设置请求的变量(用于删除) |
-        | PAM_ABORT | 该句柄已损坏 |
-        | PAM_BUF_ERR | 内存缓冲区错误 |
-        | PAM_SUCCESS | 环境变量已成功更新 |
+- `name_value`格式: "NAME=VALUE"，NAME已存在则被覆盖，否则将添加到PAM环境中;"NAME="表示空值，允许这样设置; "NAME"表示删除PAM环境中相应的变量
+- 返回值
+
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_PERM_DENIED | 给定参数name_value是NULL指针 |
+    | PAM_BAD_ITEM | 当前未设置请求的变量(用于删除) |
+    | PAM_ABORT | 该句柄已损坏 |
+    | PAM_BUF_ERR | 内存缓冲区错误 |
+    | PAM_SUCCESS | 环境变量已成功更新 |
 
 14. 获取PAM环境变量
 
-    ```c
-    #include <security/pam_appl.h>
-    const char *pam_getenv (pamh, name);	 
+```c
+#include <security/pam_appl.h>
+const char *pam_getenv (pamh, name);	 
 
-    pam_handle_t *pamh;
-    const char *name;
-    ```
+pam_handle_t *pamh;
+const char *name;
+```
+
 > `pam_getenv` 函数在与句柄关联的环境中搜索指向字符串的匹配项，并返回指向环境变量的指针，不允许释放该指针。
 
 15. 获取PAM环境变量链表
 
 > 返回环境变量的副本，需要释放
 
-    ```c
-    #include <security/pam_appl.h>
-    char **pam_getenvlist(pamh);	 
-    pam_handle_t *pamh;
-    ```
+```c
+#include <security/pam_appl.h>
+char **pam_getenvlist(pamh);	 
+pam_handle_t *pamh;
+```
 
 16. 对话功能
 
 > PAM库使用应用程序定义的回调来允许已加载的模块和应用程序之间的直接通信。
 > 拥有消息数组的意义在于，有可能在一次来自模块的调用中将许多东西传递给应用程序。对于应用程序来说，关联的事物一下子出现也很方便
 
-    ```c
-    #include <security/pam_appl.h>
+```c
+#include <security/pam_appl.h>
     
-    struct pam_message {
-        int msg_style;
-        const char *msg;
-    };
+struct pam_message {
+    int msg_style;
+    const char *msg;
+};
 
-    struct pam_response {
-        char *resp;
-        int resp_retcode;
-    };
+struct pam_response {
+    char *resp;
+    int resp_retcode;
+};
 
-    struct pam_conv {
-        int (*conv)(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr);
-        void *appdata_ptr;
-    };
-    ```
+struct pam_conv {
+    int (*conv)(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr);
+    void *appdata_ptr;
+};
+```
 
-    - 消息类型(由`struct pam_message` 的`msg_style`成员指定)
+- 消息类型(由`struct pam_message` 的`msg_style`成员指定)
+
     | 宏 | 含义 |
     | --- | --- |
     | PAM_PROMPT_ECHO_OFF | 获取字符串而不回显任何文本 |
@@ -536,19 +555,18 @@
     | PAM_ERROR_MSG | 显示错误信息 |
     | PAM_TEXT_INFO | 显示一些文字 |
 
-    - 为了维护两个PAM实现与源代码级的兼容性，两个已知的模块编写器变通办法是
+- 为了维护两个PAM实现与源代码级的兼容性，两个已知的模块编写器变通办法是
     
-        1. 永远不要调用 `num_msg`大于1的对话函数
-        2. 将msg设置为双重引用，以便两种类型的对话功能都可以找到消息，也就是说，使 `msg[n]=&(((*msg)[n]))`
+    1. 永远不要调用 `num_msg`大于1的对话函数
+    2. 将msg设置为双重引用，以便两种类型的对话功能都可以找到消息，也就是说，使 `msg[n]=&(((*msg)[n]))`
 
-    - 返回值
-        | 宏 | 含义 |
-        | --- | --- |
-        | PAM_BUF_ERR | 内存缓冲区错误 |
-        | PAM_CONV_ERR | 通话失败，该应用不应设置*resp |
-        | PAM_SUCCESS | 成功 |
+- 返回值
 
-    ```c
+    | 宏 | 含义 |
+    | --- | --- |
+    | PAM_BUF_ERR | 内存缓冲区错误 |
+    | PAM_CONV_ERR | 通话失败，该应用不应设置*resp |
+    | PAM_SUCCESS | 成功 |
 
 > 注意：所有身份验证服务函数调用都接受`PAM_SILENT`令牌，该令牌指示模块不向应用程序发送消息
 
@@ -575,10 +593,13 @@ Header file for useful library functions for making applications easier to write
 - 模块分为: 认证管理模块、帐号管理模块、会话管理模块、密码管理模块
 - PAM服务模块是一个共享库，可为系统登录应用程序（例如login, rlogin和telnet）提供身份验证和其他安全服务
 - PAM 库
+
     | 库 | 作用 |
     | --- | --- |
     | libpam | 应用程序可以调用此API进行身份验证，帐户管理，凭证建立，会话管理和密码更改 |
+
 - PAM 登录认证过程
+
     1. 应用程序调用 `pam_start` 指定pam服务名
     2. 应用程序调用 `pam_suthenticate` 
     3. PAM库在PAM配置中搜索身份验证的服务模块
@@ -586,44 +607,44 @@ Header file for useful library functions for making applications easier to write
 
 - 初始化
 
-| 宏 | 含义 |
-| --- | --- |
-| `PAM_USER` | 当前已验证的用户 |
-| `PAM_AUTHTOK` | 密码 |
-| `PAM_USER_PROMPT` | 用户名提示 |
-| `PAM_TTY` | 通过其进行用户通信的终端 |
-| `PAM_RHOST` | 用户通过其进入系统的远程主机 |
-| `PAM_REPOSITORY` | 对用户账户存储库的任何限制 |
-| `PAM_RESOURCE` | 任何对资源的控制 |
+    | 宏 | 含义 |
+    | --- | --- |
+    | `PAM_USER` | 当前已验证的用户 |
+    | `PAM_AUTHTOK` | 密码 |
+    | `PAM_USER_PROMPT` | 用户名提示 |
+    | `PAM_TTY` | 通过其进行用户通信的终端 |
+    | `PAM_RHOST` | 用户通过其进入系统的远程主机 |
+    | `PAM_REPOSITORY` | 对用户账户存储库的任何限制 |
+    | `PAM_RESOURCE` | 任何对资源的控制 |
 
 ### PAM开发小结
 
-#### PAM程序与PAM服务模块调用关系
+1. PAM程序与PAM服务模块调用关系
 
-| PAMY应用层函数 | PAM服务模块层函数 |
-| --- | --- |
-| `pam_authenticate` | `pam_sm_authenticate` |
-| `pam_setcred` | `pam_sm_setcred` |
-| `pam_acct_mgmt` | `pam_sm_acct_mgmt` |
-| `pam_open_session` | `pam_sm_open_session` |
-| `pam_close_session` | `pam_sm_close_session` |
-| `pam_chauthtok` | `pam_sm_chauthtok` |
+    | PAMY应用层函数 | PAM服务模块层函数 |
+    | --- | --- |
+    | `pam_authenticate` | `pam_sm_authenticate` |
+    | `pam_setcred` | `pam_sm_setcred` |
+    | `pam_acct_mgmt` | `pam_sm_acct_mgmt` |
+    | `pam_open_session` | `pam_sm_open_session` |
+    | `pam_close_session` | `pam_sm_close_session` |
+    | `pam_chauthtok` | `pam_sm_chauthtok` |
 
-#### PAM框架的API及其功能
+2. PAM框架的API及其功能
 
-| PAM框架API | 功能 |
-| --- | --- |
-| `pam_start` | 建立PAM会话 |
-| `pam_end` | 终止PAM会话 |
-| `pam_get_data`| 检索模块特定的数据 |
-| `pam_set_data`| 设置模块特定的数据 |
-| `pam_getenv` | 检索已定义的PAM环境变量的值 |
-| `pam_getenvlist` | 检索所有已定义的PAM环境变量及其值的列表 |
-| `pam_putenv` | 设置PAM环境变量 |
-| `pam_get_item` | 检索常见的PAM信息 |
-| `pam_set_item` | 设置公共PAM信息 |
-| `pam_get_user` | 检索用户名 |
-| `pam_strerror` | 获取PAM标准错误消息 |
+    | PAM框架API | 功能 |
+    | --- | --- |
+    | `pam_start` | 建立PAM会话 |
+    | `pam_end` | 终止PAM会话 |
+    | `pam_get_data`| 检索模块特定的数据 |
+    | `pam_set_data`| 设置模块特定的数据 |
+    | `pam_getenv` | 检索已定义的PAM环境变量的值 |
+    | `pam_getenvlist` | 检索所有已定义的PAM环境变量及其值的列表 |
+    | `pam_putenv` | 设置PAM环境变量 |
+    | `pam_get_item` | 检索常见的PAM信息 |
+    | `pam_set_item` | 设置公共PAM信息 |
+    | `pam_get_user` | 检索用户名 |
+    | `pam_strerror` | 获取PAM标准错误消息 |
 
 
 ```c
