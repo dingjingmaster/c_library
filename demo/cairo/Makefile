@@ -13,3 +13,4 @@ all:$(target)
 clean:
 	@rm -fr *.run
 	@rm -fr *.png
+	@rm -fr *.svg
