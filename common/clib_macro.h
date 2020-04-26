@@ -22,6 +22,7 @@ extern "C" {
 #define CT_CFREE(pointer)                                           \
     do {                                                            \
         if (NULL != pointer) free (pointer);                        \
+        pointer = NULL;                                             \
     } while (0)
 
 /* 调用函数 */
@@ -42,22 +43,15 @@ extern "C" {
 #define CT_INT_MAX(a, b, max)                                       \
         min = a > b ? a : b;
 
-/* 空指针返回 */
-#define CT_RETURN_IF_NULL(pointer, val)                             \
-    if (NULL == pointer) {                                          \
-        val == void ? return; : return val;                         \
-    }
-
-/* 失败返回 */
-#define CT_RETURN_IF_FAIL(fail, val)                                \
-    if (fail) {                                                     \
-        val == void ? return; : return val;                         \
-    }
-
 /* 成功返回 */
-#define CT_RETURN_IF_SUCCESS(success, val)                          \
+#define CT_RETURN_IF_SUCCESS(success)                               \
     if (success) {                                                  \
-        val == void ? return; : return val;                         \
+        return;                                                     \
+    }
+
+#define CT_RETURN_VALUE_IF_SUCCESS(success, val)                    \
+    if (success) {                                                  \
+        return val;                                                 \
     }
 
 #ifdef __cplusplus
