@@ -21,7 +21,7 @@ extern "C" {
 /* 释放 malloc 申请的内存 */
 #define CT_CFREE(pointer)                                           \
     do {                                                            \
-        if (NULL != pointer) free (pointer)                         \
+        if (NULL != pointer) free (pointer);                        \
     } while (0)
 
 /* 调用函数 */
