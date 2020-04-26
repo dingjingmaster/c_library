@@ -22,7 +22,7 @@ extern "C" {
 #define CT_CFREE(pointer)                                           \
     do {                                                            \
         if (NULL != pointer) free (pointer)                         \
-    } while (0);
+    } while (0)
 
 /* 调用函数 */
 #define CT_CALL_FUNC(func, ...)                                     \
@@ -34,7 +34,7 @@ extern "C" {
         stype tmp = first;                                          \
         first = second;                                             \
         second = tmp;                                               \
-    } while(0);
+    } while(0)
 
 #define CT_INT_MIN(a, b, min)                                       \
         min = a > b ? b : a;
