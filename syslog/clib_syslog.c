@@ -20,7 +20,7 @@ void syslog_init(const char *category, int loglevel, int facility)
 
 void syslog_info(int mlogLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...)
 {
-    if (mlogLevel >= logLevel)
+    if (mlogLevel <= logLevel)
         return;
 
     char buf[2048] = {0};
