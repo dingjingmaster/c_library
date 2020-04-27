@@ -1,5 +1,13 @@
 #include "clib_syslog.h"
 
+#ifdef RELEASE
+#define LOG_LEVEL LOG_INFO
+#elif DEBUG
+#define LOG_LEVEL LOG_DEBUG
+#else
+#define LOG_LEVEL LOG_ERR
+#endif
+
 static char sysCategory[128] = {0};
 static int sysFacility = 0;
 
@@ -16,7 +24,7 @@ void syslog_init(const char *category, int facility)
 
 void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...)
 {
-    if (logLevel > LOG_LEVEL)
+    if (logLevel >= LOG_LEVEL)
         return;
 
     char buf[2048] = {0};

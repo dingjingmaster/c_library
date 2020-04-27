@@ -10,12 +10,6 @@
 extern "C" {
 #endif
 
-#ifdef DEBUG
-#define LOG_LEVEL LOG_DEBUG
-#else
-#define LOG_LEVEL LOG_INFO
-#endif
-
 #define CT_SYSLOG(logLevel,...) {\
     syslog_info(logLevel, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
 }
