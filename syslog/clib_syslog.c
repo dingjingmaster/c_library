@@ -1,30 +1,26 @@
 #include "clib_syslog.h"
 
-#ifdef RELEASE
-#define LOG_LEVEL LOG_INFO
-#elif DEBUG
-#define LOG_LEVEL LOG_DEBUG
-#else
-#define LOG_LEVEL LOG_ERR
-#endif
-
+static int logLevel = LOG_INFO;
 static char sysCategory[128] = {0};
 static int sysFacility = 0;
 
-void syslog_init(const char *category, int facility)
+void syslog_init(const char *category, int loglevel, int facility)
 {
     if (NULL == category) {
         return;
     }
+
+    if (loglevel >= 0)
+        logLevel = loglevel;
 
     memset(sysCategory, 0, sizeof sysCategory);
     strncpy(sysCategory, category, sizeof sysCategory - 1);
     sysFacility = facility;
 }
 
-void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...)
+void syslog_info(int mlogLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...)
 {
-    if (logLevel >= LOG_LEVEL)
+    if (mlogLevel >= logLevel)
         return;
 
     char buf[2048] = {0};
@@ -72,3 +68,4 @@ void syslog_info(int logLevel, const char *fileName, const char *functionName, i
     closelog();
     va_end(para);
 }
+

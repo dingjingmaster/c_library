@@ -1,8 +1,9 @@
 #include <stdio.h>
+
 #include "clib_syslog.h"
 
 int main() {
-    syslog_init("clib syslog demo", LOG_LOCAL6);
+    syslog_init("clib syslog demo", LOG_DEBUG, LOG_LOCAL6);
     CT_SYSLOG(LOG_EMERG, "测试1");
     CT_SYSLOG(LOG_ALERT, "测试2");
     CT_SYSLOG(LOG_CRIT, "测试3");

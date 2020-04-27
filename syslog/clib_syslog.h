@@ -21,7 +21,7 @@ extern "C" {
  * @return
  *      void
  */
-void syslog_init(const char *category, int facility);
+void syslog_init(const char *category, int logLevel, int facility);
 
 /*
  * 日志输出到system log，默认LOG_INFO级别
