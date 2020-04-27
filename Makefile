@@ -79,6 +79,7 @@ mk_dir:
 	@mkdir -p $(EXAMPLE_DIR)
 	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
 	@cp $(CUR_DIR)/*/*.run $(EXAMPLE_DIR)
+	@rm -f $(LIB_DIR)/*
 	@mv $(LIB_NAME) $(LIB_DIR)
 
 mk_dir_debug:
