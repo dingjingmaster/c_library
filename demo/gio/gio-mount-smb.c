@@ -24,11 +24,7 @@ static void async_ready_cb(GObject *object, GAsyncResult *res, GtkBuilder *build
 		g_error_free (err);
 	}
 
-	GFileEnumerator *enumerator = g_file_enumerate_children(file,
-			G_FILE_ATTRIBUTE_STANDARD_NAME,
-			G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-			NULL,
-			NULL);
+	GFileEnumerator *enumerator = g_file_enumerate_children(file, G_FILE_ATTRIBUTE_STANDARD_NAME, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, NULL);
 
 	GtkWidget *list_box = gtk_list_box_new ();
 
@@ -58,21 +54,19 @@ static void async_ready_cb(GObject *object, GAsyncResult *res, GtkBuilder *build
 
 static void ask_question_cb (GMountOperation *op, char *message, char **choices, GtkBuilder* builder)
 {
-  char **ptr = choices;
-  char *s;
-  int i, choice;
+    char **ptr = choices;
+    char *s;
+    int i, choice;
 
-  g_print ("%s\n", message);
+    g_print ("%s\n", message);
 
-  i = 1;
-  while (*ptr)
-    {
-      g_print ("[%d] %s\n", i, *ptr++);
-      i++;
+    i = 1;
+    while (*ptr) {
+        g_print ("[%d] %s\n", i, *ptr++);
+        i++;
     }
-
-	g_mount_operation_set_choice (op, 0);
-	g_mount_operation_reply (op, G_MOUNT_OPERATION_HANDLED);
+    g_mount_operation_set_choice (op, 0);
+    g_mount_operation_reply (op, G_MOUNT_OPERATION_HANDLED);
 }
 
 static void ask_password_cb (GMountOperation *op, const char *message, const char *default_user, const char *default_domain, GAskPasswordFlags flags, GtkBuilder *builder) 
