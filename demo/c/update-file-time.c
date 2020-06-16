@@ -23,12 +23,17 @@ int main (int argc, char* argv[])
 
     memset (&t, 0, sizeof (struct tm));
 
+#if 0
     strptime (tim, "%Y-%m-%d %H:%M:%S", &t);
 
     time_t ntim = mktime(&t);
     struct utimbuf ntime = {ntim, ntim};
+#else
+    struct utimbuf ntime = {time(NULL), time(NULL)};
 
-    utime (argv[1], &ntime);
+#endif
+
+    printf ("%d\n", utime (argv[1], &ntime));
 
 
     return 0;
