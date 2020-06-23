@@ -7,6 +7,7 @@
 #include <glib-2.0/glib.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <stdio.h>
 
 static void async_ready_cb(GObject *object, GAsyncResult *res, GtkBuilder *builder)
 {

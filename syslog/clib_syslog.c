@@ -1,8 +1,13 @@
 #include "clib_syslog.h"
 
-static int logLevel = LOG_INFO;
 static char sysCategory[128] = {0};
 static int sysFacility = 0;
+
+#ifdef LOG_LEVEL
+static int logLevel = LOG_DEBUG;
+#else
+static int logLevel = LOG_INFO;
+#endif
 
 void syslog_init(const char *category, int loglevel, int facility)
 {

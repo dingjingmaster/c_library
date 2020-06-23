@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
       { 0, 0, 0, 0 }
     };
     c = getopt_long(argc, argv, "Dd:o:l:s:vh", longOpts, &optIndex);
-    printf("返回值： %c\n",c);
+    printf("返回值： %d\n",c);
     if(c == -1) {
       break;
     }
