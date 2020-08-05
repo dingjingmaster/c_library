@@ -25,7 +25,8 @@ void driver_func (gpointer data, gpointer udata)
     printf ("drive monted other volumes:%d\n", g_drive_has_volumes(v));
     printf ("drive can eject:%d\n", g_drive_can_eject(v));
     printf ("drive can stop:%d\n", g_drive_can_stop(v));
-    printf ("drive is removable:%d\n", g_drive_is_removable(v));
+    // 低版本不支持
+    //printf ("drive is removable:%d\n", g_drive_is_removable(v));
     printf ("drive can start degraded:%d\n", g_drive_can_start_degraded(v));
 
     v1 = g_drive_get_volumes(v);

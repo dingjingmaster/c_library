@@ -32,7 +32,7 @@ int main (void)
     printf ("file(test.test):%s\n", g_file_get_path(file));
 
     // 同上，但是结果会缓存
-    printf ("%s\n", g_file_peek_path(file));
+    //printf ("%s\n", g_file_peek_path(file));
 
     // uri格式的，本地路径是 file://+绝对路径
     printf ("%s\n", g_file_get_uri(file));
@@ -62,7 +62,7 @@ int main (void)
     //printf ("%s\n", g_file_get_relative_path(file, file3)); // 段错误
 
     // 将文件相对路径解析为绝对路径
-    printf ("%s\n", g_file_peek_path(g_file_resolve_relative_path(file3, "bbbxxx")));
+    //printf ("%s\n", g_file_peek_path(g_file_resolve_relative_path(file3, "bbbxxx")));
 
     // 检查文件是否是本地原生的，windows和linux
     printf ("%d\n", g_file_is_native(file1));
