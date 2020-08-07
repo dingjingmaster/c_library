@@ -9,7 +9,13 @@ gtk3_target = $(patsubst %.c, %.run, $(gtk3_src))
 gtk4_src = $(wildcard gtk4_*.c)
 gtk4_target = $(patsubst %.c, %.run, $(gtk4_src))
 
-all:$(gtk4_target) $(gtk3_target) $(gtk2_target)
+all:$(gtk3_target) $(gtk2_target) $(gtk4_target)
+
+gtk2: $(gtk2_target)
+
+gtk3:$(gtk3_target)
+
+gtk4:$(gtk4_target)
 
 gtk2_%.run:gtk2_%.c
 	cc -o $@ $^ $(cflag) `pkg-config --cflags gtk+-2.0 --libs gtk+-2.0`
