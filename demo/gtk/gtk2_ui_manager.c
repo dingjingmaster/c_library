@@ -26,10 +26,10 @@ static GtkActionEntry entries[] = {
 
 int main(int argc, char *argv[]) 
 {
-    GtkWidget *window;
-    GtkActionGroup *actionGroup;
-    GtkUIManager *ui;
-    GtkWidget *vbox;
+    GtkWidget *vbox = NULL;
+    GtkUIManager *ui = NULL;
+    GtkWidget *window = NULL;
+    GtkActionGroup *actionGroup = NULL;
 
     gtk_init(&argc, &argv);
 
@@ -45,8 +45,9 @@ int main(int argc, char *argv[])
     gtk_ui_manager_add_ui_from_file(ui, "resource/gtk2_ui_manager.xml", NULL);
 
     vbox = gtk_vbox_new(FALSE, 5);
-    gtk_box_pack_start(GTK_BOX(vbox), 
-    gtk_ui_manager_get_widget(ui, "/MenuBar"), FALSE, FALSE, 2);
+
+    // 此处路径是由 /ul 开始计算的
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_ui_manager_get_widget(ui, "/MenuBar"), FALSE, FALSE, 2);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
     g_signal_connect(GTK_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
