@@ -34,7 +34,7 @@ gboolean expose_event_callback(GtkWidget *widget, GdkEventExpose *event, gpointe
     gdk_draw_arc(drawable, gc, TRUE, 10, 150, 100, 50, 45 * 64, 300 * 64);
 
     // 畫一張圖
-    gdk_draw_pixbuf(drawable, gc, gdk_pixbuf_new_from_file("caterpillar.jpg", NULL), 0, 0, 150, 10, -1, -1, GDK_RGB_DITHER_NORMAL, 0, 0);
+    gdk_draw_pixbuf(drawable, gc, gdk_pixbuf_new_from_file("resource/1.png", NULL), 0, 0, 150, 10, -1, -1, GDK_RGB_DITHER_NORMAL, 0, 0);
 
     return TRUE;
 }
