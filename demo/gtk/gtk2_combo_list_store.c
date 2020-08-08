@@ -1,5 +1,5 @@
 /*************************************************************************
-> FileName: gtk2_combo_list_model.c
+> FileName: gtk2_combo_list_store.c
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2020年08月07日 星期五 21时02分13秒
