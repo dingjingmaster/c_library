@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
     gtk_window_set_default_size(GTK_WINDOW(window), 200, 50);
 
     treeView = gtk_tree_view_new_with_model(createModel());
+
     renderer = gtk_cell_renderer_pixbuf_new();
     column = gtk_tree_view_column_new_with_attributes("Icon", renderer, "pixbuf", PIXBUF_COL, NULL);
     gtk_tree_view_append_column(GTK_TREE_VIEW (treeView), column);
