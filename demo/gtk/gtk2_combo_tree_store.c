@@ -32,11 +32,11 @@ GtkTreeModel* createModel()
         "GTK_STOCK_OPEN"
     };
 
-    GtkWidget *cellView;
-    GdkPixbuf *pixbuf;
-    GtkTreeIter iter1, iter2;
-    GtkTreeStore *store;
     gint i, j, s;
+    GdkPixbuf *pixbuf;
+    GtkWidget *cellView;
+    GtkTreeStore *store;
+    GtkTreeIter iter1, iter2;
 
     store = gtk_tree_store_new(2, GDK_TYPE_PIXBUF, G_TYPE_STRING);
     cellView = gtk_cell_view_new();
@@ -48,8 +48,8 @@ GtkTreeModel* createModel()
 
         for(j = 0; j < 3; j++) {
             s = rand() % 5;
-            pixbuf = gtk_widget_render_icon(cellView, stocks[s],
-            GTK_ICON_SIZE_BUTTON, NULL);
+            pixbuf = gtk_widget_render_icon(cellView, stocks[s], GTK_ICON_SIZE_BUTTON, NULL);
+            // 第一个是追加的节点，第二个是子节点
             gtk_tree_store_append(store, &iter2, &iter1);
             gtk_tree_store_set(store, &iter2, PIXBUF_COL, pixbuf, TEXT_COL, stockNames[s], -1);
             gdk_pixbuf_unref(pixbuf);
@@ -61,9 +61,11 @@ GtkTreeModel* createModel()
 
 gboolean combo_changed(GtkComboBox *comboBox, GtkLabel *label) 
 {
-    GtkTreeModel *model = gtk_combo_box_get_model(comboBox);
-    GtkTreeIter iter;
     gchar *active;
+    GtkTreeIter iter;
+    GtkTreeModel *model = gtk_combo_box_get_model(comboBox);
+
+    // 激活的那个子节点
     gtk_combo_box_get_active_iter(comboBox, &iter);
     gtk_tree_model_get(model, &iter, 1, &active, -1);
 
@@ -86,9 +88,13 @@ int main(int argc, char *argv[])
 
     comboBox = gtk_combo_box_new_with_model(createModel());
     gtk_combo_box_set_active(GTK_COMBO_BOX(comboBox), 0);
+
+    // 第一列
     renderer = gtk_cell_renderer_pixbuf_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(comboBox), renderer, FALSE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(comboBox), renderer, "pixbuf", PIXBUF_COL,  NULL);
+
+    // 第二列
     renderer = gtk_cell_renderer_text_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(comboBox), renderer, FALSE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(comboBox), renderer, "text", TEXT_COL, NULL);    
@@ -100,9 +106,8 @@ int main(int argc, char *argv[])
     gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 5);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
-    g_signal_connect(GTK_OBJECT(comboBox), "changed", G_CALLBACK(combo_changed), label);
-
     g_signal_connect(GTK_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(GTK_OBJECT(comboBox), "changed", G_CALLBACK(combo_changed), label);
 
     gtk_widget_show_all(window);
 
