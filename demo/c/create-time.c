@@ -34,14 +34,12 @@ int main (int argc, char* argv[])
     for (i = 0, tmp = path; (tmp != NULL) && (path[i] != '\0'); tmp = strstr(path + i, "/"), i = tmp - path + 1){
         if (NULL != tmp)
             name = tmp;
-        puts(name);
     }
 
     if (name != path) {
         *name = '\0';
         name = name + 1;
     }
-    printf ("path:%s, name:%s\n", path, name);
 
     fd = open (path, O_RDONLY);
     if (fd < 0) {
@@ -51,7 +49,7 @@ int main (int argc, char* argv[])
 
     ret = statx (fd, name, AT_SYMLINK_NOFOLLOW, STATX_ALL, &buf);
     if (0 == ret) {
-        printf ("create time:%d\n", buf.stx_ctime.tv_sec);
+        printf ("%d\n", buf.stx_ctime.tv_sec);
     } else if (EACCES == errno) {
         printf ("permission is denied\n");
     } else if (EBADF == errno) {
