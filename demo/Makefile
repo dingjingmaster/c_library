@@ -9,6 +9,7 @@ all:
 	@cd dbus/ && make all
 	@cd cairo/ && make all
 	@cd pam/ && make all
+	@cd sl/ && make all
 
 .PHONY:clean 
 
@@ -23,3 +24,4 @@ clean:
 	@cd dbus/ && make clean
 	@cd cairo/ && make clean
 	@cd pam/ && make clean
+	@cd sl/ && make clean
