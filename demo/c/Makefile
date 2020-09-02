@@ -9,10 +9,10 @@ target = $(strip $(patsubst %.c, %.run, $(src)))
 all:$(target)
 
 %.run:%.o
-	cc `pkg-config --cflags --libs glib-2.0` -o $@ $^ $(cflag) 
+	cc -o $@ $< `pkg-config --cflags --libs glib-2.0 gio-2.0` $(cflag) 
 
 %.o:%.c
-	cc `pkg-config --cflags glib-2.0` -o $@ -c $< $(cflag)
+	cc `pkg-config --cflags --libs glib-2.0 gio-2.0` -o $@ -c $< $(cflag)
 
 .PHONY:clean all
 
