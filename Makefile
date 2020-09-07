@@ -1,30 +1,43 @@
-LIB_NAME = libdjctools.a
-CUR_DIR = $(shell pwd)
-LIB_DIR = $(CUR_DIR)/package/lib/
-HEAD_DIR = $(CUR_DIR)/package/include/djctool/
-SYSTEM_HEAD_DIR = /usr/include/
-DEBUG_DIR = $(CUR_DIR)/package/debug/
-EXAMPLE_DIR = $(CUR_DIR)/package/example/
+lib_name = libdjctools.a
+current = $(shell pwd)
+lib_dir = $(current)/package/lib/
+head_dir = $(current)/package/include/djctool/
+linux_heade = /usr/include/
+debug_dir = $(current)/package/debug/
+example_dir = $(current)/package/example/
 
-HEADS = -I$(CUR_DIR)/common/					\
+heads = \
+    -I$(current)/common/					\
 
-INSTALL_LIB_DIR = /usr/lib/
-INSTALL_HEAD_DIR = /usr/include/djctool/
+install_lib_dir = \
+	/usr/lib/								\
 
-libs = -lpthread
+install_head_dir = \
+	/usr/include/djctool/
 
-target_flag = -w
-flag = -Wall -Werror							\
-	   -Wno-error=format-security
+libs = \
+	-lpthread
 
-debug_flag = -Wall -Werror -g3 -p
+target_flag = \
+	-w
 
-src = $(filter-out [g]test%, $(filter-out %_example.c, $(strip $(subst $(CUR_DIR), ., $(wildcard $(CUR_DIR)/*/*.c)))))
+flag = \
+	-Wall									\
+	-Werror									\
+	-Wno-error=format-security
+
+debug_flag = \
+	-p										\
+	-g3										\
+	-Wall									\
+	-Werror									\
+
+src = $(filter-out [g]test%, $(filter-out %-example.c, $(strip $(subst $(current), ., $(wildcard $(current)/*/*.c)))))
 obj = $(strip $(patsubst %.c, %.o, $(src)))
-target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run, $(wildcard $(CUR_DIR)/*/*_example.c))))
+target = $(strip $(subst $(current), ., $(patsubst %.c, %.run, $(wildcard $(current)/*/*-example.c))))
 
 debug_obj = $(strip $(patsubst %.c, %.o_debug, $(src)))
-debug_target = $(strip $(subst $(CUR_DIR), ., $(patsubst %.c, %.run_debug, $(wildcard $(CUR_DIR)/*/*_example.c))))
+debug_target = $(strip $(subst $(current), ., $(patsubst %.c, %.run_debug, $(wildcard $(current)/*/*-example.c))))
 
 all:$(target) static_lib mk_dir
 	@cd frame && make all
@@ -50,44 +63,44 @@ tools:
 	@cd tools && make all
 
 install:all
-	@mkdir -p $(INSTALL_HEAD_DIR)
-	cp $(HEAD_DIR)/* -r $(INSTALL_HEAD_DIR)
-	cp $(LIB_DIR)/* $(INSTALL_LIB_DIR)
+	@mkdir -p $(install_head_dir)
+	cp $(head_dir)/* -r $(install_head_dir)
+	cp $(lib_dir)/* $(install_lib_dir)
 	@cd tools && make install
 	@echo "install done!"
 
 debug:$(debug_target) mk_dir_debug
 
 static_lib: $(obj)
-	ar rcs -o $(LIB_NAME) $^
+	ar rcs -o $(lib_name) $^
 
 %.run_debug:%.o_debug $(debug_obj)
-	cc $(debug_flag) $(HEADS) $(libs) -o $@ $^ $(libs) $(libs)
+	cc $(debug_flag) $(heads) $(libs) -o $@ $^ $(libs) $(libs)
 
 %.run:%.o $(obj)
-	cc ${target_flag} $(HEADS) $(libs) -o $@ $^ $(libs)
+	cc ${target_flag} $(heads) $(libs) -o $@ $^ $(libs)
 
 %.o_debug:%.c
-	cc $(debug_flag) $(HEADS) $(libs) -o $@ -c $<
+	cc $(debug_flag) $(heads) $(libs) -o $@ -c $<
 
 %.o:%.c
-	cc $(flag) $(HEADS) $(libs) -o $@ -c $< 
+	cc $(flag) $(heads) $(libs) -o $@ -c $< 
 
 mk_dir:
-	@mkdir -p $(LIB_DIR)
-	@mkdir -p $(HEAD_DIR)
-	@mkdir -p $(EXAMPLE_DIR)
-	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
-	@cp $(CUR_DIR)/*/*.run $(EXAMPLE_DIR)
-	@rm -f $(LIB_DIR)/*
-	@mv $(LIB_NAME) $(LIB_DIR)
+	@mkdir -p $(lib_dir)
+	@mkdir -p $(head_dir)
+	@mkdir -p $(example_dir)
+	@cp $(current)/*/*.h $(head_dir)
+	@cp $(current)/*/*.run $(example_dir)
+	@rm -f $(lib_dir)/*
+	@mv $(lib_name) $(lib_dir)
 
 mk_dir_debug:
-	@mkdir -p $(LIB_DIR)
-	@mkdir -p $(HEAD_DIR)
-	@mkdir -p $(DEBUG_DIR)
-	@cp $(CUR_DIR)/*/*.h $(HEAD_DIR)
-	@cp $(CUR_DIR)/*/*.run_debug $(DEBUG_DIR)
+	@mkdir -p $(lib_dir)
+	@mkdir -p $(head_dir)
+	@mkdir -p $(debug_dir)
+	@cp $(current)/*/*.h $(head_dir)
+	@cp $(current)/*/*.run_debug $(debug_dir)
 
 .PHONY:clean demo tools help all frame install
 

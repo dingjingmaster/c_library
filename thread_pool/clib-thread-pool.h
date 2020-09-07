@@ -1,12 +1,12 @@
 /*************************************************************************
-> FileName: clib_thread_pool.h
+> FileName: clib-thread-pool.h
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年11月26日 星期二 21时38分26秒
  ************************************************************************/
 
-#ifndef _CLIB_THREAD_POOL_H
-#define _CLIB_THREAD_POOL_H
+#ifndef _CLIBTHREADPOOL_H
+#define _CLIBTHREADPOOL_H
 #ifdef __cplusplus
 extern "C" {
 #endif

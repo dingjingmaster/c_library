@@ -1,11 +1,11 @@
 /*************************************************************************
-> FileName: clib_array_list.h
+> FileName: clib-array-list.h
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年07月24日 星期三 16时45分13秒
  ************************************************************************/
-#ifndef _CLIB_ARRAY_LIST_H
-#define _CLIB_ARRAY_LIST_H
+#ifndef _CLIBARRAYLIST_H
+#define _CLIBARRAYLIST_H
 #ifdef __cplusplus
 extern "C" {
 #endif

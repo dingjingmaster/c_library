@@ -1,11 +1,11 @@
 /*************************************************************************
-> FileName: clib_double_list.h
+> FileName: clib-double-list.h
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年11月07日 星期四 21时25分38秒
  ************************************************************************/
-#ifndef _CLIB_DOUBLE_LIST_H
-#define _CLIB_DOUBLE_LIST_H
+#ifndef _CLIBDOUBLELIST_H
+#define _CLIBDOUBLELIST_H
 #ifdef __cplusplus
 extern "C"{
 #endif

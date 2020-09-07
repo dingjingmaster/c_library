@@ -1,13 +1,14 @@
 /*************************************************************************
-> FileName: clib_bstring.c
+> FileName: clib-bstring.c
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年11月07日 星期四 22时33分03秒
  ************************************************************************/
+#include "clib-bstring.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "clib_bstring.h"
 
 char* bstring_new_len(const void* str, size_t strl)
 {

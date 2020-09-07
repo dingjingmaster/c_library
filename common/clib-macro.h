@@ -4,8 +4,8 @@
 > Mail    : dingjing@live.cn
 > Created Time: 2020年04月26日 星期日 11时34分53秒
  ************************************************************************/
-#ifndef _CLIB_MACRO_H
-#define _CLIB_MACRO_H
+#ifndef _CLIBMACRO_H
+#define _CLIBMACRO_H
 
 /**
  * 这里把平时常用的宏添加进来
@@ -18,18 +18,15 @@
 extern "C" {
 #endif
 
-/* 释放 malloc 申请的内存 */
 #define CT_CFREE(pointer)                                           \
     do {                                                            \
         if (NULL != pointer) free (pointer);                        \
         pointer = NULL;                                             \
     } while (0)
 
-/* 调用函数 */
 #define CT_CALL_FUNC(func, ...)                                     \
     func(##__VA_ARGS__)                                             \
 
-/* 交换 */
 #define CT_SWAP(first, second, stype)                               \
     do {                                                            \
         stype tmp = first;                                          \
@@ -43,7 +40,6 @@ extern "C" {
 #define CT_INT_MAX(a, b, max)                                       \
         min = a > b ? a : b;
 
-/* 成功返回 */
 #define CT_RETURN_IF_SUCCESS(success)                               \
     if (success) {                                                  \
         return;                                                     \

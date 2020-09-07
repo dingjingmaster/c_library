@@ -4,8 +4,8 @@
 > Mail    : dingjing@live.cn
 > Created Time: 2019年12月06日 星期五 10时12分17秒
  ************************************************************************/
-#ifndef _CLIB_RET_H
-#define _CLIB_RET_H
+#ifndef _CLIBRET_H
+#define _CLIBRET_H
 
 /*  定义返回值 */
 typedef enum bool

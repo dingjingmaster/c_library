@@ -1,12 +1,12 @@
 /*************************************************************************
-> FileName: clib_double_list_example.c
+> FileName: clib-double-list-example.c
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年11月07日 星期四 21时26分14秒
  ************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
-#include "clib_double_list.h"
+#include "clib-double-list.h"
 
 void print_list(double_list_t* list);
 void list_node_free(double_list_node_t* list);

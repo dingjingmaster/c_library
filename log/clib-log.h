@@ -1,5 +1,5 @@
-#ifndef CLIB_LOG_H
-#define CLIB_LOG_H
+#ifndef CLIBLOG_H
+#define CLIBLOG_H
 
 /**
  * full_path_name = _log_path/_log_name.log

@@ -1,12 +1,12 @@
 /*************************************************************************
-> FileName: clib_util.h
+> FileName: clib-util.h
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年11月07日 星期四 21时00分07秒
  ************************************************************************/
-#ifndef _CLIB_UTIL_H
-#define _CLIB_UTIL_H
-#include "clib_ret.h"
+#ifndef _CLIBUTIL_H
+#define _CLIBUTIL_H
+#include "clib-ret.h"
 #include <stdio.h>
 #include <stdlib.h>
 

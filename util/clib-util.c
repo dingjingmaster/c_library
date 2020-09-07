@@ -1,10 +1,11 @@
 /*************************************************************************
-> FileName: clib_util.c
+> FileName: clib-util.c
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年21月07日 星期四 10时00分10秒
  ************************************************************************/
-#include "clib_util.h"
+#include "clib-util.h"
+
 #include <utmp.h>
 #include <stdlib.h>
 #include <string.h>

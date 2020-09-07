@@ -4,8 +4,8 @@
 > Mail    : dingjing@live.cn
 > Created Time: 2019年11月07日 星期四 22时32分59秒
  ************************************************************************/
-#ifndef _CLIB_BSTRING_H
-#define _CLIB_BSTRING_H
+#ifndef _CLIBBSTRING_H
+#define _CLIBBSTRING_H
 #include <sys/types.h>
 #include <stdarg.h>
 

@@ -1,12 +1,12 @@
 /*************************************************************************
-> FileName: clib_double_list.c
+> FileName: clib-double-list.c
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年11月07日 星期四 21时25分50秒
  ************************************************************************/
 #include <stdlib.h>
 
-#include "clib_double_list.h"
+#include "clib-double-list.h"
 
 double_list_t* list_create() {
     double_list_t*   list = NULL;

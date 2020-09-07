@@ -1,5 +1,5 @@
-#ifndef CLIB_AVL_TREE_H
-#define CLIB_AVL_TREE_H
+#ifndef CLIBAVLTREE_H
+#define CLIBAVLTREE_H
 
 /**
  * 平衡二叉树

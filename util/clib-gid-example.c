@@ -1,10 +1,10 @@
 /*************************************************************************
-> FileName: clib_gid_example.c
+> FileName: clib-gid-example.c
 > Author  : DingJing
 > Mail    : dingjing@live.cn
 > Created Time: 2019年12月06日 星期五 10时16分12秒
  ************************************************************************/
-#include "clib_util.h"
+#include "clib-util.h"
 
 int main () 
 {

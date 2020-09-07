@@ -1,5 +1,5 @@
-#ifndef CLIB_BASE64_H
-#define CLIB_BASE64_H
+#ifndef CLIBBASE64_H
+#define CLIBBASE64_H
 
 #include <stdlib.h>
 
