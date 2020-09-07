@@ -16,21 +16,21 @@ install_head_dir = \
 	/usr/include/djctool/
 
 libs = \
-	-lpthread
+	-lpthread								\
 
 target_flag = \
 	-w
 
 flag = \
 	-Wall									\
-	-Werror									\
-	-Wno-error=format-security
+	`pkg-config --libs --cflags gio-2.0`	\
+	#-Werror									\
+	#-Wno-error=format-security				\
 
 debug_flag = \
 	-p										\
 	-g3										\
 	-Wall									\
-	-Werror									\
 
 src = $(filter-out [g]test%, $(filter-out %-example.c, $(strip $(subst $(current), ., $(wildcard $(current)/*/*.c)))))
 obj = $(strip $(patsubst %.c, %.o, $(src)))
@@ -72,19 +72,19 @@ install:all
 debug:$(debug_target) mk_dir_debug
 
 static_lib: $(obj)
-	ar rcs -o $(lib_name) $^
+	ar rcsv -o $(lib_name) $^
 
 %.run_debug:%.o_debug $(debug_obj)
-	cc $(debug_flag) $(heads) $(libs) -o $@ $^ $(libs) $(libs)
+	cc $(debug_flag) $(heads) $(libs) -o $@ $^ $(libs) $(flag)
 
 %.run:%.o $(obj)
-	cc ${target_flag} $(heads) $(libs) -o $@ $^ $(libs)
+	cc ${target_flag} $(heads) $(libs) -o $@ $^ $(libs) $(flag)
 
 %.o_debug:%.c
-	cc $(debug_flag) $(heads) $(libs) -o $@ -c $<
+	cc $(debug_flag) $(heads) $(libs) -o $@ -c $< $(flag)
 
 %.o:%.c
-	cc $(flag) $(heads) $(libs) -o $@ -c $< 
+	cc $(heads) $(libs) -o $@ -c $< $(flag)
 
 mk_dir:
 	@mkdir -p $(lib_dir)
