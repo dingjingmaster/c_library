@@ -24,11 +24,11 @@ int main (int argc, int argv[])
 
 
     // 输出
-    printf ("最新访问<time::access>: %d\n", acc);
-    printf ("最新修改<time::modified>: %d\n", mod);
+    //printf ("最新访问<time::access>: %d\n", acc);
+    //printf ("最新修改<time::modified>: %d\n", mod);
 
     // 系统调用获取文件信息
-    printf ("\n系统调用获取文件信息\n");
+    //printf ("\n系统调用获取文件信息\n");
     struct stat statbuf;
     int fd = open ("./gio-file-attr-time.c", O_RDONLY);
     // ...
@@ -46,3 +46,7 @@ int main (int argc, int argv[])
 
     return 0;
 }
+
+
+
+
