@@ -8,7 +8,7 @@
 #include <string.h>
 #include <security/pam_appl.h>
 #include <security/pam_misc.h>
-#include <djctool/clib_syslog.h>
+#include <djctool/clib-syslog.h>
 
 static struct pam_conv conv = {
     misc_conv,
@@ -18,7 +18,7 @@ static struct pam_conv conv = {
 
 int main(int argc, char *argv[])
 {
-    syslog_init("PAM应用程序端", LOG_LOCAL6);
+    syslog_init("PAM应用程序端", LOG_LOCAL6, 1);
     CT_SYSLOG (LOG_ERR, "");
 
     pam_handle_t *pamh=NULL;

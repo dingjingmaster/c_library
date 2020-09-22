@@ -13,7 +13,7 @@
 
 #include <security/pam_modules.h>
 #include <security/pam_appl.h>
-#include <djctool/clib_syslog.h>
+#include <djctool/clib-syslog.h>
 
 /**
  * 1. 将文件复制到 /lib64/secure/
@@ -28,7 +28,7 @@
 // 密码验证
 PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc, const char *argv[])
 {
-    syslog_init("PAM服务端", LOG_LOCAL6);
+    syslog_init("PAM服务端", LOG_LOCAL6, 1);
 
     struct passwd *pwd;
     const char *user;
@@ -93,7 +93,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc, const
 
 PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh, int flags, int argc, const char *argv[])
 {
-    syslog_init("PAM服务端", LOG_LOCAL6);
+    syslog_init("PAM服务端", LOG_LOCAL6, 1);
     CT_SYSLOG (LOG_ERR, "");
 
     return (PAM_SUCCESS);
@@ -101,7 +101,7 @@ PAM_EXTERN int pam_sm_setcred(pam_handle_t *pamh, int flags, int argc, const cha
 
 PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const char *argv[])
 {
-    syslog_init("PAM服务端", LOG_LOCAL6);
+    syslog_init("PAM服务端", LOG_LOCAL6, 1);
     CT_SYSLOG (LOG_ERR, "");
 
     return (PAM_SUCCESS);
@@ -109,7 +109,7 @@ PAM_EXTERN int pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const c
 
 PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, const char *argv[])
 {
-    syslog_init("PAM服务端", LOG_LOCAL6);
+    syslog_init("PAM服务端", LOG_LOCAL6, 1);
     CT_SYSLOG (LOG_ERR, "");
 
     return (PAM_SUCCESS);
@@ -117,7 +117,7 @@ PAM_EXTERN int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc, cons
 
 PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh, int flags, int argc, const char *argv[])
 {
-    syslog_init("PAM服务端", LOG_LOCAL6);
+    syslog_init("PAM服务端", LOG_LOCAL6, 1);
     CT_SYSLOG (LOG_ERR, "");
 
     return (PAM_SUCCESS);
@@ -125,7 +125,7 @@ PAM_EXTERN int pam_sm_close_session(pam_handle_t *pamh, int flags, int argc, con
 
 PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags, int argc, const char *argv[])
 {
-    syslog_init("PAM服务端", LOG_LOCAL6);
+    syslog_init("PAM服务端", LOG_LOCAL6, 1);
     CT_SYSLOG (LOG_ERR, "");
 
     return (PAM_SERVICE_ERR);
