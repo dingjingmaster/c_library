@@ -50,7 +50,7 @@ typedef enum {
  * @return 成功: 0; 失败: -1
  */
 int log_init(log_type_t type, log_level_t level, log_rotate_t rotate, unsigned long long log_size,
-             const char* dir, const char* prefix, const char* suffix);
+        const char* dir, const char* prefix, const char* suffix);
 
 /**
  * 销毁 log 参数
@@ -63,8 +63,7 @@ void log_destroy(void);
  * 输出日志信息到文件
  *
  */
-int log_print(log_level_t level, const char* tag, const char* file, int line,
-              const char* func, const char* fmt, ...);
+int log_print(log_level_t level, const char* tag, const char* file, int line, const char* func, const char* fmt, ...);
 #define loge(...) log_print(LOG_ERR, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
 #define logw(...) log_print(LOG_WARNING, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
 #define logi(...) log_print(LOG_INFO, LOG_TAG, __FILE__, __LINE__, __func__, __VA_ARGS__)
