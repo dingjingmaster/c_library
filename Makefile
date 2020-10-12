@@ -7,7 +7,14 @@ debug_dir = $(current)/package/debug/
 example_dir = $(current)/package/example/
 
 heads = \
-    -I$(current)/common/					\
+	-I$(current)/log						\
+	-I$(current)/tree						\
+	-I$(current)/array						\
+	-I$(current)/base64						\
+    -I$(current)/common 					\
+	-I$(current)/config						\
+	-I$(current)/string						\
+	-I$(current)/syslog						\
 
 install_lib_dir = \
 	/usr/lib/								\
@@ -25,7 +32,7 @@ flag = \
 	-Wall									\
 	`pkg-config --libs --cflags gio-2.0`	\
 	#-Werror									\
-	#-Wno-error=format-security				\
+	-Wno-error=format-security				\
 
 debug_flag = \
 	-p										\
@@ -78,13 +85,13 @@ static_lib: $(obj)
 	cc $(debug_flag) $(heads) $(libs) -o $@ $^ $(libs) $(flag)
 
 %.run:%.o $(obj)
-	cc ${target_flag} $(heads) $(libs) -o $@ $^ $(libs) $(flag)
+	cc ${target_flag} $(heads) $(libs) -o $@ $^ $(libs) $(flag) 
 
 %.o_debug:%.c
 	cc $(debug_flag) $(heads) $(libs) -o $@ -c $< $(flag)
 
 %.o:%.c
-	cc $(heads) $(libs) -o $@ -c $< $(flag)
+	cc $(heads) $(libs) -o $@ -c $< $(flag) 
 
 mk_dir:
 	@mkdir -p $(lib_dir)

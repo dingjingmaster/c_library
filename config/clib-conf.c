@@ -10,8 +10,8 @@
 
 #include "clib-conf.h"
 
-#include <djctool/clib-ret.h>
-#include <djctool/clib-log.h>
+#include "clib-ret.h"
+#include "clib-log.h"
 
 typedef struct
 {
