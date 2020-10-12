@@ -1,4 +1,5 @@
 *.test
+doc/
 cmake-*/
 .idea/
 package/
