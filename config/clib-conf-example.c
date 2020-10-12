@@ -9,7 +9,7 @@
 #include <string.h>
 
 #include "clib-conf.h"
-#include <djctool/clib-ret.h>
+#include "clib-ret.h"
 
 #define BUF_SIZE 10240
 
