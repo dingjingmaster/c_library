@@ -20,7 +20,7 @@ if __name__ == '__main__':
         for line in fr:
             arr = line.split(",")
             if len(arr) != 3 or arr[0] == "" or arr[1] == "" or arr[2] == "":
-                print ("bad line:" + line)
+                #print ("bad line:" + line)
                 continue
             allUUID[arr[0]] = arr[1]
             allName[arr[2]] = arr[1]
@@ -35,7 +35,6 @@ if __name__ == '__main__':
             # 解析设备列表, 强行以\t分割
             line = re.sub(' +', '\t',line)
             arr = line.split('\t')
-            print line
             if len(arr) == 6:
                 pths = arr[0].split('/')
                 if len(pths) > 1:
@@ -63,13 +62,8 @@ if __name__ == '__main__':
     with open ('/etc/fstab', 'a') as fw:
         fw.write("\n")
         for ik, iv in saveInfo.items():
-            fw.write(ik + "\t" + "\t".join(iv) + "\n")
+            fw.write("UUID=" + ik + "\t" + "\t".join(iv) + "\n")
             print ("磁盘UUID:" + ik + ' -- 将要自动挂载到:' + iv[0])
 
     print ("完成!")
     exit(0)
-        
-
-
-
-    exit (0)

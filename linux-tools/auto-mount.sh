@@ -15,8 +15,6 @@ fi
 
 if [ -d "${mountPath}" ]
 then
-    echo "存在${mountPath}"
-
     lsblk -npfo "UUID,FSTYPE,NAME" | awk '{print $1","$2","$3}' > all_device.txt
 
     python auto-mount.py ${mountPath}
