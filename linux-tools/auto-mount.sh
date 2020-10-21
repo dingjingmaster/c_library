@@ -17,9 +17,9 @@ if [ -d "${mountPath}" ]
 then
     echo "存在${mountPath}"
 
-    lsblk -npfo "PTUUID,FSTYPE,PATH" | awk '{print $1","$2","$3}' > all_device.txt
+    lsblk -npfo "UUID,FSTYPE,NAME" | awk '{print $1","$2","$3}' > all_device.txt
 
-    python auto-mount.py
+    python auto-mount.py ${mountPath}
 else
     echo -e "\033[32m 要求的挂载目录不存在! \033[0m"
 fi

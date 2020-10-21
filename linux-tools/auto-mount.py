@@ -1,10 +1,14 @@
 #!/usr/bin/env python2
 # -*- coding=utf-8 -*-
 import re
+import sys
 
 if __name__ == '__main__':
+    if len (sys.argv) < 2:
+        print ("挂载点不正确")
+        exit (-1)
 
-    userName = ''               # 用户名
+    mountPath = sys.argv[1]     # 用户名
 
     allUUID = {}                # 所有设备信息
     allName = {}                # 所有名字设备
@@ -25,12 +29,13 @@ if __name__ == '__main__':
     with open ('/etc/fstab', 'r') as fr:
         for line in fr.readlines():
             line = line.strip()
-            if len(line) >= 0 and (line[0] == '#'):
+            if (len(line) == 0) or ((len(line) > 0) and (line[0] == '#')):
                 continue
 
             # 解析设备列表, 强行以\t分割
             line = re.sub(' +', '\t',line)
             arr = line.split('\t')
+            print line
             if len(arr) == 6:
                 pths = arr[0].split('/')
                 if len(pths) > 1:
@@ -52,13 +57,13 @@ if __name__ == '__main__':
     for ik, iv in allUUID.items():
         if fstabInfo.has_key(ik):
             continue
-        saveInfo[ik] = ('/media/' + userName + '/' + ik, iv, 'defaults', '0', '1')
+        saveInfo[ik] = (mountPath + '/' + ik, iv, 'defaults', '0', '1')
 
     # 追加写入 fstab
     with open ('/etc/fstab', 'a') as fw:
         fw.write("\n")
         for ik, iv in saveInfo.items():
-            fw.write(ik + "\t" + iv.join("\t"))
+            fw.write(ik + "\t" + "\t".join(iv) + "\n")
             print ("磁盘UUID:" + ik + ' -- 将要自动挂载到:' + iv[0])
 
     print ("完成!")
