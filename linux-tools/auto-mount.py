@@ -56,7 +56,7 @@ if __name__ == '__main__':
     for ik, iv in allUUID.items():
         if fstabInfo.has_key(ik):
             continue
-        saveInfo[ik] = (mountPath + '/' + ik, iv, 'defaults', '0', '1')
+        saveInfo[ik] = (mountPath + '/' + ik, iv, 'defaults', '0', '0')
 
     # 追加写入 fstab
     with open ('/etc/fstab', 'a') as fw:
