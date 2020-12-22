@@ -17,16 +17,6 @@ typedef struct _FavoritesVFSFileEnumeratorPrivate       FavoritesVFSFileEnumerat
 
 struct _FavoritesVFSFileEnumeratorPrivate
 {
-    QString *search_vfs_directory_uri;
-    gboolean search_hidden;
-    gboolean use_regexp;
-    gboolean save_result;
-    gboolean recursive;
-    gboolean case_sensitive;
-    QRegExp *name_regexp;
-    QRegExp *content_regexp;
-    QList<QRegExp*> *name_regexp_extend_list;
-    gboolean match_name_or_content;
     QQueue<QString> *enumerate_queue;
 };
 

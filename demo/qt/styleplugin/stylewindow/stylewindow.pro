@@ -1,14 +1,10 @@
-TARGET = styleplugin
-
 QT += widgets
 
-HEADERS = \
-    PWD/style-window.h
+HEADERS    = stylewindow.h
+SOURCES    = stylewindow.cpp \
+             main.cpp
 
-SOURCES = \
-    PWD/main.cpp \
-    PWD/style-window.cpp
-
+TARGET     = styleplugin
 win32 {
     debug:DESTDIR = ../debug/
     release:DESTDIR = ../release/
@@ -17,7 +13,7 @@ win32 {
 }
 
 # install
-target.path = $$PWD/styleplugin/
+target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/styleplugin
 INSTALLS += target
 
 CONFIG += install_ok  # Do not cargo-cult this!

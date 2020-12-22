@@ -15,6 +15,7 @@ int main (int argc, char* argv[])
     }
 
     GFile*          file = NULL;
+    GFile*          file1 = NULL;
     GError*         error = NULL;
     GFileInfo*      fileInfo = NULL;
 
@@ -24,6 +25,7 @@ int main (int argc, char* argv[])
         return -1;
     }
 
+    file1 = g_file_new_for_uri ("file:///");
     fileInfo = g_file_query_info(file, "*", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
     if (NULL != error || NULL == fileInfo) {
         printf ("Query file info error:%s !!!\n", error->message);
@@ -31,6 +33,8 @@ int main (int argc, char* argv[])
     }
 
     printf ("\n========================== All of attributes ========================================\n");
+    printf ("g_file_get_basename():                                 %30s\n", g_file_get_basename(file));
+    printf ("get_relative_path('file:///', file):                   %30s\n", g_file_get_relative_path(file1, file));
     printf ("G_FILE_ATTRIBUTE_STANDARD_TYPE:                        %30s\n", g_file_info_get_attribute_as_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_TYPE));
     printf ("G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN:                   %30s\n", g_file_info_get_attribute_boolean(fileInfo, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)?"true":"false");
     printf ("G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP:                   %30s\n", g_file_info_get_attribute_boolean(fileInfo, G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP)?"true":"false");
