@@ -9,7 +9,7 @@ target = $(strip $(patsubst %.c, %.run, $(src)))
 all:$(target)
 
 %.run:%.o
-	cc -o $@ $< `pkg-config --cflags --libs glib-2.0 gio-2.0 openssl` $(cflag) 
+	cc -o $@ $< -lrt `pkg-config --cflags --libs glib-2.0 gio-2.0 openssl` $(cflag) 
 
 %.o:%.c
 	cc `pkg-config --cflags --libs glib-2.0 gio-2.0` -o $@ -c $< $(cflag)
