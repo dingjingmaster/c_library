@@ -34,6 +34,7 @@ int main (int argc, char* argv[])
 
     printf ("\n========================== All of attributes ========================================\n");
     printf ("g_file_get_basename():                                 %30s\n", g_file_get_basename(file));
+    printf ("g_file_info_get_display_name():                        %30s\n", g_file_info_get_display_name(fileInfo));
     printf ("get_relative_path('file:///', file):                   %30s\n", g_file_get_relative_path(file1, file));
     printf ("G_FILE_ATTRIBUTE_STANDARD_TYPE:                        %30s\n", g_file_info_get_attribute_as_string(fileInfo, G_FILE_ATTRIBUTE_STANDARD_TYPE));
     printf ("G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN:                   %30s\n", g_file_info_get_attribute_boolean(fileInfo, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN)?"true":"false");
