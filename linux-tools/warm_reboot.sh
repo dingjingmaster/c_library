@@ -4,7 +4,7 @@ set -e -u
 
 workdir="$(dirname $(realpath -- $0))/reboot/"
 
-rootPWD="123123"
+rootPWD="qwe123"
 logFile="${workdir}/run.log"
 dmesg_logfile="${workdir}/Dmesg.log"
 syslog_file="${workdir}/Syslog.log"
@@ -22,12 +22,12 @@ inputSTR[1]="source ${workdir}/times.left"
 inputSTR[2]="rm -rf ${workdir}/times.left"
 inputSTR[3]="if [ \${timesLeft} -gt '0' ];then"
 inputSTR[4]="	echo \"还剩余\$((timesLeft-1))次重启。\" >> ${logFile}"
-inputSTR[5]="   echo ${rootPWD} | sudo -S cat /var/log/syslog > ${dmesg_logfile}-\${timesLeft}"
-inputSTR[6]="   echo ${rootPWD} | sudo -S dmesg > ${syslog_file}-\${timesLeft}"
+inputSTR[5]="   echo ${rootPWD} | sudo -S cat /var/log/syslog > ${syslog_file}-\${timesLeft}"
+inputSTR[6]="   echo ${rootPWD} | sudo -S dmesg > ${dmesg_logfile}-\${timesLeft}"
 inputSTR[7]="   echo ${rootPWD} | sudo -S cat /dev/null > /var/log/syslog"
 inputSTR[8]="	date >> ${logFile}"
 inputSTR[9]="	echo >> ${logFile}"
-inputSTR[10]="	echo "timesLeft=\$\(\(timesLeft-1\)\)" > ${workdir}/times.left"
+inputSTR[10]="	echo timesLeft=\$((timesLeft-1)) > ${workdir}/times.left"
 inputSTR[11]="	reboot"
 inputSTR[12]="else"
 inputSTR[13]="	sed -i '/.\/rbt.sh/d' /etc/crontab"
@@ -61,7 +61,7 @@ cfgOK=$(cat /etc/crontab | grep "./rbt.sh" | wc -l)
 if [ 1 -eq ${cfgOK} ];then
 	echo ${rootPWD} | sudo -S sed -i "\$a\*\/${interval:=2} * * * * root cd ${workdir} && .\/rbt.sh" /etc/crontab
 elif [ 1 -gt ${cfgOK} ]; then
-	echo "\*/${interval} * * * * root cd ${workdir} && ./rbt.sh" >> /etc/crontab
+	echo "*/${interval} * * * * root cd ${workdir} && ./rbt.sh" >> /etc/crontab
 fi
 IFS=$oldIFS
 
