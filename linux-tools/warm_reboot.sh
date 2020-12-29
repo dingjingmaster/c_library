@@ -38,7 +38,6 @@ inputSTR[16]="fi"
 echo -n -e "请输入自动重启的次数:\t"
 read timesLeft
 echo "timesLeft=${timesLeft}" > ${workdir}/times.left
-echo ${rootPWD} | sudo -S mv ${workdir}/times.left ${workdir}/times.left &> /dev/null
 
 echo -n -e "请输入重启间隔的时间（分钟）:\t"
 read interval
