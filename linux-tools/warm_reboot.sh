@@ -2,11 +2,12 @@
 
 set -e -u
 
+workdir="$(dirname $(realpath -- $0))/reboot/"
+
 rootPWD="123123"
 logFile="${workdir}/run.log"
 dmesg_logfile="${workdir}/Dmesg.log"
 syslog_file="${workdir}/Syslog.log"
-workdir="$(dirname $(realpath -- $0))/reboot/"
 
 if (( EUID != 0 )); then
     echo "必须以root权限运行..."
