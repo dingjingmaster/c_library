@@ -59,7 +59,7 @@ oldIFS=$IFS
 IFS=$'\n'
 cfgOK=$(cat /etc/crontab | grep "./rbt.sh" | wc -l)
 if [ 1 -eq ${cfgOK} ];then
-	echo ${rootPWD} | sudo -S sed -i "\$a\*\/${interval:=2} * * * * root cd ${workdir} && .\/rbt.sh" /etc/crontab
+	echo ${rootPWD} | sudo -S sed -i "\$a\*\/${interval:=2} * * * * root cd ${workdir} && ./rbt.sh" /etc/crontab
 elif [ 1 -gt ${cfgOK} ]; then
 	echo "*/${interval} * * * * root cd ${workdir} && ./rbt.sh" >> /etc/crontab
 fi
