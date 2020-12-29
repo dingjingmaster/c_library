@@ -8,6 +8,7 @@ workdir="$(dirname $(realpath -- $0))/reboot/"
 
 if (( EUID != 0 )); then
     echo "必须以root权限运行..."
+    exit 1
 fi
 
 rm -rf "${workdir}/run.log" "${workdir}/Dmesg*" "${workdir}/Sys*"
