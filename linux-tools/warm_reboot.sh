@@ -1,13 +1,16 @@
 #!/bin/bash
 
-workdir="$(dirname $(realpath -- $0))/reboot/"
-
-rm -rf "${workdir}/run.log" "${workdir}/Dmesg*" "${workdir}/Sys*"
-
 rootPWD="123123"
 logFile="${workdir}/run.log"
 dmesg_logfile="${workdir}/Dmesg.log"
 syslog_file="${workdir}/Syslog.log"
+workdir="$(dirname $(realpath -- $0))/reboot/"
+
+if (( EUID != 0 )); then
+    echo "必须以root权限运行..."
+fi
+
+rm -rf "${workdir}/run.log" "${workdir}/Dmesg*" "${workdir}/Sys*"
 
 inputSTR[0]="#!/bin/bash"
 inputSTR[1]="source ${workdir}/times.left"
@@ -42,7 +45,6 @@ if [ ! -f /opt/rbt.sh ];then
 	do
 		echo ${inputSTR[$i]} >> ${workdir}/rbt.sh
 	done
-	echo ${rootPWD} | sudo -S mv ${workdir}/rbt.sh ${workdir}/rbt.sh
 	echo ${rootPWD} | sudo -S chown root:root ${workdir}/rbt.sh
 	echo ${rootPWD} | sudo -S chmod a+x ${workdir}/rbt.sh
 fi
