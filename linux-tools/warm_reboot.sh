@@ -44,23 +44,27 @@ read interval
 
 echo -e "Checking necessary files for auto rebooting ..."
 
-if [ ! -f /opt/rbt.sh ];then
+if [ ! -f "${workdir}/rbt.sh" ];then
+    rm -rf "${workdir}/rbt.sh"
 	for ((i=0; i<${#inputSTR[@]}; i++))
 	do
 		echo ${inputSTR[$i]} >> ${workdir}/rbt.sh
 	done
 	echo ${rootPWD} | sudo -S chown root:root ${workdir}/rbt.sh
-	echo ${rootPWD} | sudo -S chmod a+x ${workdir}/rbt.sh
+	echo ${rootPWD} | sudo -S chmod u+x ${workdir}/rbt.sh
 fi
 echo -e "\e[1;32m[ REBOOT SCRIPT OK]\e[0m"
 
 oldIFS=$IFS
 IFS=$'\n'
-cfgOK=$(cat /etc/crontab | grep "./rbt.sh")
-if [ ! ${cfgOK} ];then
+cfgOK=$(cat /etc/crontab | grep "./rbt.sh" | wc -l)
+if [ 1 -eq ${cfgOK} ];then
 	echo ${rootPWD} | sudo -S sed -i "\$a\*\/${interval:=2} * * * * root cd ${workdir} && .\/rbt.sh" /etc/crontab
+elif [ 1 -gt ${cfgOK} ]; then
+	echo "\*/${interval} * * * * root cd ${workdir} && ./rbt.sh" >> /etc/crontab
 fi
 IFS=$oldIFS
+
 echo -e "\e[1;32m[CRONTAB CONFIG OK]\e[0m"
 
 echo -n "请稍候，系统即将重启中……"
