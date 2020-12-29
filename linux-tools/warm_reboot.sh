@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -u
+
 rootPWD="123123"
 logFile="${workdir}/run.log"
 dmesg_logfile="${workdir}/Dmesg.log"
@@ -11,6 +13,7 @@ if (( EUID != 0 )); then
     exit 1
 fi
 
+mkdir -p "${workdir}"
 rm -rf "${workdir}/run.log" "${workdir}/Dmesg*" "${workdir}/Sys*"
 
 inputSTR[0]="#!/bin/bash"
