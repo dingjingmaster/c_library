@@ -51,7 +51,7 @@ if [ ! -f "${workdir}/rbt.sh" ];then
 		echo ${inputSTR[$i]} >> ${workdir}/rbt.sh
 	done
 	echo ${rootPWD} | sudo -S chown root:root ${workdir}/rbt.sh
-	echo ${rootPWD} | sudo -S chmod u+x ${workdir}/rbt.sh
+	echo ${rootPWD} | sudo -S chmod a+x ${workdir}/rbt.sh
 fi
 echo -e "\e[1;32m[ REBOOT SCRIPT OK]\e[0m"
 
