@@ -1,5 +1,11 @@
 #!/bin/bash
 
+######################### 使用前说明 ########################
+# 使用前需要在 /etc/crontab 里配置PATH路径，使常用命令可用  #
+# SHELL=/bin/bash                                           #
+# PATH=/bin:/sbin:/usr/bin:/usr/sbin/                       #
+#############################################################
+
 set -e -u
 
 workdir="$(dirname $(realpath -- $0))/reboot/"
@@ -57,11 +63,9 @@ echo -e "\e[1;32m[ REBOOT SCRIPT OK]\e[0m"
 
 oldIFS=$IFS
 IFS=$'\n'
-cfgOK=$(cat /etc/crontab | grep "./rbt.sh" | wc -l)
-if [ 1 -eq ${cfgOK} ];then
-	echo ${rootPWD} | sudo -S sed -i "\$a\*\/${interval:=2} * * * * root cd ${workdir} && ./rbt.sh" /etc/crontab
-elif [ 1 -gt ${cfgOK} ]; then
-	echo "*/${interval} * * * * root cd ${workdir} && ./rbt.sh" >> /etc/crontab
+cfgOK=$(cat /etc/crontab | grep "rbt.sh" | wc -l)
+if [ 0 -eq ${cfgOK} ];then
+	echo "*/${interval} * * * * root cd ${workdir} && bash ./rbt.sh" >> /etc/crontab
 fi
 IFS=$oldIFS
 
