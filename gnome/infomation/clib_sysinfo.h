@@ -6,7 +6,7 @@
  ************************************************************************/
 #ifndef _CLIB_SYSINFO_H
 #define _CLIB_SYSINFO_H
-#include "clib_ret.h"
+#include "clib-ret.h"
 #include <glib-object.h>
 
 #define CLIB_TYPE_SYSINFO               (clib_sysinfo_get_type())
