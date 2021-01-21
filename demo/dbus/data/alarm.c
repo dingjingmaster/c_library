@@ -318,7 +318,7 @@ alarm_default_init (AlarmIface *iface)
    *
    * If a signal handler returns %TRUE, it means the signal handler will handle the invocation (e.g. take a reference to @invocation and eventually call alarm_complete_configure() or e.g. g_dbus_method_invocation_return_error() on it) and no order signal handlers will run. If no signal handler handles the invocation, the %G_DBUS_ERROR_UNKNOWN_METHOD error is returned.
    *
-   * Returns: %TRUE if the invocation was handled, %FALSE to let other signal handlers run.
+   * Returns: %G_DBUS_METHOD_INVOCATION_HANDLED or %TRUE if the invocation was handled, %G_DBUS_METHOD_INVOCATION_UNHANDLED or %FALSE to let other signal handlers run.
    */
   g_signal_new ("handle-configure",
     G_TYPE_FROM_INTERFACE (iface),
@@ -447,7 +447,7 @@ alarm_call_configure (
  *
  * Finishes an operation started with alarm_call_configure().
  *
- * Returns: (skip): %TRUE if the call succeded, %FALSE if @error is set.
+ * Returns: (skip): %TRUE if the call succeeded, %FALSE if @error is set.
  */
 gboolean
 alarm_call_configure_finish (
@@ -477,7 +477,7 @@ _out:
  *
  * See alarm_call_configure() for the asynchronous version of this method.
  *
- * Returns: (skip): %TRUE if the call succeded, %FALSE if @error is set.
+ * Returns: (skip): %TRUE if the call succeeded, %FALSE if @error is set.
  */
 gboolean
 alarm_call_configure_sync (
