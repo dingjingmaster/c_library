@@ -28,6 +28,7 @@ Dialog::Dialog(QWidget *parent) : QDialog(parent)
     mNavigationBar = new NavigationBar;
     mMainContent = new QHBoxLayout;
     mSideBar = new SideBar;
+    mFilterBar = new FilterBar;
 
     mSideBar->setFixedWidth(180);
     mNavigationBar->setFixedHeight(50);
@@ -38,6 +39,7 @@ Dialog::Dialog(QWidget *parent) : QDialog(parent)
 
     qobject_cast<QGridLayout*>(layout())->addWidget(mNavigationBar);
     qobject_cast<QGridLayout*>(layout())->addLayout(mMainContent, 1, 0);
+    qobject_cast<QGridLayout*>(layout())->addWidget(mFilterBar, 2, 0);
 
 //     layout()->
 //    layout()->addItem(mMainContent);

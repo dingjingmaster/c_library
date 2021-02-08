@@ -11,6 +11,7 @@ INCLUDEPATH += \
 PKGCONFIG += peony
 
 SOURCES += \
+    filter-bar.cpp \
     main.cpp \
     dialog.cpp \
     navigation-bar.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     dialog.h \
+    filter-bar.h \
     navigation-bar.h \
     path-bar.h \
     side-bar.h \

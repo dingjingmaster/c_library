@@ -1,6 +1,8 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
+#include "filter-bar.h"
+
 #include <QDialog>
 #include <QLayout>
 
@@ -39,6 +41,7 @@ private:
     SideBar*                            mSideBar;
     PathBar*                            mPathBar;
     ToolBar*                            mToolBar;
+    FilterBar*                          mFilterBar;
     NavigationBar*                      mNavigationBar;
     Peony::DirectoryViewContainer*      mContainer;
     QLayout*                            mMainContent;
