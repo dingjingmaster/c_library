@@ -1,10 +1,9 @@
 #include "side-bar.h"
 
 #include <QTimer>
-
+#include <side-bar-model.h>
 #include <PeonySideBarModel>
 #include <PeonySideBarProxyModel>
-#include <side-bar-model.h>
 
 SideBar::SideBar(QWidget *parent) : QTreeView(parent)
 {
