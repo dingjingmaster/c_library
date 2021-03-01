@@ -2,9 +2,13 @@
 #define DIALOG_H
 
 #include "filter-bar.h"
+#include "location-bar.h"
+#include "view-type-menu.h"
 
 #include <QDialog>
+#include <QDockWidget>
 #include <QLayout>
+#include <QMainWindow>
 
 namespace Peony
 {
@@ -17,7 +21,7 @@ class ToolBar;
 class NavigationBar;
 
 
-class Dialog : public QDialog
+class Dialog : public QMainWindow
 {
     Q_OBJECT
 
@@ -44,6 +48,8 @@ private:
     FilterBar*                          mFilterBar;
     NavigationBar*                      mNavigationBar;
     Peony::DirectoryViewContainer*      mContainer;
+    ViewTypeMenu*                       mViewTypeMenu;
+    QLayout*                            mNavLayout;
     QLayout*                            mMainContent;
 };
 #endif // DIALOG_H
