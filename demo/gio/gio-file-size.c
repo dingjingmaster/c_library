@@ -5,10 +5,12 @@
 > Created Time: 2021年03月15日 星期一 16时37分54秒
  ************************************************************************/
 
+
 int main (int argc, char **argv)
 {
+    int status = 0;
+#if 0
     GApplication *app;
-    int status;
 
     app = g_application_new ("org.gtk.TestApplication", G_APPLICATION_HANDLES_OPEN);
     g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
@@ -19,6 +21,7 @@ int main (int argc, char **argv)
 
     g_object_unref (app);
 
+#endif
     return status;
 }
 
