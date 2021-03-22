@@ -3,6 +3,14 @@
 import re
 import sys
 
+def is_number(num):
+    try:
+        int (num)
+        return True
+    except ValueError:
+        return False
+    return False
+
 if __name__ == '__main__':
     if len (sys.argv) < 2:
         print ("挂载点不正确")
@@ -19,7 +27,7 @@ if __name__ == '__main__':
     with open ('all_device.txt', 'r') as fr:
         for line in fr:
             arr = line.split(",")
-            if len(arr) != 3 or arr[0] == "" or arr[1] == "" or arr[2] == "":
+            if len(arr) != 3 or arr[0] == "" or arr[1] == "" or arr[2] == "" or not is_number(arr[2][-1]):
                 #print ("bad line:" + line)
                 continue
             allUUID[arr[0]] = arr[1]
