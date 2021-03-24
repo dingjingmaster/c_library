@@ -1,5 +1,4 @@
 *.test
-*.txt
 doc/
 cmake-*/
 .idea/
