@@ -4,10 +4,11 @@ cmake_minimum_required(VERSION 3.15)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC TRUE)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR YES)
 
 
-add_definitions("-Wall")
+ADD_DEFINITIONS("-DQT_NO_KEYWORDS" "-Wall")
 
 
 set(QT_MINIMUM_VERSION "5.12.0")
@@ -23,20 +24,33 @@ find_package(Qt5LinguistTools "${QT_MINIMUM_VERSION}" REQUIRED)
 pkg_check_modules (GLIB REQUIRED glib-2.0 gio-2.0 gobject-2.0 gthread-2.0)
 pkg_check_modules (XCB REQUIRED xcb)
 
+include_directories(${GLIB_INCLUDE_DIRS} ${XCB_INCLUDE_DIRS})
+
 
 message(STATUS "Building ${PROJECT_NAME} with Qt ${Qt5Core_VERSION}")
 
+FILE (GLOB ALL_QRC "core/*.qrc")
+FILE (GLOB ALL_FORMS "core/*.ui")
+FILE (GLOB ALL_SOURCES "core/*.cpp" "core/*.c")
+FILE (GLOB ALL_HEADERS "core/*.hpp" "core/*.h")
 
-add_subdirectory(core)
+# 调用预编译器moc，需要使用 QT5_WRAP_CPP宏
+QT5_WRAP_CPP(ALL_HEADERS_MOC ${ALL_HEADERS})
+
+# 使用uic处理.ui文件
+QT5_WRAP_UI(ALL_FORMS_HEADERS ${ALL_FORMS})
+
+# 使用rcc处理.qrc文件
+QT5_ADD_RESOURCES(ALL_RESOURCES_RCC ${ALL_QRC})
+
+# 这些生成的中间文件都会在build目录下，这样的话，编译器则不能定位由uic程序产生的诸如_ui_mainwindow.h等文件。
+# 所以，我们需要把build目录添加到包含目录中
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+add_library(core-dingjing STATIC ${ALL_SOURCES} ${ALL_HEADERS_MOC} ${ALL_RESOURCES_RCC} ${ALL_FORMS_HEADERS})
 
 
-add_library(core-dingjing STATIC ${ALL_SOURCES})
-
-
-#target_link_libraries(core-dingjing
-#        Qt5::Widgets
-#        Qt5::X11Extras
-#)
+target_link_libraries(core-dingjing Qt5::Widgets Qt5::X11Extras ${GLIB_LIBRARIES} ${XCB_LIBRARIES})
 
 
 option(BUILD_DOCUMENTATION "Use Doxygen to create the HTML based API documentation" OFF)

@@ -10,7 +10,6 @@
 #include <QtGlobal>
 #include <QRunnable>
 #include <gio/gio.h>
-
 #include "smart-ptr.hpp"
 
 namespace dingjing
