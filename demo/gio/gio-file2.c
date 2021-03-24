@@ -21,6 +21,8 @@ int main (int arg, char* garv[])
 
     // sdc
     printf ("basename:%s\n", g_file_get_basename(upan));
+
+    printf ("parse_name:%s\n", g_file_get_parse_name(upan));
     
     // /dev/sdc
     printf ("path:%s\n", g_file_get_path(upan));
