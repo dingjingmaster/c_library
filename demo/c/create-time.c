@@ -47,13 +47,15 @@ int main (int argc, char* argv[])
         return -1;
     }
 
-    ret = statx (fd, name, AT_SYMLINK_NOFOLLOW, STATX_ALL, &buf);
+    ret = statx (fd, name, AT_SYMLINK_NOFOLLOW, STATX_BASIC_STATS, &buf);
     if (0 == ret) {
-        printf ("%d\n", buf.stx_ctime.tv_sec);
+        printf ("create time: %d\n", buf.stx_ctime.tv_sec);
+        printf ("access time: %d\n", buf.stx_atime.tv_sec);
+        printf ("modify time: %d\n", buf.stx_mtime.tv_sec);
     } else if (EACCES == errno) {
         printf ("permission is denied\n");
     } else if (EBADF == errno) {
-        printf ("dirfd is not a valid open file descriptor\n");
+        printf ("dirfd is not a valid opdfn file descriptor\n");
     } else if (EFAULT == errno) {
         printf ("pathname or statxbuf is NULL or points is invalid\n");
     } else if (EINVAL== errno) {
