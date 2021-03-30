@@ -33,20 +33,35 @@ FILE (GLOB ALL_QRC "core/*.qrc")
 FILE (GLOB ALL_FORMS "core/*.ui")
 FILE (GLOB ALL_SOURCES
         "core/job.cpp"
+        "core/folder.cpp"
+        "core/mime-type.cpp"
+        "core/file-info.cpp"
         "core/file-path.cpp"
         "core/icon-info.cpp"
+        "core/thumbnailer.cpp"
+        "core/dir-list-job.cpp"
+        "core/file-info-job.cpp"
         "core/volume-manager.cpp"
+        "core/filesystem-info-job.cpp"
 )
 
 FILE (GLOB ALL_HEADERS
         "core/job.h"
         "core/job_p.h"
         "core/global.h"
+        "core/folder.h"
+        "core/mime-type.h"
+        "core/file-info.h"
         "core/file-path.h"
         "core/icon-info.h"
+        "core/file-info-p.h"
         "core/icon-info-p.h"
         "core/smart-ptr.hpp"
+        "core/thumbnailer.h"
+        "core/dir-list-job.h"
+        "core/file-info-job.h"
         "core/volume-manager.h"
+        "core/filesystem-info-job.h"
 )
 
 # 调用预编译器moc，需要使用 QT5_WRAP_CPP宏
