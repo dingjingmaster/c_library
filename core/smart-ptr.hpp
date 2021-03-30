@@ -60,20 +60,20 @@ class GObjectPtr
 public:
     explicit GObjectPtr(): gobj_{nullptr} {}
     explicit GObjectPtr(T* gobj, bool addRef = true) : gobj_ {gobj}
-{
-    if(gobj_ != nullptr && addRef) {
-        g_object_ref(gobj_);
+    {
+        if(gobj_ != nullptr && addRef) {
+            g_object_ref(gobj_);
+        }
     }
-}
 
     GObjectPtr(const GObjectPtr& other): gobj_{other.gobj_ ? reinterpret_cast<T*> (g_object_ref(other.gobj_)) : nullptr} {}
     GObjectPtr(GObjectPtr&& other) noexcept: gobj_{other.release()} {}
 
     ~GObjectPtr()
-{
-    if(gobj_ != nullptr)
-        g_object_unref(gobj_);
-}
+    {
+        if(gobj_ != nullptr)
+            g_object_unref(gobj_);
+    }
 
     T* get() const
     {

@@ -35,6 +35,7 @@ FILE (GLOB ALL_SOURCES
         "core/job.cpp"
         "core/file-path.cpp"
         "core/icon-info.cpp"
+        "core/volume-manager.cpp"
 )
 
 FILE (GLOB ALL_HEADERS
@@ -45,6 +46,7 @@ FILE (GLOB ALL_HEADERS
         "core/icon-info.h"
         "core/icon-info-p.h"
         "core/smart-ptr.hpp"
+        "core/volume-manager.h"
 )
 
 # 调用预编译器moc，需要使用 QT5_WRAP_CPP宏
