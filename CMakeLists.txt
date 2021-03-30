@@ -31,8 +31,21 @@ message(STATUS "Building ${PROJECT_NAME} with Qt ${Qt5Core_VERSION}")
 
 FILE (GLOB ALL_QRC "core/*.qrc")
 FILE (GLOB ALL_FORMS "core/*.ui")
-FILE (GLOB ALL_SOURCES "core/*.cpp" "core/*.c")
-FILE (GLOB ALL_HEADERS "core/*.hpp" "core/*.h")
+FILE (GLOB ALL_SOURCES
+        "core/job.cpp"
+        "core/file-path.cpp"
+        "core/icon-info.cpp"
+)
+
+FILE (GLOB ALL_HEADERS
+        "core/job.h"
+        "core/job_p.h"
+        "core/global.h"
+        "core/file-path.h"
+        "core/icon-info.h"
+        "core/icon-info-p.h"
+        "core/smart-ptr.hpp"
+)
 
 # 调用预编译器moc，需要使用 QT5_WRAP_CPP宏
 QT5_WRAP_CPP(ALL_HEADERS_MOC ${ALL_HEADERS})
