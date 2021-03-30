@@ -2,13 +2,14 @@
 // Created by dingjing on 2021/3/24.
 //
 
-#include "Job.h"
+#include "job.h"
 #include "job_p.h"
 
-namespace dingjing {
-
-    Job::Job() : paused_{false}, cancellable_{g_cancellable_new(), false}, cancellableHandler_ {
-        g_signal_connect(cancellable_.get(), "cancelled", G_CALLBACK(_onCancellableCancelled), this)} {}
+namespace dingjing
+{
+    Job::Job() : paused_{false}
+        , cancellable_{g_cancellable_new(), false}
+        , cancellableHandler_ {(gulong)g_signal_connect(cancellable_.get(), "cancelled", G_CALLBACK(_onCancellableCancelled), this)} {}
 
 
     Job::~Job()
@@ -43,7 +44,7 @@ namespace dingjing {
         return cancellable_;
     }
 
-    static void Job::_onCancellableCancelled(GCancellable* cancellable, Job* _this)
+    void Job::_onCancellableCancelled(GCancellable* cancellable, Job* _this)
     {
         _this->onCancellableCancelled(cancellable);
     }
@@ -71,7 +72,7 @@ namespace dingjing {
         if(severity == ErrorSeverity::CRITICAL || response == ErrorAction::ABORT) {
             cancel();
         } else if (response == ErrorAction::RETRY) {
-            /* If the job is already cancelled, retry is not allowed. */
+            /* If the Job is already cancelled, retry is not allowed. */
             if(isCancelled() || (err.domain() == G_IO_ERROR && err.code() == G_IO_ERROR_CANCELLED)) {
                 response = ErrorAction::CONTINUE;
             }

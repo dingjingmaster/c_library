@@ -6,7 +6,7 @@
 #define LIBCORE_DINGJING_JOB_P_H
 
 #include <QThread>
-#include "Job.h"
+#include "job.h"
 
 namespace dingjing
 {
