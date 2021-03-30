@@ -259,7 +259,7 @@ namespace dingjing
         if(emblem_names) {
             auto n_emblems = g_strv_length(emblem_names);
             for(int i = n_emblems - 1; i >= 0; --i) {
-                emblems_.emplace_front(Fm::IconInfo::fromName(emblem_names[i]));
+                emblems_.emplace_front(IconInfo::fromName(emblem_names[i]));
             }
         }
 

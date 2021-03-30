@@ -1,0 +1,28 @@
+#ifndef UTILS_H
+#define UTILS_H
+
+#include <QUrl>
+#include <QList>
+#include <cstdint>
+#include <utility>
+#include <QMimeData>
+#include <sys/types.h>
+
+#include "core/global.h"
+#include "core/file-path.h"
+#include "core/file-info.h"
+
+namespace dingjing
+{
+class Utils
+{
+public:
+    static FilePathList pathListFromQUrls (QList<QUrl> urls);
+    static FilePathList pathListFromUriList (const char* uriList);
+    static QByteArray pathListToUriList (const FilePathList& paths);
+};
+}
+
+
+
+#endif // UTILS_H

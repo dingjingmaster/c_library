@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include "mime-type.h"
+
 namespace dingjing
 {
     std::mutex Thumbnailer::mutex_;
