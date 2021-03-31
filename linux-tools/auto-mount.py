@@ -3,7 +3,9 @@
 import re
 import sys
 
+
 def is_number(num):
+    """ 判断是否为数字 """
     try:
         int (num)
         return True
@@ -14,7 +16,7 @@ def is_number(num):
 if __name__ == '__main__':
     if len (sys.argv) < 2:
         print ("挂载点不正确")
-        exit (-1)
+        sys.exit (-1)
 
     mountPath = sys.argv[1]     # 用户名
 
@@ -26,6 +28,7 @@ if __name__ == '__main__':
     # 获取所有设备
     with open ('all_device.txt', 'r') as fr:
         for line in fr:
+            line = line.strip()
             arr = line.split(",")
             if len(arr) != 3 or arr[0] == "" or arr[1] == "" or arr[2] == "" or not is_number(arr[2][-1]):
                 #print ("bad line:" + line)
@@ -47,7 +50,7 @@ if __name__ == '__main__':
                 pths = arr[0].split('/')
                 if len(pths) > 1:
                     print ('fstab 配置文件中文件系统表示使用了设备名而不是uuid')
-                    exit (-1)
+                    sys.exit (-1)
                 uuids = arr[0].split('=')
                 if len(uuids) == 2:
                     fstabInfo[uuids[1]] = (arr[1], arr[2], arr[3], arr[4], arr[5])
@@ -74,4 +77,4 @@ if __name__ == '__main__':
             print ("磁盘UUID:" + ik + ' -- 将要自动挂载到:' + iv[0])
 
     print ("完成!")
-    exit(0)
+    sys.exit(0)
