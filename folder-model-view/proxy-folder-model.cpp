@@ -61,7 +61,7 @@ void ProxyFolderModel::setSourceModel(QAbstractItemModel* model)
     FolderModel* oldSrcModel = static_cast<FolderModel*>(sourceModel());
     if(model) {
         // we only support Fm::FolderModel
-        Q_ASSERT(model->inherits("Fm::FolderModel"));
+        Q_ASSERT(model->inherits("dingjing::FolderModel"));
 
         if(mShowThumbnails && mThumbnailSize != 0) { // if we're showing thumbnails
             if(oldSrcModel) { // we need to release cached thumbnails for the old source model

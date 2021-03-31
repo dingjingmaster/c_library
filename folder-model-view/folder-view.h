@@ -94,11 +94,13 @@ public:
         mFileLauncher = launcher;
     }
 
-    FileLauncher* fileLauncher() {
+    FileLauncher* fileLauncher()
+    {
         return mFileLauncher;
     }
 
-    int autoSelectionDelay() const {
+    int autoSelectionDelay() const
+    {
         return mAutoSelectionDelay;
     }
 

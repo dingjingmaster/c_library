@@ -13,6 +13,7 @@ ADD_DEFINITIONS("-DQT_NO_KEYWORDS" "-Wall")
 
 set(QT_MINIMUM_VERSION "5.12.0")
 set(GLIB_MINIMUM_VERSION "2.50.0")
+set(LIB_CORE_DINGJING_NAME "core-dingjing" CACHE STRING "core-dingjing")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 
@@ -21,11 +22,11 @@ find_package(Qt5Widgets "${QT_MINIMUM_VERSION}" REQUIRED)
 find_package(Qt5X11Extras "${QT_MINIMUM_VERSION}" REQUIRED)
 find_package(Qt5LinguistTools "${QT_MINIMUM_VERSION}" REQUIRED)
 
-pkg_check_modules (GLIB REQUIRED glib-2.0 gio-2.0 gobject-2.0 gthread-2.0)
 pkg_check_modules (XCB REQUIRED xcb)
+pkg_check_modules (EXIF REQUIRED libexif)
+pkg_check_modules (GLIB REQUIRED glib-2.0 gio-2.0 gobject-2.0 gthread-2.0)
 
-include_directories(${GLIB_INCLUDE_DIRS} ${XCB_INCLUDE_DIRS})
-
+include_directories(${GLIB_INCLUDE_DIRS} ${XCB_INCLUDE_DIRS} ${EXIF_INCLUDE_DIRS})
 
 message(STATUS "Building ${PROJECT_NAME} with Qt ${Qt5Core_VERSION}")
 
@@ -53,6 +54,7 @@ FILE (GLOB ALL_SOURCES
         "folder-model-view/folder-model.cpp"
         "folder-model-view/folder-model-item.cpp"
         "folder-model-view/proxy-folder-model.cpp"
+        "folder-model-view/cached-folder-model.cpp"
         "folder-model-view/folder-item-delegate.cpp"
 )
 
@@ -84,6 +86,7 @@ FILE (GLOB ALL_HEADERS
         "folder-model-view/folder-view-p.h"
         "folder-model-view/folder-model-item.h"
         "folder-model-view/proxy-folder-model.h"
+        "folder-model-view/cached-folder-model.h"
         "folder-model-view/folder-item-delegate.h"
 )
 
@@ -100,10 +103,19 @@ QT5_ADD_RESOURCES(ALL_RESOURCES_RCC ${ALL_QRC})
 # 所以，我们需要把build目录添加到包含目录中
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} PRIVATE "${Qt5Gui_PRIVATE_INCLUDE_DIRS}")
 
-add_library(core-dingjing STATIC ${ALL_SOURCES} ${ALL_HEADERS_MOC} ${ALL_RESOURCES_RCC} ${ALL_FORMS_HEADERS})
+add_library(${LIB_CORE_DINGJING_NAME} STATIC ${ALL_SOURCES} ${ALL_HEADERS_MOC} ${ALL_RESOURCES_RCC} ${ALL_FORMS_HEADERS})
 
 
-target_link_libraries(core-dingjing Qt5::Widgets Qt5::X11Extras ${GLIB_LIBRARIES} ${XCB_LIBRARIES})
+target_link_libraries(${LIB_CORE_DINGJING_NAME} Qt5::Widgets Qt5::X11Extras ${GLIB_LIBRARIES} ${XCB_LIBRARIES} ${EXIF_LIBRARIES})
+
+# demo library
+set (DEMO_LIBRARYS Qt5::Core Qt5::Widgets ${LIB_CORE_DINGJING_NAME})
+
+# demo
+add_executable("test-folder-model-view"
+    demo/folder-mode-view/folder-mode-view.cpp
+)
+target_link_libraries("test-folder-model-view" ${DEMO_LIBRARYS})
 
 
 option(BUILD_DOCUMENTATION "Use Doxygen to create the HTML based API documentation" OFF)

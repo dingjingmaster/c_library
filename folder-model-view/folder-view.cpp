@@ -1336,6 +1336,16 @@ QModelIndexList FolderView::selectedIndexes() const
     return QModelIndexList();
 }
 
+void FolderView::prepareFileMenu(FileMenu *menu)
+{
+
+}
+
+void FolderView::prepareFolderMenu(FolderMenu *menu)
+{
+
+}
+
 QItemSelectionModel* FolderView::selectionModel() const
 {
     return mView ? mView->selectionModel() : nullptr;
