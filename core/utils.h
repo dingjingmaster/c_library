@@ -20,6 +20,8 @@ public:
     static FilePathList pathListFromQUrls (QList<QUrl> urls);
     static FilePathList pathListFromUriList (const char* uriList);
     static QByteArray pathListToUriList (const FilePathList& paths);
+
+    static bool changeFileName(const FilePath& filePath, const QString& newName, QWidget* parent, bool showMessage=true);
 };
 }
 

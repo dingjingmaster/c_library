@@ -1,5 +1,7 @@
 #include "utils.h"
+#include "folder.h"
 
+#include <QMessageBox>
 
 dingjing::FilePathList dingjing::Utils::pathListFromQUrls(QList<QUrl> urls)
 {
@@ -35,4 +37,27 @@ QByteArray dingjing::Utils::pathListToUriList(const dingjing::FilePathList &path
     }
 
     return uriList;
+}
+
+bool dingjing::Utils::changeFileName(const dingjing::FilePath &filePath, const QString &newName, QWidget *parent, bool showMessage)
+{
+    GErrorPtr err;
+    GFilePtr gfile{g_file_set_display_name(filePath.gfile().get(),
+                                            newName.toLocal8Bit().constData(),
+                                            nullptr, /* make this cancellable later. */
+                                            &err)};
+    if(gfile == nullptr) {
+        if (showMessage){
+            QMessageBox::critical(parent ? parent->window() : nullptr, QObject::tr("Error"), err.message());
+        }
+        return false;
+    }
+
+    // reload the containing folder if it is in use but does not have a file monitor
+    auto folder = Folder::findByPath(filePath.parent());
+    if(folder && folder->isValid() && folder->isLoaded() && !folder->hasFileMonitor()) {
+        folder->reload();
+    }
+
+    return true;
 }

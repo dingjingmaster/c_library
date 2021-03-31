@@ -53,6 +53,7 @@ QString FolderModelItem::ownerGroup() const
 {
 //    auto group = UserInfoCache::globalInstance()->groupFromId(info->gid());
 //    return group ? group->name() : QString();
+    return "";
 }
 
 const QString &FolderModelItem::displayMtime() const
@@ -66,7 +67,7 @@ const QString &FolderModelItem::displayMtime() const
 //            dispMtime_ = mtime.toString(Qt::SystemLocaleShortDate);
 //        }
 //    }
-//    return dispMtime_;
+    return mDispMtime;
 }
 
 const QString &FolderModelItem::displayCrtime() const
@@ -80,7 +81,7 @@ const QString &FolderModelItem::displayCrtime() const
 //            dispCrtime_ = crtime.toString(Qt::SystemLocaleShortDate);
 //        }
 //    }
-//    return dispCrtime_;
+    return mDispCrtime;
 }
 
 const QString &FolderModelItem::displayDtime() const

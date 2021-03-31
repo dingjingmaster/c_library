@@ -45,12 +45,15 @@ FILE (GLOB ALL_SOURCES
         "core/thumbnail-job.cpp"
         "core/file-info-job.cpp"
         "core/volume-manager.cpp"
+        "core/dnd-action-menu.cpp"
+        "core/x-dnd-workaround.cpp"
         "core/filesystem-info-job.cpp"
 
         "folder-model-view/folder-view.cpp"
         "folder-model-view/folder-model.cpp"
         "folder-model-view/folder-model-item.cpp"
         "folder-model-view/proxy-folder-model.cpp"
+        "folder-model-view/folder-item-delegate.cpp"
 )
 
 FILE (GLOB ALL_HEADERS
@@ -72,6 +75,8 @@ FILE (GLOB ALL_HEADERS
         "core/thumbnail-job.h"
         "core/file-info-job.h"
         "core/volume-manager.h"
+        "core/dnd-action-menu.h"
+        "core/x-dnd-workaround.h"
         "core/filesystem-info-job.h"
 
         "folder-model-view/folder-view.h"
@@ -79,6 +84,7 @@ FILE (GLOB ALL_HEADERS
         "folder-model-view/folder-view-p.h"
         "folder-model-view/folder-model-item.h"
         "folder-model-view/proxy-folder-model.h"
+        "folder-model-view/folder-item-delegate.h"
 )
 
 # 调用预编译器moc，需要使用 QT5_WRAP_CPP宏
@@ -92,7 +98,7 @@ QT5_ADD_RESOURCES(ALL_RESOURCES_RCC ${ALL_QRC})
 
 # 这些生成的中间文件都会在build目录下，这样的话，编译器则不能定位由uic程序产生的诸如_ui_mainwindow.h等文件。
 # 所以，我们需要把build目录添加到包含目录中
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} PRIVATE "${Qt5Gui_PRIVATE_INCLUDE_DIRS}")
 
 add_library(core-dingjing STATIC ${ALL_SOURCES} ${ALL_HEADERS_MOC} ${ALL_RESOURCES_RCC} ${ALL_FORMS_HEADERS})
 

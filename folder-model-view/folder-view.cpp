@@ -1,23 +1,29 @@
 #include "folder-view.h"
 
 #include "folder-view-p.h"
+#include "folder-item-delegate.h"
+#include "core/x-dnd-workaround.h"
 
-#include <QAbstractListModel>
-#include <QAction>
-#include <QApplication>
-#include <QHeaderView>
-#include <QLabel>
-#include <QLineEdit>
 #include <QMenu>
-#include <QMimeData>
-#include <QModelIndex>
-#include <QModelIndex>
-#include <QPainter>
-#include <QScrollBar>
-#include <QTextEdit>
 #include <QTimer>
+#include <QLabel>
+#include <QAction>
+#include <QPainter>
+#include <QX11Info>     // for XDS support
+#include <xcb/xcb.h>    // for XDS support
+#include <QLineEdit>
+#include <QMimeData>
+#include <QTextEdit>
+#include <QScrollBar>
+#include <QHeaderView>
 #include <QVBoxLayout>
+#include <QModelIndex>
+#include <QModelIndex>
+#include <QApplication>
 #include <QWidgetAction>
+#include <QAbstractListModel>
+#include <core/dnd-action-menu.h>
+#include <core/utils.h>
 
 #define SCROLL_FRAMES_PER_SEC       50
 #define SCROLL_DURATION             300
@@ -961,7 +967,7 @@ void FolderView::onClosingEditor(QWidget* editor, QAbstractItemDelegate::EndEdit
             if (window() == this) { // supposedly desktop, in case it uses this
                 parent = nullptr;
             }
-            changeFileName(info->path(), newName, parent);
+            Utils::changeFileName(info->path(), newName, parent);
         }
     }
 }
@@ -1190,7 +1196,7 @@ void FolderView::setShadowHidden(bool shadowHidden)
     if(mView && shadowHidden != mShadowHidden) {
         mShadowHidden = shadowHidden;
         FolderItemDelegate* delegate = nullptr;
-        if(mode == DetailedListMode) {
+        if(mMode == DetailedListMode) {
             FolderViewTreeView* treeView = static_cast<FolderViewTreeView*>(mView);
             delegate = static_cast<FolderItemDelegate*>(treeView->itemDelegateForColumn(FolderModel::ColumnFileName));
         }
@@ -1830,7 +1836,7 @@ void FolderView::onFileClicked(int type, const std::shared_ptr<const FileInfo> &
         if(mFileLauncher) {
             FileInfoList files;
             files.push_back(fileInfo);
-            mFileLauncher->launchFiles(nullptr, std::move(files));
+//            mFileLauncher->launchFiles(nullptr, std::move(files));
         }
     } else if(type == ContextMenuClick) {
         FilePath folderPath;
@@ -1854,16 +1860,16 @@ void FolderView::onFileClicked(int type, const std::shared_ptr<const FileInfo> &
             // show context menu
             auto files = selectedFiles();
             if(!files.empty()) {
-                FileMenu* fileMenu = new FileMenu(files, fileInfo, folderPath, isWritableDir, QString(), mView);
-                fileMenu->setFileLauncher(mFileLauncher);
-                fileMenu->addTrustAction();
-                prepareFileMenu(fileMenu);
-                menu = fileMenu;
+//                FileMenu* fileMenu = new FileMenu(files, fileInfo, folderPath, isWritableDir, QString(), mView);
+//                fileMenu->setFileLauncher(mFileLauncher);
+//                fileMenu->addTrustAction();
+//                prepareFileMenu(fileMenu);
+//                menu = fileMenu;
             }
         } else if (folderInfo()) {
-            FolderMenu* folderMenu = new FolderMenu(this);
-            prepareFolderMenu(folderMenu);
-            menu = folderMenu;
+//            FolderMenu* folderMenu = new FolderMenu(this);
+//            prepareFolderMenu(folderMenu);
+//            menu = folderMenu;
         }
         if(menu) {
             menu->exec(QCursor::pos());
