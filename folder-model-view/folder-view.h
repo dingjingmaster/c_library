@@ -19,7 +19,7 @@ class FolderMenu;
 class FileLauncher;
 class FolderViewStyle;
 
-class FoldedrView : public QWidget
+class FolderView : public QWidget
 {
     Q_OBJECT
 public:

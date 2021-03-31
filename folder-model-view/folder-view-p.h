@@ -30,20 +30,24 @@ public:
 
     QModelIndex indexAt(const QPoint & point) const override;
 
-    inline void setPositionForIndex(const QPoint & position, const QModelIndex & index) {
+    inline void setPositionForIndex(const QPoint & position, const QModelIndex & index)
+    {
       QListView::setPositionForIndex(position, index);
     }
 
-    inline QRect rectForIndex(const QModelIndex & index) const {
+    inline QRect rectForIndex(const QModelIndex & index) const
+    {
       return QListView::rectForIndex(index);
     }
 
-    inline QStyleOptionViewItem getViewOptions() {
+    inline QStyleOptionViewItem getViewOptions()
+    {
       return viewOptions();
     }
 
-    inline bool cursorOnSelectionCorner() const {
-        return cursorOnSelectionCorner_;
+    inline bool cursorOnSelectionCorner() const
+    {
+        return mCursorOnSelectionCorner;
     }
 
 Q_SIGNALS:
@@ -59,10 +63,10 @@ private Q_SLOTS:
     void activation(const QModelIndex &index);
 
 private:
-    bool activationAllowed_;
-    mutable bool cursorOnSelectionCorner_;
-    bool mouseLeftPressed_;
-    QPoint globalItemPressPoint_; // to prevent dragging when only the view is scrolled
+    bool                mActivationAllowed;
+    mutable bool        mCursorOnSelectionCorner;
+    bool                mMouseLeftPressed;
+    QPoint              mGlobalItemPressPoint; // to prevent dragging when only the view is scrolled
 };
 
 class FolderViewTreeView : public QTreeView
@@ -94,7 +98,8 @@ public:
     void resizeEvent(QResizeEvent* event) override;
     void queueLayoutColumns();
 
-    void keyboardSearch(const QString &search) override {
+    void keyboardSearch(const QString &search) override
+    {
       QAbstractItemView::keyboardSearch(search); // let items be selected by typing
     }
 
@@ -115,17 +120,17 @@ private Q_SLOTS:
     void headerContextMenu(const QPoint &p);
 
 private:
-    bool doingLayout_;
-    QTimer* layoutTimer_;
-    bool activationAllowed_;
-    QList<int> customColumnWidths_;
-    QSet<int> hiddenColumns_;
-    QPoint globalItemPressPoint_; // to prevent dragging when only the view is scrolled
+    bool                                mDoingLayout;
+    QTimer*                             mLayoutTimer;
+    bool                                mActivationAllowed;
+    QList<int>                          mCustomColumnWidths;
+    QSet<int>                           mHiddenColumns;
+    QPoint                              mGlobalItemPressPoint; // to prevent dragging when only the view is scrolled
 
     // for rubberband
-    QPoint mousePressPoint_;
-    QRect rubberBandRect_;
-    QItemSelectionModel::SelectionFlag ctrlDragSelectionFlag_;
+    QPoint                              mMousePressPoint;
+    QRect                               mRubberBandRect;
+    QItemSelectionModel::SelectionFlag  mCtrlDragSelectionFlag;
 };
 
 

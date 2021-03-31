@@ -47,7 +47,7 @@ FILE (GLOB ALL_SOURCES
         "core/volume-manager.cpp"
         "core/filesystem-info-job.cpp"
 
-        "folder-model-view/foldedr-view.cpp"
+        "folder-model-view/folder-view.cpp"
         "folder-model-view/folder-model.cpp"
         "folder-model-view/folder-model-item.cpp"
         "folder-model-view/proxy-folder-model.cpp"
@@ -74,7 +74,7 @@ FILE (GLOB ALL_HEADERS
         "core/volume-manager.h"
         "core/filesystem-info-job.h"
 
-        "folder-model-view/foldedr-view.h"
+        "folder-model-view/folder-view.h"
         "folder-model-view/folder-model.h"
         "folder-model-view/folder-view-p.h"
         "folder-model-view/folder-model-item.h"
