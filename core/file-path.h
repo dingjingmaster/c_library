@@ -7,160 +7,64 @@
 
 #include "global.h"
 #include "smart-ptr.hpp"
-#include <gio/gio.h>
+
 #include <glib.h>
 #include <vector>
+#include <gio/gio.h>
+
+#include <QObject>
 
 namespace dingjing
 {
 class FilePath
 {
 public:
-    explicit FilePath() {}
+    explicit FilePath();
+    explicit FilePath(GFile* gfile, bool add_ref);
 
-    explicit FilePath(GFile* gfile, bool add_ref): gfile_{gfile, add_ref} {}
+    FilePath(const FilePath& other);
+    FilePath(FilePath&& other) noexcept;
+    static FilePath fromUri(const char* uri);
+    static FilePath fromLocalPath(const char* path);
+    static FilePath fromPathStr(const char* pathStr);
+    static FilePath fromDisplayName(const char* path);
 
-    FilePath(const FilePath& other): FilePath{} {
-        *this = other;
-    }
+    CStrPtr uri() const;
+    bool isValid() const;
+    CStrPtr baseName() const;
+    CStrPtr toString() const;
+    unsigned int hash() const;
+    CStrPtr localPath() const;
+    CStrPtr displayName() const;            // a human readable UTF-8 display name for the path
 
-    FilePath(FilePath&& other) noexcept: FilePath{} {
-        *this = other;
-    }
+    bool hasParent() const;
+    FilePath parent() const;
 
-    static FilePath fromUri(const char* uri) {
-        return FilePath{g_file_new_for_uri(uri), false};
-    }
+    bool isParentOf(const FilePath& other) const;
+    bool isPrefixOf(const FilePath& other) const;
 
-    static FilePath fromLocalPath(const char* path) {
-        return FilePath{g_file_new_for_path(path), false};
-    }
+    FilePath child(const char* name) const;
+    FilePath relativePath(const char* relPath) const;
+    CStrPtr relativePathStr(const FilePath& descendant) const;
 
-    static FilePath fromDisplayName(const char* path) {
-        return FilePath{g_file_parse_name(path), false};
-    }
+    bool isNative() const;
+    CStrPtr uriScheme() const;
+    const GObjectPtr<GFile>& gfile() const;
+    bool hasUriScheme(const char* scheme) const;
 
-    static FilePath fromPathStr(const char* path_str) {
-        return FilePath{g_file_new_for_commandline_arg(path_str), false};
-    }
-
-    bool isValid() const {
-        return gfile_ != nullptr;
-    }
-
-    unsigned int hash() const {
-        return g_file_hash(gfile_.get());
-    }
-
-    CStrPtr baseName() const {
-        return CStrPtr{g_file_get_basename(gfile_.get())};
-    }
-
-    CStrPtr localPath() const {
-        return CStrPtr{g_file_get_path(gfile_.get())};
-    }
-
-    CStrPtr uri() const {
-        return CStrPtr{g_file_get_uri(gfile_.get())};
-    }
-
-    CStrPtr toString() const {
-        if(isNative()) {
-            return localPath();
-        }
-        return uri();
-    }
-
-    // a human readable UTF-8 display name for the path
-    CStrPtr displayName() const {
-        return CStrPtr{g_file_get_parse_name(gfile_.get())};
-    }
-
-    FilePath parent() const {
-        return FilePath{g_file_get_parent(gfile_.get()), false};
-    }
-
-    bool hasParent() const {
-        return g_file_has_parent(gfile_.get(), nullptr);
-    }
-
-    bool isParentOf(const FilePath& other) const {
-        return g_file_has_parent(other.gfile_.get(), gfile_.get());
-    }
-
-    bool isPrefixOf(const FilePath& other) const {
-        return g_file_has_prefix(other.gfile_.get(), gfile_.get());
-    }
-
-    FilePath child(const char* name) const {
-        return FilePath{g_file_get_child(gfile_.get(), name), false};
-    }
-
-    CStrPtr relativePathStr(const FilePath& descendant) const {
-        return CStrPtr{g_file_get_relative_path(gfile_.get(), descendant.gfile_.get())};
-    }
-
-    FilePath relativePath(const char* relPath) const {
-        return FilePath{g_file_resolve_relative_path(gfile_.get(), relPath), false};
-    }
-
-    bool isNative() const {
-        return g_file_is_native(gfile_.get());
-    }
-
-    bool hasUriScheme(const char* scheme) const {
-        return g_file_has_uri_scheme(gfile_.get(), scheme);
-    }
-
-    CStrPtr uriScheme() const {
-        return CStrPtr{g_file_get_uri_scheme(gfile_.get())};
-    }
-
-    const GObjectPtr<GFile>& gfile() const {
-        return gfile_;
-    }
-
-    FilePath& operator = (const FilePath& other) {
-        gfile_ = other.gfile_;
-        return *this;
-    }
-
-    FilePath& operator = (const FilePath&& other) noexcept {
-        gfile_ = std::move(other.gfile_);
-        return *this;
-    }
-
-    bool operator == (const FilePath& other) const {
-        return operator==(other.gfile_.get());
-    }
-
-    bool operator == (GFile* other_gfile) const {
-        if(gfile_ == other_gfile) {
-            return true;
-        }
-        if(gfile_ && other_gfile) {
-            return g_file_equal(gfile_.get(), other_gfile);
-        }
-        return false;
-    }
-
-    bool operator != (const FilePath& other) const {
-        return !operator==(other);
-    }
-
-    bool operator != (std::nullptr_t) const {
-        return gfile_ != nullptr;
-    }
-
-    operator bool() const {
-        return gfile_ != nullptr;
-    }
+    operator bool() const;
+    bool operator != (std::nullptr_t) const;
+    bool operator == (GFile* other_gfile) const;
+    bool operator == (const FilePath& other) const;
+    bool operator != (const FilePath& other) const;
+    FilePath& operator = (const FilePath& other);
+    FilePath& operator = (const FilePath&& other) noexcept;
 
     static const FilePath& homeDir();
 
 private:
-    GObjectPtr<GFile> gfile_;
-    static FilePath homeDir_;
+    GObjectPtr<GFile>           mGfile;
+    static FilePath             mHomeDir;
 };
 
 struct FilePathHash
@@ -173,5 +77,6 @@ struct FilePathHash
 typedef std::vector<FilePath> FilePathList;
 };
 
-//Q_DECLARE_METATYPE(dingjing::FilePath)
+Q_DECLARE_METATYPE(dingjing::FilePath)
+
 #endif //LIBCORE_DINGJING_FILE_PATH_H
