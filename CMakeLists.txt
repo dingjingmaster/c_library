@@ -56,6 +56,8 @@ FILE (GLOB ALL_SOURCES
         "folder-model-view/proxy-folder-model.cpp"
         "folder-model-view/cached-folder-model.cpp"
         "folder-model-view/folder-item-delegate.cpp"
+
+        "pathbar-model-view/path-editor.cpp"
 )
 
 FILE (GLOB ALL_HEADERS
@@ -88,6 +90,9 @@ FILE (GLOB ALL_HEADERS
         "folder-model-view/proxy-folder-model.h"
         "folder-model-view/cached-folder-model.h"
         "folder-model-view/folder-item-delegate.h"
+
+        "pathbar-model-view/path-editor.h"
+        "pathbar-model-view/path-editor-p.h"
 )
 
 # 调用预编译器moc，需要使用 QT5_WRAP_CPP宏
