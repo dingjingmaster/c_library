@@ -1,14 +1,15 @@
-cflag = -w \
-		-I/usr/include/glib-2.0
+curDir = $(shell pwd)
 
-demo1_src = main_event_loop.c
+cflag = \
+	-w 					\
+	-I$(curDir)/../../ 	\
 
-gobject_target =\
-	main_event_loop.run 
-
-target = $(gobject_target)
+src = $(strip $(subst $(curDir), ., $(wildcard $(curDir)/*.c)))
+target = $(strip $(patsubst %.c, %.run, $(src)))
 
 all:$(target)
+	echo $(target)
+
 
 %.run:%.o
 	cc -o $@ $^ $(cflag) `pkg-config --cflags --libs glib-2.0 gio-2.0 gobject-2.0`
