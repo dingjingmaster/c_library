@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+<policyconfig>
+    <vendor>Kylinos</vendor>
+    <vendor_url>https://github.com/gicmo/bolt</vendor_url>
+    <icon_name>thunderbolt-symbolic</icon_name>
+    <action id="com.kylin.systemctl.processctrl">
+        <description>Enroll new thunderbolt devices</description>
+        <message>Authentication is required to enroll thunderbolt devices</message>
+        <icon_name>thunderbolt-symbolic</icon_name>
+        <defaults>
+            <allow_any>auth_admin</allow_any>
+            <allow_inactive>auth_admin</allow_inactive>
+            <allow_active>auth_admin_keep</allow_active>
+        </defaults>
+    </action>
+</policyconfig>
+
