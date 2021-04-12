@@ -10,6 +10,11 @@
 extern "C" {
 #endif
 #include <stddef.h>
+#ifdef __cplusplus
+}
+#else
+#include <assert.h>
+#endif
 
 #define CLIB_VERSION_MAJOR                                  (0)
 #define CLIB_VERSION_MINOR                                  (0)
@@ -17,6 +22,8 @@ extern "C" {
 
 #define CLIB_VERSION_CHECK(major, minor, patch)             ((major<<16)|(minor<<8)|(patch))
 #define CLIB_VERSION                                        CLIB_VERSION_CHECK(CLIB_VERSION_MAJOR, CLIB_VERSION_MINOR, CLIB_VERSION_PATCH)
+
+#define CLIB_UNUSED(x)                                      (void)x;
 
 typedef signed char                     cint8;              // 8 bit signed
 typedef unsigned char                   cuint8;             // 8 bit unsigned
@@ -28,7 +35,4 @@ typedef long long                       cint64;             // 64 bit signed
 typedef unsigned long long              cuint64;            // 64 bit unsigned
 
 
-#ifdef __cplusplus
-}
-#endif
 #endif
