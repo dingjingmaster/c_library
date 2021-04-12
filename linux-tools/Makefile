@@ -1,9 +1,12 @@
+curDir = $(shell pwd)
+bin = $(wildcard $(curDir)/linux-tools-*)
 
 all:
 	@echo "make all"
 
 install:
-	@echo "未定义"
+	@install -m a+rx $(bin) "/usr/bin/"
+	
 
 .PHONY:all install clean
 
