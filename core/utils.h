@@ -8,9 +8,9 @@
 #include <QMimeData>
 #include <sys/types.h>
 
-#include "core/global.h"
-#include "core/file-path.h"
-#include "core/file-info.h"
+#include "global.h"
+#include "file-path.h"
+#include "file-info.h"
 
 namespace dingjing
 {

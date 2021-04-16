@@ -3,7 +3,7 @@ doc/
 cmake-*/
 .idea/
 package/
-build-*/
+build/
 *.run_debug
 *.run
 *~

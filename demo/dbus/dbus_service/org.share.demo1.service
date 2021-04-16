@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.share.demo1
-Exec=/data/code/c_library/demo/dbus/dbus_service/share_service.run
