@@ -34,12 +34,6 @@ add_subdirectory(core)
 add_subdirectory(tests)
 
 
-
-
-
-
-
-
 option(BUILD_DOCUMENTATION "Use Doxygen to create the HTML based API documentation" OFF)
 if(BUILD_DOCUMENTATION)
     find_package(Doxygen REQUIRED)
