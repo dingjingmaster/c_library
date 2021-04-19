@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# 常用变量
+work_dir=$(dirname $(realpath -- $0))
+app_name=''
+
+############################################## 常用函數 ###############################################
+# 输出信息
+_msg_info() 
+{
+    local _msg="${1}"
+    if [[ ${app_name} == '' ]]; then
+        [[ "${quiet}" == "y" ]] || printf '\033[32m %s\033[0m\n' "${_msg}" | sed ':label;N;s/\n/ /g;b label' | sed 's/[ ][ ]*/ /g'
+    else
+        [[ "${quiet}" == "y" ]] || printf '\033[32m[%s] %s\033[0m\n' "${app_name}" "${_msg}" | sed ':label;N;s/\n/ /g;b label' | sed 's/[ ][ ]*/ /g'
+    fi
+}
+
+# 输出信息
+_msg_info_pure() 
+{
+    local _msg="${1}"
+    if [[ ${app_name} == '' ]]; then
+        [[ "${quiet}" == "y" ]] || printf '\033[32m %s\033[0m\n' "${_msg}" 
+    else
+        [[ "${quiet}" == "y" ]] || printf '\033[32m[%s] %s\033[0m\n' "${app_name}" "${_msg}" 
+    fi
+}
+
+# 输出警告
+_msg_warning()
+{
+    local _msg="${1}"
+    if [[ ${app_name} == '' ]]; then
+        printf '\033[33m警告: %s\033[0m\n' "${_msg}" >&2
+    else
+        printf '\033[33m[%s] %s\033[0m\n' "${app_name}" "${_msg}" >&2
+    fi
+}
+
+# 输出错误
+_msg_error()
+{
+    local _msg="${1}"
+    local _error="${2}"
+    if [[ ${app_name} == '' ]]; then
+        printf '\033[31m %s\033[0m\n' "${_msg}" >&2
+    else
+        printf '\033[31m[%s] %s\033[0m\n' "${app_name}" "${_msg}" >&2
+    fi
+
+    if (( _error > 0 )); then
+        exit "${_error}"
+    fi
+}
+#######################################################################################################
+
+# 輸出脚本定义的变量
+#_msg_info " 工作目录:       ${work_dir}"
+
