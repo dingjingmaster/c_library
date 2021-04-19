@@ -4,6 +4,7 @@ cmake-*/
 .idea/
 package/
 build/
+*.kdev4
 *.run_debug
 *.run
 *~
