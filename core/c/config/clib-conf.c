@@ -10,8 +10,8 @@
 
 #include "clib-conf.h"
 
-#include "clib-ret.h"
-#include "clib-log.h"
+#include "c/log/clib-log.h"
+#include "c/common/clib-ret.h"
 
 typedef struct
 {

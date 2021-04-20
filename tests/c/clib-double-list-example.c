@@ -6,7 +6,7 @@
  ************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
-#include "clib-double-list.h"
+#include "../../core/c/list/clib-double-list.h"
 
 void print_list(double_list_t* list);
 void list_node_free(double_list_node_t* list);

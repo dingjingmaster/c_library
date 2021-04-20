@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "clib-random.h"
+#include "../../core/c/random/clib-random.h"
 
 int main (int argc, char* argv[])
 {

@@ -18,6 +18,21 @@ FILE (GLOB ALL_SOURCES
         "x-dnd-workaround.cpp"
         "filesystem-info-job.cpp"
 
+        "c/log/clib-log.c"
+        "c/util/clib-util.c"
+        "c/config/clib-conf.c"
+        "c/rpc/clib-rpcpack.c"
+        "c/base64/clib-base64.c"
+        "c/random/clib-random.c"
+        "c/string/clib-string.c"
+        "c/tree/clib-avl-tree.c"
+        "c/syslog/clib-syslog.c"
+        "c/string/clib-bstring.c"
+        "c/array/clib-array-list.c"
+        "c/list/clib-double-list.c"
+        "c/file/clib-file-enumerator.c"
+        "c/thread_pool/clib-thread-pool.c"
+
         "folder-model-view/folder-view.cpp"
         "folder-model-view/folder-model.cpp"
         "folder-model-view/folder-model-item.cpp"
@@ -51,6 +66,24 @@ FILE (GLOB ALL_HEADERS
         "x-dnd-workaround.h"
         "filesystem-info-job.h"
 
+        "c/common/clib-ret.h"
+        "c/common/clib-macro.h"
+
+        "c/log/clib-log.h"
+        "c/util/clib-util.h"
+        "c/config/clib-conf.h"
+        "c/rpc/clib-rpcpack.h"
+        "c/base64/clib-base64.h"
+        "c/random/clib-random.h"
+        "c/string/clib-string.h"
+        "c/tree/clib-avl-tree.h"
+        "c/syslog/clib-syslog.h"
+        "c/string/clib-bstring.h"
+        "c/array/clib-array-list.h"
+        "c/list/clib-double-list.h"
+        "c/file/clib-file-enumerator.h"
+        "c/thread_pool/clib-thread-pool.h"
+
         "folder-model-view/folder-view.h"
         "folder-model-view/folder-model.h"
         "folder-model-view/folder-view-p.h"
@@ -78,4 +111,4 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} PRIVATE "${Qt5Gui_PRIVATE_INCLUD
 
 add_library(${LIB_CORE_DINGJING_NAME} STATIC ${ALL_SOURCES} ${ALL_HEADERS_MOC} ${ALL_RESOURCES_RCC} ${ALL_FORMS_HEADERS})
 
-target_link_libraries(${LIB_CORE_DINGJING_NAME} Qt5::Widgets Qt5::X11Extras ${GLIB_LIBRARIES} ${XCB_LIBRARIES} ${EXIF_LIBRARIES})
+target_link_libraries(${LIB_CORE_DINGJING_NAME} ${PTHREAD} Qt5::Widgets Qt5::X11Extras ${GLIB_LIBRARIES} ${XCB_LIBRARIES} ${EXIF_LIBRARIES})

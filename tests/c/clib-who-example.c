@@ -5,7 +5,7 @@
 > Created Time: 2019年11月07日 星期四 10时00分21秒
  ************************************************************************/
 #include <stdio.h>
-#include "clib-util.h"
+#include "../../core/c/util/clib-util.h"
 
 int main (int argc, char* argv[])
 {

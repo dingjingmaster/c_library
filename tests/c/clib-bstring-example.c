@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "clib-bstring.h"
+#include "../../core/c/string/clib-bstring.h"
 
 int main(int argc, char* argv[])
 {

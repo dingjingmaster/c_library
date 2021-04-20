@@ -9,7 +9,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR YES)
 set(LIBRARY_NAME "libcore-dingjing")
 ADD_DEFINITIONS("-DQT_NO_KEYWORDS" "-Wall")
 
-
 set(QT_MINIMUM_VERSION "5.12.0")
 set(GLIB_MINIMUM_VERSION "2.50.0")
 set(LIB_CORE_DINGJING_NAME "core-dingjing" CACHE STRING "core-dingjing")
@@ -21,11 +20,13 @@ find_package(Qt5Widgets "${QT_MINIMUM_VERSION}" REQUIRED)
 find_package(Qt5X11Extras "${QT_MINIMUM_VERSION}" REQUIRED)
 find_package(Qt5LinguistTools "${QT_MINIMUM_VERSION}" REQUIRED)
 
+find_library(PTHREAD pthread)
+
 pkg_check_modules (XCB REQUIRED xcb)
 pkg_check_modules (EXIF REQUIRED libexif)
 pkg_check_modules (GLIB REQUIRED glib-2.0 gio-2.0 gobject-2.0 gthread-2.0)
 
-include_directories(core/)
+include_directories(${CMAKE_SOURCE_DIR}/core/)
 include_directories(${GLIB_INCLUDE_DIRS} ${XCB_INCLUDE_DIRS} ${EXIF_INCLUDE_DIRS})
 
 message(STATUS "Building ${PROJECT_NAME} with Qt ${Qt5Core_VERSION}")

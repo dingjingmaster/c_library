@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "clib-ret.h"
+#include "c/common/clib-ret.h"
 #include "clib-align.h"
 
 #include "clib-rpcpack.h"

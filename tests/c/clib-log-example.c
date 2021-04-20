@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "clib-log.h"
+#include "../../core/c/log/clib-log.h"
 
 int main() {
     int i = 0;

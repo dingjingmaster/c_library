@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "clib-avl-tree.h"
+#include "../../core/c/tree/clib-avl-tree.h"
 
 int my_compare(avl_key_t value1, avl_key_t value2) {
     if (*(int*)value1 > *(int*)value2) {

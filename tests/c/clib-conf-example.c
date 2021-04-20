@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "clib-conf.h"
-#include "clib-ret.h"
+#include "../../core/c/config/clib-conf.h"
+#include "../../core/c/common/clib-ret.h"
 
 #define BUF_SIZE 10240
 

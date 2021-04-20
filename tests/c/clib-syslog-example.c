@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "clib-syslog.h"
+#include "../../core/c/syslog/clib-syslog.h"
 
 int main() {
     syslog_init("clib syslog demo", LOG_DEBUG, LOG_LOCAL6);
