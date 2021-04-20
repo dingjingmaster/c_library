@@ -27,5 +27,11 @@ int main (int argc, char* argv[])
         return -1;
     }
 
+    gboolean ret = g_output_stream_flush (fw, NULL, &error);
+    if (NULL != error) {
+        printf ("error:%s\n", error->message);
+        return -1;
+    }
+
     return 0;
 }
