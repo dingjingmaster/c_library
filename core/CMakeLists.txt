@@ -15,6 +15,7 @@ FILE (GLOB ALL_SOURCES
         "file-info-job.cpp"
         "volume-manager.cpp"
         "dnd-action-menu.cpp"
+        "file-read-write.cpp"
         "x-dnd-workaround.cpp"
         "filesystem-info-job.cpp"
 
@@ -63,6 +64,7 @@ FILE (GLOB ALL_HEADERS
         "file-info-job.h"
         "volume-manager.h"
         "dnd-action-menu.h"
+        "file-read-write.h"
         "x-dnd-workaround.h"
         "filesystem-info-job.h"
 
@@ -111,4 +113,4 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} PRIVATE "${Qt5Gui_PRIVATE_INCLUD
 
 add_library(${LIB_CORE_DINGJING_NAME} STATIC ${ALL_SOURCES} ${ALL_HEADERS_MOC} ${ALL_RESOURCES_RCC} ${ALL_FORMS_HEADERS})
 
-target_link_libraries(${LIB_CORE_DINGJING_NAME} ${PTHREAD} Qt5::Widgets Qt5::X11Extras ${GLIB_LIBRARIES} ${XCB_LIBRARIES} ${EXIF_LIBRARIES})
+target_link_libraries(${LIB_CORE_DINGJING_NAME} ${PTHREAD} Qt5::Core Qt5::Widgets Qt5::X11Extras ${GLIB_LIBRARIES} ${XCB_LIBRARIES} ${EXIF_LIBRARIES})
