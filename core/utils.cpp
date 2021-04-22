@@ -1,13 +1,38 @@
 #include "utils.h"
 #include "folder.h"
 
+#include <QFile>
 #include <QMessageBox>
+
+
+bool dingjing::Utils::fileExists(const QString& file)
+{
+    QString filePath = file.split("://").last();
+
+    return QFile::exists(filePath);
+}
+
+GFileType dingjing::Utils::getFileType(const QString &uri)
+{
+    GFileType fileType = G_FILE_TYPE_UNKNOWN;
+    GFile* file = g_file_new_for_uri(uri.toUtf8().data());
+    if (nullptr == file) {
+        goto out;
+    }
+
+    fileType = g_file_query_file_type(file, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, nullptr);
+
+out:
+    if (nullptr != file)        g_object_unref(file);
+
+    return fileType;
+}
 
 dingjing::FilePathList dingjing::Utils::pathListFromQUrls(QList<QUrl> urls)
 {
     FilePathList pathList;
-    for(auto it = urls.cbegin(); it != urls.cend(); ++it) {
-        auto path = FilePath::fromUri(it->toString().toUtf8().constData());
+    for(const auto & url : urls) {
+        auto path = FilePath::fromUri(url.toString().toUtf8().constData());
         pathList.push_back(std::move(path));
     }
 

@@ -205,8 +205,8 @@ uint64_t conf_uhex(void *conf, const char *key, uint64_t def)
 }
 
 void conf_dump(void *conf) {
-    uint32_t kv_id;
 #if 0
+    uint32_t kv_id;
     for (kv_id = 0; kv_id < CONF->kv_count; kv_id++) {
         INFO("[%.*s]=[%s]", /**/
         CONF->kv_array[kv_id].v_bpos - CONF->kv_array[kv_id].k_bpos, /**/

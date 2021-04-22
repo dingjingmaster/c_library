@@ -116,7 +116,7 @@ public:
     void setCustomColumnWidths(const QList<int> &widths);
 
     QList<int> getHiddenColumns() const {
-        return mHiddenColumns.toList();
+        return mHiddenColumns.values();
     }
     void setHiddenColumns(const QList<int> &columns);
 

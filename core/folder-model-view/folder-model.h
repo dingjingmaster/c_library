@@ -124,10 +124,10 @@ private:
         FileInfoList    mPendingThumbnails;
     };
 
-    bool                                mIsLoaded;
-    bool                                mHasCutfile;
-    bool                                mShowFullNames;
-    bool                                mHasPendingThumbnailHandler;
+    bool                                mIsLoaded = false;
+    bool                                mHasCutfile = false;
+    bool                                mShowFullNames = false;
+    bool                                mHasPendingThumbnailHandler = false;
 
     HashSet                             mCutFilesHashSet;
     QList<FolderModelItem>              mItems;

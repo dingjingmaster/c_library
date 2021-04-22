@@ -5,6 +5,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC TRUE)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_INCLUDE_CURRENT_DIR YES)
+set(CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 
 set(LIBRARY_NAME "libcore-dingjing")
 ADD_DEFINITIONS("-DQT_NO_KEYWORDS" "-Wall" "-g")
@@ -25,7 +26,12 @@ find_library(PTHREAD pthread REQUIRED)
 
 pkg_check_modules (XCB REQUIRED xcb)
 pkg_check_modules (EXIF REQUIRED libexif)
-pkg_check_modules (GLIB REQUIRED glib-2.0 gio-2.0 gobject-2.0 gthread-2.0)
+pkg_check_modules (VTE REQUIRED vte-2.91)
+pkg_check_modules (GTK2 REQUIRED gtk+-2.0)
+pkg_check_modules (GTK3 REQUIRED gtk+-3.0)
+pkg_check_modules (OPENSSL REQUIRED openssl)
+pkg_check_modules (QT5BASE REQUIRED Qt5Core Qt5Widgets)
+pkg_check_modules (GLIB REQUIRED glib-2.0 gio-2.0 gio-unix-2.0 gobject-2.0 gthread-2.0)
 
 message(STATUS "include glib -- ${GLIB_INCLUDE_DIRS}")
 message(STATUS "include xcb  -- ${XCB_INCLUDE_DIRS}")
@@ -36,6 +42,7 @@ include_directories(${CMAKE_SOURCE_DIR}/core/)
 message(STATUS "Building ${PROJECT_NAME} with Qt ${Qt5Core_VERSION}")
 
 add_subdirectory(core)
+add_subdirectory(demo)
 add_subdirectory(tests)
 
 

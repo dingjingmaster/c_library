@@ -1629,8 +1629,8 @@ bool FolderView::eventFilter(QObject* watched, QEvent* event)
                 if(sbar != nullptr) {
                     QWheelEvent *we = static_cast<QWheelEvent*>(event);
 #if (QT_VERSION >= QT_VERSION_CHECK(5,12,0))
-                    QWheelEvent e(we->posF(),
-                                  we->globalPosF(),
+                    QWheelEvent e(we->position(),
+                                  we->globalPosition(),
                                   we->pixelDelta(),
 #if (QT_VERSION < QT_VERSION_CHECK(5,14,0))
                                   QPoint (0, we->angleDelta().y() / QApplication::wheelScrollLines()),

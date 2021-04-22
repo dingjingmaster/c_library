@@ -17,6 +17,8 @@ namespace dingjing
 class Utils
 {
 public:
+    static bool fileExists (const QString& file);
+    static GFileType getFileType(const QString& uri);
     static FilePathList pathListFromQUrls (QList<QUrl> urls);
     static FilePathList pathListFromUriList (const char* uriList);
     static QByteArray pathListToUriList (const FilePathList& paths);

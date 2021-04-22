@@ -1,0 +1,17 @@
+FILE(GLOB GTK2_DEMO . gtk2[_-]*.c)
+FILE(GLOB GTK3_DEMO . gtk3[_-]*.c)
+FILE(GLOB GTK4_DEMO . gtk4[_-]*.c)
+
+foreach(src2 ${GTK2_DEMO})
+    include_directories(${GTK2_INCLUDE_DIRS})
+    get_filename_component(mainName ${src2} NAME_WE)
+    add_executable(${mainName} ${src2})
+    target_link_libraries(${mainName} ${GTK2_LIBRARIES})
+endforeach(src2)
+
+#foreach(src3 ${GTK3_DEMO})
+#    include_directories(${GTK3_INCLUDE_DIRS})
+#    get_filename_component(mainName ${src3} NAME_WE)
+#    add_executable(${mainName} ${src3})
+#    target_link_libraries(${mainName} ${GTK3_LIBRARIES})
+#endforeach(src3)

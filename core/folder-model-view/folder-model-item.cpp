@@ -3,6 +3,7 @@
 //
 
 #include "folder-model-item.h"
+#include <QDateTime>
 
 namespace dingjing
 {
@@ -58,39 +59,37 @@ QString FolderModelItem::ownerGroup() const
 
 const QString &FolderModelItem::displayMtime() const
 {
-//    if(dispMtime_.isEmpty()) {
-//        if(info->mtime() == 0) {
-//            dispMtime_ = QObject::tr("N/A");
-//        }
-//        else {
-//            auto mtime = QDateTime::fromMSecsSinceEpoch(info->mtime() * 1000);
-//            dispMtime_ = mtime.toString(Qt::SystemLocaleShortDate);
-//        }
-//    }
+    if(mDispMtime.isEmpty()) {
+        if(mInfo->mtime() == 0) {
+            mDispMtime = QObject::tr("N/A");
+        } else {
+            auto mtime = QDateTime::fromMSecsSinceEpoch(mInfo->mtime() * 1000);
+            mDispMtime = mtime.toString(Qt::SystemLocaleShortDate);
+        }
+    }
     return mDispMtime;
 }
 
 const QString &FolderModelItem::displayCrtime() const
 {
-//    if(dispCrtime_.isEmpty()) {
-//        if(info->crtime() == 0) {
-//            dispCrtime_ = QObject::tr("N/A");
-//        }
-//        else {
-//            auto crtime = QDateTime::fromMSecsSinceEpoch(info->crtime() * 1000);
-//            dispCrtime_ = crtime.toString(Qt::SystemLocaleShortDate);
-//        }
-//    }
+    if(mDispCrtime.isEmpty()) {
+        if(mInfo->crtime() == 0) {
+            mDispCrtime = QObject::tr("N/A");
+        } else {
+            auto crtime = QDateTime::fromMSecsSinceEpoch(mInfo->crtime() * 1000);
+            mDispCrtime = crtime.toString(Qt::SystemLocaleShortDate);
+        }
+    }
     return mDispCrtime;
 }
 
 const QString &FolderModelItem::displayDtime() const
 {
-//    if(dispDtime_.isEmpty() && info->dtime() > 0) {
-//        auto mtime = QDateTime::fromMSecsSinceEpoch(info->dtime() * 1000);
-//        dispDtime_ = mtime.toString(Qt::SystemLocaleShortDate);
-//    }
-//    return dispDtime_;
+    if(mDispDtime.isEmpty() && mInfo->dtime() > 0) {
+        auto mtime = QDateTime::fromMSecsSinceEpoch(mInfo->dtime() * 1000);
+        mDispDtime = mtime.toString(Qt::SystemLocaleShortDate);
+    }
+    return mDispDtime;
 }
 
 const QString& FolderModelItem::displaySize() const
