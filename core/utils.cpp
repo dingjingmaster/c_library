@@ -39,6 +39,39 @@ QByteArray dingjing::Utils::pathListToUriList(const dingjing::FilePathList &path
     return uriList;
 }
 
+QString dingjing::Utils::stringMiddleTruncate (const QString& str, uint truncateLength)
+{
+    glong                   length;
+    glong                   numLeftChars;
+    glong                   numRightChars;
+    QString                 leftSubStr = nullptr;
+    QString                 rightSubStr = nullptr;
+
+    if (nullptr == str || truncateLength <= 0) {
+        goto out;
+    }
+
+    length = str.length();
+    if (length <= truncateLength) {
+        goto out;
+    }
+
+    numLeftChars = truncateLength / 2;
+    numRightChars = truncateLength - numLeftChars;
+
+    if (numLeftChars <= 0 || numRightChars <= 0) {
+        goto out;
+    }
+
+    leftSubStr = str.left(numLeftChars);
+    rightSubStr = str.right(numRightChars);
+
+    return QString("%1...%2").arg(leftSubStr).arg(rightSubStr);
+
+out:
+    return str;
+}
+
 bool dingjing::Utils::changeFileName(const dingjing::FilePath &filePath, const QString &newName, QWidget *parent, bool showMessage)
 {
     GErrorPtr err;

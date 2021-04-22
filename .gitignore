@@ -1,4 +1,7 @@
 *.test
+*.tar.gz
+*.tar
+*.zip
 doc/
 cmake-*/
 .idea/

@@ -7,9 +7,10 @@
 #ifndef _FILE_READ_WRITE_H
 #define _FILE_READ_WRITE_H
 
+#include <gio/gio.h>
+
 #include <qt/QtCore/QMutex>
 #include <qt/QtCore/QObject>
-#include <gio/gio.h>
 
 namespace dingjing
 {
@@ -23,7 +24,8 @@ namespace dingjing
             PAUSE,
             CANCEL,
             RUNNING,
-            FINISHED
+            FINISHED,
+            ERROR
         };
         Q_ENUM(Status)
         /**
@@ -51,17 +53,18 @@ namespace dingjing
         void run ();
 
     private:
+        void updateProgress () const;
+        void detailError (GError** error);
+
+    private:
         QMutex                  mPause;
         GFile*                  mSrcFile = nullptr;
         GFile*                  mDestFile = nullptr;
         GFileProgressCallback   mProgress;
         GFileCopyFlags          mCopyFlags;
-        GCancellable*           mCancel = nullptr;
-        GCancellable*           mReadCancel = nullptr;
-        GCancellable*           mWriteCancel = nullptr;
-        GFileInputStream*       mReadIO = nullptr;
-        GFileOutputStream*      mWriteIO = nullptr;
-        GError**                mError = nullptr;
+        GCancellable*           mCancel = nullptr;          // temp param
+
+        GError**                mError = nullptr;           // temp param
         gpointer                mProgressData;
 
         goffset                 mOffset = 0;                // 记录当前进度
