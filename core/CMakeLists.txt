@@ -98,6 +98,7 @@ FILE (GLOB ALL_HEADERS
         "pathbar-model-view/path-editor-p.h"
         )
 
+
 # 调用预编译器moc，需要使用 QT5_WRAP_CPP宏
 QT5_WRAP_CPP(ALL_HEADERS_MOC ${ALL_HEADERS})
 
@@ -115,3 +116,8 @@ include_directories(${GLIB_INCLUDE_DIRS} ${XCB_INCLUDE_DIRS} ${EXIF_INCLUDE_DIRS
 add_library(${LIB_CORE_DINGJING_NAME} STATIC ${ALL_SOURCES} ${ALL_HEADERS_MOC} ${ALL_RESOURCES_RCC} ${ALL_FORMS_HEADERS})
 
 target_link_libraries(${LIB_CORE_DINGJING_NAME} Qt5::Core Qt5::Widgets Qt5::X11Extras ${PTHREAD} ${GLIB_LIBRARIES} ${XCB_LIBRARIES} ${EXIF_LIBRARIES})
+
+
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/core/" DESTINATION include/libcore-dingjing FILES_MATCHING PATTERN "*.h[pp]")
+install(FILES ${ALL_HEADERS} DESTINATION include/libcore-dingjing)
+install(TARGETS ${LIB_CORE_DINGJING_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
