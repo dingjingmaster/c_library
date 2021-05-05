@@ -1,12 +1,12 @@
 cflag = -w
 
-gtk2_src = $(wildcard gtk2_*.c)
+gtk2_src = $(wildcard gtk2/gtk2_*.c)
 gtk2_target = $(patsubst %.c, %.run, $(gtk2_src))
 
-gtk3_src = $(wildcard gtk3_*.c)
+gtk3_src = $(wildcard gtk3/gtk3_*.c)
 gtk3_target = $(patsubst %.c, %.run, $(gtk3_src))
 
-gtk4_src = $(wildcard gtk4_*.c)
+gtk4_src = $(wildcard gtk4/gtk4_*.c)
 gtk4_target = $(patsubst %.c, %.run, $(gtk4_src))
 
 all:$(gtk3_target) $(gtk2_target) $(gtk4_target)
