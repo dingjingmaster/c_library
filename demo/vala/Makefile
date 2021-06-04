@@ -6,7 +6,7 @@ target = $(patsubst %.vala, %.run, $(src))
 all:$(target)
 
 %.run:%.vala
-	valac -o $@ $^ $(cflag)
+	valac --pkg gio-2.0 -o $@ $^ $(cflag)
 
 .PHONY:clean all
 
