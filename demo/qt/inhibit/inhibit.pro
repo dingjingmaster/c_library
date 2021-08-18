@@ -4,7 +4,7 @@ QT += dbus
 CONFIG += c++11 console link_pkgconfig no_keywords
 CONFIG -= app_bundle
 
-PKGCONFIG += glib-2.0 gio-2.0
+PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
