@@ -160,7 +160,7 @@ int main()
     GFileInfo *info = NULL;
 
     name_discription_table_init ();
-    gtk_init (NULL, NULL);
+    //gtk_init (NULL, NULL);
     
     GFile *location = g_file_new_for_path ("/usr/share/applications");
 
@@ -202,7 +202,7 @@ int main()
 
     g_object_unref (location);
 
-    gtk_main ();
+    //gtk_main ();
     if (name_discription_table) {
         g_hash_table_destroy (name_discription_table);
     }
