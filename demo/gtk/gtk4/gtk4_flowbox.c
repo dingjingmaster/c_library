@@ -706,13 +706,13 @@ GtkWidget* do_flowbox (GtkWidget *do_widget)
     int i;
 
     if (!window) {
-        window = gtk_window_new (0);
+        window = gtk_window_new ();
         gtk_window_set_display (GTK_WINDOW (window), gtk_widget_get_display (do_widget));
         gtk_window_set_title (GTK_WINDOW (window), "Flow Box");
         gtk_window_set_default_size (GTK_WINDOW (window), 400, 600);
         g_object_add_weak_pointer (G_OBJECT (window), (gpointer *)&window);
 
-        scrolled = gtk_scrolled_window_new (NULL, NULL);
+        scrolled = gtk_scrolled_window_new ();
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
         flowbox = gtk_flow_box_new ();
         gtk_widget_set_valign (flowbox, GTK_ALIGN_START);
@@ -734,20 +734,19 @@ GtkWidget* do_flowbox (GtkWidget *do_widget)
     return window;
 }
 
+static void activate (GApplication* app)
+{
+    GtkWidget* w = gtk_application_window_new (app);
+    GtkWidget* wi = do_flowbox (w);
+    gtk_widget_show (wi);
+}
 
 int main (int argc, char* argv[])
 {
-    gtk_init (&argc, &argv);
+    GtkApplication *app = gtk_application_new ("com.GtkApplication", G_APPLICATION_FLAGS_NONE);
 
-    GtkWindow* w = gtk_window_new (0);
+    g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
 
-    GtkWidget* wi = do_flowbox (w);
-
-    gtk_widget_show (wi);
-
-    gtk_main ();
-
-    return 0;
+    return g_application_run (G_APPLICATION (app), argc, argv);
 }
-
 

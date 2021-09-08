@@ -1,4 +1,4 @@
-cflag = -w
+cflag = -w -g
 
 gtk2_src = $(wildcard gtk2/gtk2_*.c)
 gtk2_target = $(patsubst %.c, %.run, $(gtk2_src))
@@ -37,4 +37,4 @@ lightdm_%.run:lightdm_%.c
 .PHONY:clean all
 
 clean:
-	@rm -fr *.run
+	@rm -f */*.run
