@@ -23,10 +23,10 @@ gtk4:$(gtk4_target)
 lightdm:$(lightdm_target)
 
 gtk2_%.run:gtk2_%.c
-	cc -o $@ $^ $(cflag) `pkg-config --cflags gtk+-2.0 --libs gtk+-2.0`
+	cc -o $@ $^ $(cflag) `pkg-config --cflags --libs gtk+-2.0`
 
 gtk3_%.run:gtk3_%.c
-	cc -o $@ $^ $(cflag) `pkg-config --cflags gtk+-3.0 --libs gtk+-3.0`
+	cc -o $@ $^ $(cflag) `pkg-config --cflags --libs gtk+-3.0 gtk4`
 
 gtk4_%.run:gtk4_%.c
 	cc -o $@ $^ $(cflag) `pkg-config --cflags gtk4 --libs gtk4`
