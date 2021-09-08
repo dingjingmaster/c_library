@@ -197,8 +197,8 @@ int main()
     printf ("home dir: %s\n", g_get_home_dir ());
     printf ("user data dir: %s\n", g_get_user_data_dir ());
 
-    GFileMonitor *monitor = g_file_monitor_directory (location, G_FILE_MONITOR_EVENT_CREATED, NULL, NULL);
-    g_signal_connect (monitor, "changed", G_CALLBACK (file_added_callback), NULL);
+    //GFileMonitor *monitor = g_file_monitor_directory (location, G_FILE_MONITOR_EVENT_CREATED, NULL, NULL);
+    //g_signal_connect (monitor, "changed", G_CALLBACK (file_added_callback), NULL);
 
     g_object_unref (location);
 

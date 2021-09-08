@@ -59,8 +59,18 @@ GtkWidget* do_headerbar (GtkWidget *do_widget)
 }
 
 
-int main (void)
+int main (int argc, char* argv[])
 {
+    gtk_init (&argc, &argv);
+
+    GtkWindow* w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+    GtkWidget* wi = do_headerbar (w);
+
+    gtk_widget_show (wi);
+
+    gtk_main ();
+
     return 0;
 }
 
