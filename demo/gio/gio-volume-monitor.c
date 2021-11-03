@@ -19,8 +19,6 @@ static void do_action(char* cmd)
     g_print("[do_action] exec done\n");
 }
 
- 
-
 static void handle_volume_changed(GVolumeMonitor* monitor, GVolume* volume, gpointer data)
 {
     char* ev = (char*)data;
