@@ -55,7 +55,7 @@ gint64 getCreateTimeOfMicro(const char* url)
 {
     g_autoptr (GError) error = NULL;
     g_autoptr (GFile) file = g_file_new_for_uri (url);
-    g_autoptr (GFileInfo) fileInfo = g_file_query_info (file, "*" /*G_FILE_ATTRIBUTE_TIME_CHANGED G_FILE_ATTRIBUTE_TIME_CREATED "metadata::*"*/, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
+    g_autoptr (GFileInfo) fileInfo = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_CHANGED "," G_FILE_ATTRIBUTE_TIME_CREATED "," "metadata::ctime", G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error);
 
     g_return_val_if_fail (G_IS_FILE (file) && G_IS_FILE_INFO (fileInfo) && g_file_query_exists (file, NULL), 0);
 
