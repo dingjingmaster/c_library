@@ -11,14 +11,22 @@
 #include <udisks/udisks.h>
 #include <gio/gunixmounts.h>
 
+typedef struct _DeviceRenameData        DeviceRenameData;
+
 static int device_rename (const char* devName, const char* name);
 static void udisk_umounted (GMount* mount, GAsyncResult *res, gpointer udata);
 static UDisksObject* getObjectFromBlockDevice (UDisksClient* client, const gchar* bdevice);
 
+struct _DeviceRenameData
+{
+    char*           devName;
+    char*           rename;
+};
+
 int main (int argc, char* argv[])
 {
-    if (argc < 2) {
-        printf ("请输入设备挂载点路径\n");
+    if (argc < 3) {
+        printf ("请输入设备  挂载点路径  和  名字 \n");
         return -1;
     }
 
@@ -52,7 +60,11 @@ int main (int argc, char* argv[])
     g_autofree char* devName = g_volume_get_identifier (volume, G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE);
     g_return_val_if_fail (devName, -1);
 
-    g_mount_unmount_with_operation (mount, G_MOUNT_UNMOUNT_NONE, NULL, NULL, (GAsyncReadyCallback) udisk_umounted, devName);
+    DeviceRenameData* data = (DeviceRenameData*) g_malloc0 (sizeof (DeviceRenameData));
+    data->devName = g_strndup (devName, strlen(devName));
+    data->rename = g_strndup (argv[2], strlen(argv[2]));
+
+    g_mount_unmount_with_operation (mount, G_MOUNT_UNMOUNT_NONE, NULL, NULL, (GAsyncReadyCallback) udisk_umounted, data);
 
     //
 
@@ -88,7 +100,6 @@ int device_rename (const char* devName, const char* name)
     return ret ? 0 : -1;
 }
 
-
 UDisksObject* getObjectFromBlockDevice (UDisksClient* client, const gchar* bdevice)
 {
     struct stat statbuf;
@@ -118,10 +129,12 @@ UDisksObject* getObjectFromBlockDevice (UDisksClient* client, const gchar* bdevi
 
 static void udisk_umounted (GMount* mount, GAsyncResult *res, gpointer udata)
 {
+    g_return_if_fail (udata);
+
     g_autoptr (GError) error = NULL;
 
     if (g_mount_unmount_with_operation_finish (G_MOUNT (mount), res, &error)) {
-        g_return_if_fail (device_rename ((char*) udata, "pp") == 0);
+        g_return_if_fail (device_rename (((DeviceRenameData*) udata)->devName, ((DeviceRenameData*) udata)->rename) == 0);
         // 挂载
         printf ("挂载!!!\n");
     } else {
