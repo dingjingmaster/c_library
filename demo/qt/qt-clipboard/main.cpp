@@ -1,21 +1,12 @@
-#include <QApplication>
+#include "clipboard-utils.h"
 
-#include <QDebug>
-#include <QMimeData>
-#include <QClipboard>
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QClipboard* cp = qApp->clipboard();
-
-    cp->connect(cp, &QClipboard::dataChanged, [=]() {
-        qDebug() << QApplication::clipboard()->mimeData()->text();
-
-    });
-
-    qDebug() << cp->mimeData()->text();
+    ClipboardUtils cu;
 
     return a.exec();
 }
