@@ -2,13 +2,14 @@
 #define CLIPBOARDUTILS_H
 
 #include <QObject>
+#include <QWidget>
 
-class ClipboardUtils : public QObject
+class ClipboardUtils : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ClipboardUtils (QObject *parent = nullptr);
+    explicit ClipboardUtils (QWidget *parent = nullptr);
 
 protected:
     bool eventFilter (QObject* obj, QEvent* ev) override;

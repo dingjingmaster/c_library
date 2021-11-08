@@ -1,17 +1,18 @@
 #include "clipboard-utils.h"
 
 #include <QDebug>
+#include <unistd.h>
 #include <QApplication>
 #include <QClipboard>
 #include <QMetaObject>
 #include <QMetaProperty>
 
-ClipboardUtils::ClipboardUtils(QObject *parent) : QObject(parent)
+ClipboardUtils::ClipboardUtils(QWidget *parent) : QWidget (parent)
 {
     qApp->clipboard ()->installEventFilter (this);
 
     connect (QApplication::clipboard (), &QClipboard::changed, this, [=] () {
-        qDebug() << QApplication::clipboard ()->text ();
+        qDebug() << "0:" << QApplication::clipboard ()->text ();
         const QMetaObject* metaObject = QApplication::clipboard ()->metaObject();
 
         for(int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i) {
@@ -23,7 +24,27 @@ ClipboardUtils::ClipboardUtils(QObject *parent) : QObject(parent)
             qDebug() << "dynamicPropertyNames ===>" << *s;
         }
 
+        bool flag = true;
+        while (flag) {
+            sleep (2);
+            QString s = QApplication::clipboard ()->text ();
+            if (!s.isEmpty ()) flag = false;
+            qDebug() << "0:" << s;
+        }
+
         qDebug() << "=================================================";
+    });
+
+    connect (QApplication::clipboard (), &QClipboard::dataChanged, this, [=] () {
+        qDebug () << "1:" << QApplication::clipboard ()->text ();
+    });
+
+    connect (QApplication::clipboard (), &QClipboard::findBufferChanged, this, [=] () {
+        qDebug () << "2:" << QApplication::clipboard ()->text ();
+    });
+
+    connect (QApplication::clipboard (), &QClipboard::selectionChanged, this, [=] () {
+        qDebug () << "3:" << QApplication::clipboard ()->text ();
     });
 }
 
