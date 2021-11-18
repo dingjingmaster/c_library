@@ -4,17 +4,27 @@
 #include <QObject>
 #include <QWidget>
 
-class ClipboardUtils : public QWidget
+class ClipboardUtils : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit ClipboardUtils (QWidget *parent = nullptr);
+    explicit ClipboardUtils (QObject *parent = nullptr);
+    QStringList getUrlsByX11 ();
 
 protected:
     bool eventFilter (QObject* obj, QEvent* ev) override;
 
+private:
+
+public Q_SLOTS:
+    void onClipboardDataChanged ();
+
 signals:
+
+private:
+    bool isRemoteUri = false;
+    int remoteCurrentCount = 0;
+
 
 };
 
