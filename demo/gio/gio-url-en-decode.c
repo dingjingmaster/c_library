@@ -10,6 +10,7 @@ char* url_encode (const char* url);
 char* url_decode (const char* url);
 
 char* strs[] = {
+    "file:///home/啊三大苏打水/bug%A9-12/",
     "file:///home/啊三大苏打水/%三大/",
     "file:///home/啊三大苏打水/三%大/",
     "file:///home/啊三大苏打水/三大%/",
@@ -26,7 +27,8 @@ int main (int argc, char* argv[])
         char* str = strs[i];
 
         g_autofree char* encode = url_encode (str);
-        printf ("str: %s  ==>  encode: %s\n", str, encode);
+        g_autofree char* eencode = url_encode (encode);
+        printf ("str: %s  ==>  encode: %s ==> eencode %s\n", str, encode, eencode);
 
         g_autofree char* decode = url_decode (encode);
         g_autofree char* ddecode = url_decode (decode);
@@ -52,6 +54,9 @@ char* url_encode (const char* url)
     return g_strdup (encode);
 }
 
+/**
+ * 此处为了兼容 windows 编码, 做如下特殊处理
+ */
 char* url_decode (const char* url)
 {
     g_return_val_if_fail (url, NULL);

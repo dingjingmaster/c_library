@@ -206,12 +206,13 @@ int main (int argc, char **argv)
     g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
     g_signal_connect (app, "open", G_CALLBACK (open), NULL);
     g_signal_connect (app, "command-line", G_CALLBACK (command_line), NULL);
+#if 0
 #ifdef STANDALONE
     g_application_set_inactivity_timeout (app, 10000);
 #else
     g_application_set_inactivity_timeout (app, 1000);
 #endif
-
+#endif
     if (g_strcmp0 (argv[1], "./actions") == 0) {
         g_application_set_inactivity_timeout (app, 0);
         g_application_hold (app);

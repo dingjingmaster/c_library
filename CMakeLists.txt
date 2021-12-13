@@ -42,7 +42,7 @@ include_directories(${CMAKE_SOURCE_DIR}/core/)
 message(STATUS "Building ${PROJECT_NAME} with Qt ${Qt5Core_VERSION}")
 
 add_subdirectory(core)
-add_subdirectory(demo)
+#add_subdirectory(demo)
 add_subdirectory(tests)
 
 
