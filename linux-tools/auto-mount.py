@@ -44,7 +44,8 @@ if __name__ == '__main__':
                 continue
 
             # 解析设备列表, 强行以\t分割
-            line = re.sub(' +', '\t',line)
+            line = re.sub(' ', '\t', line)
+            line = re.sub('\t+', '\t', line)
             arr = line.split('\t')
             if len(arr) == 6:
                 pths = arr[0].split('/')
