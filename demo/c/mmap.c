@@ -27,7 +27,7 @@ int main ()
     }
 
     void *start_fp;
-    if ((start_fp = mmap (NULL, file_stat.st_size + 20, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED) {
+    if ((start_fp = mmap (NULL, file_stat.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED) {
         printf ("mmap wrong\n");
         exit(0);
     }
