@@ -160,6 +160,9 @@ function add_execute_dir()
         path="$1"
         while [ "x$path" != "x/" ];
         do
+            if [ "x$path" != "x/home" ]; then
+                continue
+            fi
             chmod o+x "$path"
             printf "chmod o+x $path\n"
             path=$(dirname ${path})
