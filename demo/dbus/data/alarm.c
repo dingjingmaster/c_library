@@ -515,7 +515,7 @@ _out:
  */
 void
 alarm_complete_configure (
-    Alarm *object,
+    Alarm *object G_GNUC_UNUSED,
     GDBusMethodInvocation *invocation)
 {
   g_dbus_method_invocation_return_value (invocation,

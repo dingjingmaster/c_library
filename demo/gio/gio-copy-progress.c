@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <gio/gio.h>
 
-void progress_callback(goffset current_num_bytes, goffset total_num_bytes, void*)
+void progress_callback(goffset current_num_bytes, goffset total_num_bytes, void* data)
 {
     while (1);
 }

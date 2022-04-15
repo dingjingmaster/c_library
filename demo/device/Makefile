@@ -8,11 +8,8 @@ target = $(strip $(patsubst %.c, %.run, $(src)))
 
 all:$(target)
 
-%.run:%.o
-	cc -o $@ $< -ludev $(cflag)
-
-%.o:%.c
-	cc -o $@ -c $< $(cflag)
+%.run:%.c
+	gcc -o $@ $< $(cflag) `pkg-config --cflags --libs gtk+-2.0 gio-2.0 glib-2.0 gio-unix-2.0 udisks2` -ludev
 
 .PHONY:clean all
 
