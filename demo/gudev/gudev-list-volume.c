@@ -66,4 +66,11 @@ static void on_uevent (GUdevClient* client, const char* action, GUdevDevice* dev
         printf ("%s  ", propKeys[i]);
     }
     printf ("\n");
+
+    printf ("some prperties:\n");
+    for (int i = 0; propKeys[i] != NULL; ++i) {
+        if (g_udev_device_has_property (device, propKeys[i])) {
+            printf ("%s: %s\n", propKeys[i], g_udev_device_get_property (device, propKeys[i]));
+        }
+    }
 }
