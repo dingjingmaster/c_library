@@ -41,8 +41,6 @@ static void on_uevent (GUdevClient* client, const char* action, GUdevDevice* dev
     const char* const* devFileSymlinks = g_udev_device_get_device_file_symlinks (device);
     const char* const* propKeys = g_udev_device_get_property_keys (device);
 
-
-
     printf ("\n"
             "action: %s\n"
             "name: %s\n"
@@ -64,6 +62,13 @@ static void on_uevent (GUdevClient* client, const char* action, GUdevDevice* dev
     printf ("property keys: ");
     for (int i = 0; propKeys[i] != NULL; ++i) {
         printf ("%s  ", propKeys[i]);
+    }
+    printf ("\n");
+
+    printf ("tags: ");
+    const gchar* const* tags = g_udev_device_get_tags (device);
+    for (int i = 0; tags[i] != NULL; ++i) {
+        printf ("%s  ", tags[i]);
     }
     printf ("\n");
 
