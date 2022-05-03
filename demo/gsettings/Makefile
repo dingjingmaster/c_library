@@ -1,12 +1,14 @@
 cflag = -w 
 
 demo1_src = \
-	demo2.c \
-	demo1.c
+	graceful-log.c \
+	gsettings-demo2.c \
+	gsettings-demo1.c
 
 gobject_target =\
-	demo2.run \
-	demo1.run 
+	graceful-log.run \
+	gsettings-demo2.run \
+	gsettings-demo1.run 
 
 target = $(gobject_target)
 
