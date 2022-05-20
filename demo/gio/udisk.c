@@ -9,7 +9,7 @@ UDisksObject* getObjectFromBlockDevice(UDisksClient* client, const gchar* bdevic
 
 int main (int argc, char* argv[])
 {
-	char* devName = "/dev/sdb1";
+	char* devName = "/dev/sda";
 	char* name = "dd";
 
 	UDisksClient* client = udisks_client_new_sync(NULL, NULL);
