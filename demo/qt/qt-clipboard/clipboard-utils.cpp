@@ -27,9 +27,9 @@ ClipboardUtils::ClipboardUtils(QObject *parent) : QObject (parent)
     connect (QApplication::clipboard (), &QClipboard::changed, this, [=] () {
         qDebug() << qApp->clipboard()->mimeData();;
         qDebug() << qApp->clipboard ()->text ();
-        onClipboardDataChanged();
+        //onClipboardDataChanged();
 
-        qDebug() << "\n\n\n\n\nn\n";
+        qDebug() << "\n\n\n\n\n\n\n";
 //        const QMetaObject* metaObject = QApplication::clipboard ()->metaObject();
 
 //        for(int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i) {
@@ -64,6 +64,7 @@ bool ClipboardUtils::eventFilter(QObject *obj, QEvent *ev)
 
 QStringList ClipboardUtils::getUrlsByX11()
 {
+#if 0
     QAtomicInt currentCount = remoteCurrentCount;
     const QMimeData *mimedata = qApp->clipboard()->mimeData();
     if (!mimedata) {
@@ -161,6 +162,8 @@ QStringList ClipboardUtils::getUrlsByX11()
     }
 
     return clipboardFileUrls;
+#endif
+    return QStringList();
 }
 
 void ClipboardUtils::onClipboardDataChanged()
