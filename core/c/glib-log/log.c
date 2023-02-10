@@ -87,7 +87,10 @@ GLogWriterOutput log_handler (GLogLevelFlags level, const GLogField* fields, gsi
             logLevel = "WARNING";
             break;
         }
-        case G_LOG_LEVEL_CRITICAL:
+        case G_LOG_LEVEL_CRITICAL: {
+            logLevel = "CRITICAL";
+            break;
+        }
         case G_LOG_LEVEL_ERROR: {
             logLevel = "ERROR";
             break;
