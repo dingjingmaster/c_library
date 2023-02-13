@@ -14,6 +14,7 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <execinfo.h>
 
 #define FG_BLACK                    30
 #define FG_RED                      31
@@ -135,13 +136,6 @@ GLogWriterOutput log_handler (GLogLevelFlags level, const GLogField* fields, gsi
     if (file) {
         vec[++i].iov_base = (void*)file;
         vec[i].iov_len = strlen(file);
-        vec[++i].iov_base = (void*)(" ");
-        vec[i].iov_len = 1;
-    }
-
-    if (func) {
-        vec[++i].iov_base = (void*)func;
-        vec[i].iov_len = strlen(func);
         vec[++i].iov_base = (void*)(":");
         vec[i].iov_len = 1;
     }
@@ -149,6 +143,13 @@ GLogWriterOutput log_handler (GLogLevelFlags level, const GLogField* fields, gsi
     if (line) {
         vec[++i].iov_base = (void*)line;
         vec[i].iov_len = strlen(line);
+    }
+
+    if (func) {
+        vec[++i].iov_base = (void*)(" ");
+        vec[i].iov_len = 1;
+        vec[++i].iov_base = (void*)func;
+        vec[i].iov_len = strlen(func);
     }
 
     vec[++i].iov_base = "] ";
@@ -302,5 +303,68 @@ static void _log_get_time (char* str, int len, int flag)
         strftime (date_fmt, 20, "%Y_%m_%d", &now_tm);
         snprintf (str, (unsigned long)len, "%s", date_fmt);
     }
+}
+
+void signal_handler (int sig, siginfo_t* siginfo, void* context)
+{
+    void*   bt[256] = {0};
+    char**  btSymbols = NULL;
+
+    int bufSize = 0;
+    char buf[256000] = {0};
+
+    int n = backtrace (bt, sizeof(bt) / sizeof(bt[0]));
+    if (n <= 0) {
+        LOG_ERROR("backtrace error, '%s'", g_strerror (errno));
+        return;
+    }
+    btSymbols = backtrace_symbols(bt, n);
+    for (int i = 1; i < n; ++i) {
+        char lineBuf[10240] = {0};
+        char binPath[1024] = {0};
+        char p[32] = {0};
+
+        sscanf(btSymbols[i], "%*[^(]%[^)]s", lineBuf);
+        const char* sc = strstr (btSymbols[i], "(");
+        if (NULL != sc) {
+            strncpy(binPath, btSymbols[i], sc - btSymbols[i]);
+        }
+        sscanf(lineBuf, "(+%s", p);
+        memset(lineBuf, 0, sizeof(lineBuf));
+        if (strlen(p) > 0) {
+            snprintf(lineBuf, sizeof(lineBuf) - 1, "addr2line %s -e %s", p, strlen (binPath) > 0 ? binPath : INSTALL_NAME);
+            FILE* fr = popen(lineBuf, "r");
+            memset(lineBuf, 0, sizeof(lineBuf));
+            fread(lineBuf, sizeof(lineBuf) - 1, 1, fr);
+            fclose(fr);
+            for (int j = 0; j < sizeof(lineBuf) - 1; ++j) {
+                if ('\n' == lineBuf[j] || 0 == lineBuf[j]) {
+                    lineBuf[j] = 0;
+                    break;
+                }
+            }
+        }
+
+        int fl = (int) strlen (lineBuf);
+        int l = (int) strlen(btSymbols[i]);
+        if (bufSize + l + fl + 2 >= sizeof(lineBuf) - 1) {
+            break;
+        }
+
+        strncat(buf + bufSize, btSymbols[i], sizeof(buf) - bufSize - 1);
+        bufSize += l;
+        strncat(buf + bufSize, " ", sizeof(buf) - bufSize - 1);
+        bufSize += 1;
+        strncat(buf + bufSize, lineBuf, sizeof(buf) - bufSize - 1);
+        bufSize += fl;
+        strncat(buf + bufSize, "\n", sizeof(buf) - bufSize - 1);
+        bufSize += 1;
+    }
+
+    ERROR ("\n\n%s\n\n", buf);
+
+    free(btSymbols);
+    signal(sig, SIG_DFL);
+    raise(sig);
 }
 

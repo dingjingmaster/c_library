@@ -96,6 +96,7 @@ extern "C" {
     exit(-1);                                               \
 }
 
+void signal_handler (int sig, siginfo_t* siginfo, void* context);
 
 GLogWriterOutput log_handler(GLogLevelFlags level, const GLogField *fields, gsize nFields, gpointer udata);
 
