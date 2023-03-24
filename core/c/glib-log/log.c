@@ -108,7 +108,7 @@ GLogWriterOutput log_handler (GLogLevelFlags level, const GLogField* fields, gsi
         } else if (0 == g_ascii_strcasecmp ("line", fields[i].key)) {
             line = g_strdup_printf ("%d", fields[i].value);
         } else if (0 == g_ascii_strcasecmp ("message", fields[i].key)) {
-            msg = g_strdup_printf (fields[i].value);
+            msg = g_strdup_printf ("%s", fields[i].value ? fields[i].value : "<null>");
         } else if (0 == g_ascii_strcasecmp ("glib_domain", fields[i].key)) {
             domain = g_strdup_printf (fields[i].value);
         } else if (0 == g_ascii_strcasecmp ("loc", fields[i].key)) {
